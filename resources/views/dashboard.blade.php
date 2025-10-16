@@ -31,14 +31,6 @@
                 </div>
             </div>
 
-            <!-- Asset Value -->
-            <div class="bg-white shadow rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-800">Total Asset Value</h3>
-                <p class="mt-2 text-2xl font-bold text-indigo-600">
-                    Rp {{ number_format($totalValue, 0, ',', '.') }}
-                </p>
-            </div>
-
             <!-- Assets by Department -->
             <div class="bg-white shadow rounded-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Assets by Department</h3>
