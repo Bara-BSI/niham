@@ -112,8 +112,8 @@
                                 <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
                             </div>
 
-                            @if (Auth::user()->inDept('EXE'))
-                                <!-- Departments -->
+                            @if (Auth::user()->inDept('EXE') || Auth::user()->inDept('PTLP'))
+                                <!-- Executive can choose any department -->
                                 <div>
                                     <x-input-label for="department_id" :value="__('Department')" />
                                     <select
@@ -123,21 +123,16 @@
                                     >
                                         <option value="">—</option>
                                         @foreach ($departments as $department)
-                                            @if (old('department_id', $asset->department_id) == $department->id)
-                                                <option value="{{ $department->id }}" selected>
-                                                    {{ $department->name }}
-                                                </option>
-                                            @else
-                                                <option value="{{ $department->id }}">
-                                                    {{ $department->name }}
-                                                </option>
-                                            @endif
+                                            <option value="{{ $department->id }}"
+                                                @selected(old('department_id', $asset->department_id) == $department->id)>
+                                                {{ $department->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     <x-input-error :messages="$errors->get('department_id')" class="mt-2" />
                                 </div>
                             @else
-                                <!-- Departments -->
+                                <!-- Non-executive: locked to their department -->
                                 <div>
                                     <x-input-label for="department_id" :value="__('Department')" />
                                     <select
@@ -146,9 +141,12 @@
                                         disabled
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-500"
                                     >
-                                        <option value="{{ Auth::user()->department->id }}" selected>{{ Auth::user()->department->name }}</option>
+                                        <option value="{{ old('department_id', $asset->department_id) }}" selected>
+                                            {{ old('department_id', $asset->department->name) }}
+                                        </option>
                                     </select>
-                                    <input type="hidden" name="department_id" value="{{ Auth::user()->department->id }}">
+                                    <!-- Hidden input ensures value is still submitted -->
+                                    <input type="hidden" name="department_id" value="{{ old('department_id', $asset->department_id) }}">
                                     <x-input-error :messages="$errors->get('department_id')" class="mt-2" />
                                 </div>
                             @endif

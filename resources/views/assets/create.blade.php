@@ -102,7 +102,7 @@
                                 <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
                             </div>
 
-                            @if (Auth::user()->inDept('EXE'))
+                            @if (Auth::user()->inDept('EXE') || Auth::user()->inDept('PTLP'))
                                 <!-- Departments -->
                                 <div>
                                     <x-input-label for="department_id" :value="__('Department')" />

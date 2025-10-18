@@ -35,7 +35,7 @@
                 </div>
 
                 <!-- Department Filter -->
-                @if (Auth::user()->inDept('EXE'))
+                @if (Auth::user()->inDept('EXE') || Auth::user()->inDept('PTLP'))
                     <div>
                         <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
                         <select name="department" id="department" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">

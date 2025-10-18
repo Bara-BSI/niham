@@ -40,7 +40,7 @@ class AssetController extends Controller
         }
 
         // Pembatasan akses ke departemen lain
-        if (! Auth::user()->inDept('EXE')) {
+        if (! Auth::user()->inDept('EXE') && ! Auth::user()->inDept('PTLP')) {
             $query->where('department_id', Auth::user()->department_id);
         }
 
@@ -176,7 +176,7 @@ class AssetController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'departments_id' => 'nullable|exists:departments,id',
+            'department_id' => 'nullable|exists:departments,id',
             'status' => 'in:in_service,out_of_service,disposed',
             'serial_number' => 'nullable|string|max:255',
             'purchase_date' => 'nullable|date',
@@ -276,7 +276,7 @@ class AssetController extends Controller
         }
 
         // Pembatasan akses ke departemen lain
-        if (! Auth::user()->inDept('EXE')) {
+        if (! Auth::user()->inDept('EXE') && !Auth::user()->inDept('PTLP')) {
             $query->where('department_id', Auth::user()->department_id);
         }
 
