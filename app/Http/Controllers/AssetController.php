@@ -100,6 +100,7 @@ class AssetController extends Controller
             'remarks' => 'nullable|string|max:120'
         ]);
         $data['purchase_cost'] = $request->filled('purchase_cost') ? $request->input('purchase_cost') : null;
+        $data['editor'] = Auth::id();
         $asset = Asset::create($data);
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
@@ -185,6 +186,8 @@ class AssetController extends Controller
             'vendor' => 'nullable|string|max:255',
             'remarks' => 'nullable|string|max:120'
         ]);
+        $data['purchase_cost'] = $request->filled('purchase_cost') ? $request->input('purchase_cost') : null;
+        $data['editor'] = Auth::id();
         $asset->update($data);
 
         // Attachment

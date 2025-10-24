@@ -57,11 +57,12 @@
 
                         <div><strong>Purchase Cost:</strong> {{ $asset->purchase_cost ? 'Rp ' . number_format($asset->purchase_cost, 0, ',', '.') : '-' }}</div>
                         <div><strong>Vendor:</strong> {{ $asset->vendor ?: '-' }}</div>
-                        <div>
-                            <strong>Remarks:</strong>
-                            <p class=" bg-gray-100"  style="overflow-wrap: anywhere;"> {{ $asset->remarks ?: '-' }} </p>
-                        </div>
+                        <div><strong>Last Editor:</strong> {{ $asset->editorUser->name ?: 'N/A' }}</div>
                     </div>
+                </div>
+                <div class="mx-5">
+                    <strong>Remarks:</strong>
+                    <p class=" bg-gray-100"  style="overflow-wrap: anywhere;"> {{ $asset->remarks ?: '-' }} </p>
                 </div>
                 {{-- QR --}}
                 <x-qr-modal :asset="$asset" class="flex justify-center items-center"/>

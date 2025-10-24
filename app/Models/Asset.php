@@ -25,6 +25,7 @@ class Asset extends Model
         'vendor',
         'meta',
         'remarks',
+        'editor'
     ];
 
     protected $casts = [
@@ -49,5 +50,9 @@ class Asset extends Model
 
     public function attachments() {
         return $this->hasOne(Attachment::class);
+    }
+
+    public function editorUser() {
+        return $this->belongsTo(User::class, 'editor');
     }
 }

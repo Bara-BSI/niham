@@ -53,7 +53,8 @@
                             <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Name</th>
                             <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Department</th>
                             <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Status</th>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Created</th>
+                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Updated</th>
+                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Editor</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -64,7 +65,8 @@
                                 <td class="px-4 py-2">
                                     <x-status-badge :status="$asset->status" />
                                 </td>
-                                <td class="px-4 py-2">{{ $asset->created_at->diffForHumans() }}</td>
+                                <td class="px-4 py-2">{{ $asset->updated_at->diffForHumans() }}</td>
+                                <td class="px-4 py-2">{{ $asset->editorUser ? $asset->editorUser->name : 'N/A' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

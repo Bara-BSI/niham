@@ -45,6 +45,16 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 ### Fixed
 - Fixing bug on changing department while editing asset
 
+## [0.1.2]
+### Fixed
+- Hide administrational menus for non admins in mobile view
+
+### Changed
+- Rearranging backend of the dashboard, now use last updated instead of last created
+
+### Added
+- Editor column on asset table, showing the latest user who edited the asset
+- Editor info on dashboard and asset details.
 ----------------------------------------------------------------
 ## Authors
 - Contributors: Bara Rifki Annajib(Bara-BSI)
