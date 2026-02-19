@@ -18,20 +18,7 @@ Route::get('/', function () {
     return redirect()->route('assets.index');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard', [
-        'totalAssets'       => Asset::count(),
-        'isAssets'      => Asset::where('status', 'in_service')->count(),
-        'oosAssets' => Asset::where('status', 'out_of_service')->count(),
-        'disposedAssets'     => Asset::where('status', 'disposed')->count(),
-        'totalValue'        => Asset::sum('purchase_cost'),
-        'assetsByDepartment'=> Asset::with('department')
-                                    ->get()
-                                    ->groupBy(fn($a) => $a->department->name)
-                                    ->map->count(),
-        'recentAssets'      => Asset::with('department')->latest()->take(5)->get(),
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -39,6 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Export the assets
+    Route::get('/assets/export', [AssetController::class, 'export'])->name('assets.export');
 
     Route::resource('assets', AssetController::class);
     Route::resource('roles', RoleController::class);
@@ -48,11 +38,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('assets/{asset}/qr', [QrController::class, 'image'])->name('assets.qr');
 
-    // Halaman scan qr, Broken
-    // Route::view('scan', 'qr.scan')->name('qr.scan');
+    // Halaman scan qr
+    Route::view('scan', 'qr.scan')->name('qr.scan');
 
-    // Export the assets
-    Route::get('/assets/export', [AssetController::class, 'export'])->name('assets.export');
+
     
     // Backup routes
     Route::post('/backup/download', [BackupController::class, 'download'])->name('backup.download');

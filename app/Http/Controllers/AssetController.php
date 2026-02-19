@@ -10,7 +10,7 @@ use App\Models\User;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Facades\Excel;
 use Storage;
 
 class AssetController extends Controller
@@ -97,11 +97,38 @@ class AssetController extends Controller
             'warranty_duration' => 'in:none,6m,1y,2y,3y',
             'purchase_cost' => 'nullable|numeric',
             'vendor' => 'nullable|string|max:255',
-            'remarks' => 'nullable|string|max:120'
+            'remarks' => 'nullable|string|max:120',
+            'attachment' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Max 2MB
         ]);
         $data['purchase_cost'] = $request->filled('purchase_cost') ? $request->input('purchase_cost') : null;
         $data['editor'] = Auth::id();
+        
+        // Warranty Calculation
+        $purchaseDate = $request->filled('purchase_date') ? Carbon::parse($request->purchase_date) : null;
+        $warrantyDate = null;
+
+        if ($purchaseDate) {
+            switch ($request->warranty_duration) {
+                case '6m':
+                    $warrantyDate = $purchaseDate->copy()->addMonths(6);
+                    break;
+                case '1y':
+                    $warrantyDate = $purchaseDate->copy()->addYear();
+                    break;
+                case '2y':
+                    $warrantyDate = $purchaseDate->copy()->addYears(2);
+                    break;
+                case '3y':
+                    $warrantyDate = $purchaseDate->copy()->addYears(3);
+                    break;
+            }
+        }
+
+        $data['purchase_date'] = $purchaseDate;
+        $data['warranty_date'] = $warrantyDate;
+
         $asset = Asset::create($data);
+
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $path = $file->store('attachments', 'public');
@@ -111,29 +138,6 @@ class AssetController extends Controller
                 'type' => $file->getClientMimeType(),
             ]);
         }
-
-        // Warranty Calculation
-        $purchaseDate = Carbon::parse($request->purchase_date);
-        switch ($request->warranty_duration) {
-            case '6m':
-                $warrantyDate = $purchaseDate->copy()->addMonths(6);
-                break;
-            case '1y':
-                $warrantyDate = $purchaseDate->copy()->addYear();
-                break;
-            case '2y':
-                $warrantyDate = $purchaseDate->copy()->addYears(2);
-                break;
-            case '3y':
-                $warrantyDate = $purchaseDate->copy()->addYears(3);
-                break;
-            default:
-                $warrantyDate = null;
-        }
-        $asset->update([
-            'purchase_date' => $purchaseDate,
-            'warranty_date' => $warrantyDate
-        ]);
 
         return redirect()->route('assets.show', $asset)->with('ok','Asset Created');
     }
@@ -150,7 +154,7 @@ class AssetController extends Controller
             'attachments',
         ]);
         $assetClass = Asset::class;
-        // dd($asset->attachments()->first()->path);
+
         return view('assets.show', compact('asset', 'assetClass'));
     }
 
@@ -184,10 +188,35 @@ class AssetController extends Controller
             'warranty_duration' => 'in:none,6m,1y,2y,3y',
             'purchase_cost' => 'nullable|numeric',
             'vendor' => 'nullable|string|max:255',
-            'remarks' => 'nullable|string|max:120'
+            'remarks' => 'nullable|string|max:120',
+            'attachment' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Max 2MB
         ]);
         $data['purchase_cost'] = $request->filled('purchase_cost') ? $request->input('purchase_cost') : null;
         $data['editor'] = Auth::id();
+        // Warranty Calculation
+        $purchaseDate = $request->filled('purchase_date') ? Carbon::parse($request->purchase_date) : null;
+        $warrantyDate = null;
+
+        if ($purchaseDate) {
+            switch ($request->warranty_duration) {
+                case '6m':
+                    $warrantyDate = $purchaseDate->copy()->addMonths(6);
+                    break;
+                case '1y':
+                    $warrantyDate = $purchaseDate->copy()->addYear();
+                    break;
+                case '2y':
+                    $warrantyDate = $purchaseDate->copy()->addYears(2);
+                    break;
+                case '3y':
+                    $warrantyDate = $purchaseDate->copy()->addYears(3);
+                    break;
+            }
+        }
+
+        $data['purchase_date'] = $purchaseDate;
+        $data['warranty_date'] = $warrantyDate;
+
         $asset->update($data);
 
         // Attachment
@@ -217,30 +246,6 @@ class AssetController extends Controller
                 ]);
             }
         }
-
-
-        // Warranty Calculation
-        $purchaseDate = Carbon::parse($request->purchase_date);
-        switch ($request->warranty_duration) {
-            case '6m':
-                $warrantyDate = $purchaseDate->copy()->addMonths(6);
-                break;
-            case '1y':
-                $warrantyDate = $purchaseDate->copy()->addYear();
-                break;
-            case '2y':
-                $warrantyDate = $purchaseDate->copy()->addYears(2);
-                break;
-            case '3y':
-                $warrantyDate = $purchaseDate->copy()->addYears(3);
-                break;
-            default:
-                $warrantyDate = null;
-        }
-        $asset->update([
-            'purchase_date' => $purchaseDate,
-            'warranty_date' => $warrantyDate
-        ]);
         return redirect()->route('assets.show', $asset)->with('ok', 'Updated');
     }
 
@@ -269,8 +274,13 @@ class AssetController extends Controller
         $query = Asset::query();
 
         // Search
+        // Search by 'name' or 'tag' fields if a search term is provided
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->input('search') . '%');
+            $searchTerm = $request->input('search');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('tag', 'like', '%' . $searchTerm . '%');
+            });
         }
 
         // Filter by category

@@ -11,7 +11,7 @@
                     <!-- Image Preview -->
                     @if ($asset->attachments)
                         <div class="flex justify-center">
-                            <img src="{{ asset('storage/' . $asset->attachments->first()->path) }}"
+                            <img src="{{ asset('storage/' . $asset->attachments->path) }}"
                                 alt="Asset Image"
                                 class="max-w-xs rounded-md shadow-md border border-gray-200" />
                         </div>
