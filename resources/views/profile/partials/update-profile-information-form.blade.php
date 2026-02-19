@@ -29,13 +29,13 @@
 
         <div>
             <x-input-label for="department" :value="__('Department')" />
-            <x-text-input id="department" name="department" type="text" class="mt-1 block w-full text-gray-400" :value="old('department', $user->department->name)" required autofocus autocomplete="department" disabled="true" />
+            <x-text-input id="department" name="department" type="text" class="mt-1 block w-full text-gray-400" :value="old('department', $user->department?->name)" required autofocus autocomplete="department" disabled="true" />
             <x-input-error class="mt-2" :messages="$errors->get('department')" />
         </div>
 
         <div>
             <x-input-label for="role" :value="__('Role')" />
-            <x-text-input id="role" name="role" type="text" class="mt-1 block w-full text-gray-400" :value="old('role', $user->role->name)" required autofocus autocomplete="role" disabled="true" />
+            <x-text-input id="role" name="role" type="text" class="mt-1 block w-full text-gray-400" :value="old('role', $user->role?->name)" required autofocus autocomplete="role" disabled="true" />
             <x-input-error class="mt-2" :messages="$errors->get('role')" />
         </div>
 

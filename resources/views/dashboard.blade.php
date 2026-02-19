@@ -61,7 +61,7 @@
                         @foreach ($recentAssets as $asset)
                             <tr>
                                 <td class="px-4 py-2">{{ $asset->name }}</td>
-                                <td class="px-4 py-2">{{ $asset->department->name }}</td>
+                                <td class="px-4 py-2">{{ $asset->department?->name ?? 'N/A' }}</td>
                                 <td class="px-4 py-2">
                                     <x-status-badge :status="$asset->status" />
                                 </td>

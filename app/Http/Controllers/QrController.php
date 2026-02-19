@@ -22,7 +22,7 @@ class QrController extends Controller
         $png = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
             ->size(400)->margin(1)
             ->errorCorrection('H')
-            ->merge(public_path('niham-logo-cr-rd.png'), 0.2, true)
+            // ->merge(public_path('niham-logo-cr-rd.png'), 0.2, true)
             ->generate($signedUrl);
         
         return response($png)->header('Content-Type', 'image/png');

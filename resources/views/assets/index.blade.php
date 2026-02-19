@@ -76,23 +76,22 @@
                     <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Search by name or tag" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
                 </div>
 
-                <!-- Submit -->
-                <div class="pt-6">
+                <!-- Buttons -->
+                <div class="pt-6 flex gap-2">
                     <button type="submit"
                             class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md 
                                 font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 
                                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
                         {{ __('Apply') }}
                     </button>
-                </div>
 
-                {{-- Export to excel, still broken --}}
-                {{-- <div class="pt-6 justify-end">
-                    <a href="{{ route('assets.export') }}"
-                    class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                        Export to Excel
-                    </a>
-                </div> --}}
+                    <button type="submit" formaction="{{ route('assets.export') }}"
+                            class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md 
+                                font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 
+                                focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition">
+                        {{ __('Export') }}
+                    </button>
+                </div>
 
                 
             </form>
