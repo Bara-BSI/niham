@@ -6,14 +6,14 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 
 ## [Unreleased]
 ### Added
-- Placeholder for upcoming features, endpoints, controllers, views, or packages.
-- Add new migrations, jobs, events, or queued workers.
+- **Dynamic Property Branding:** Users can now set custom `logo`, `background_image`, and `accent_color` for their individual properties.
+- **Global Tenancy Scopes (BelongsToProperty):** Scoped queries natively, handling both isolated users and Super Admin global perspectives via traits.
+- **Custom View Composer:** Injected `$activeProperty` globally to dynamically shade layouts and color badges across the authenticated app.
+- **Split-Screen Guest UI:** De-coupled the pre-login UI from standard Breeze styles, implementing a deeply branded side-by-side design.
+- **Dynamic Dashboard UI:** Refactored the dashboard shell (sidebar/topnav) to implement the active property's frosted background and accent styling on-the-fly.
 
 ### Changed
-- Notes about refactors, dependency upgrades, or breaking changes.
-
-### Fixed
-- Bug fixes and small improvements.
+- Converted `resources/views/auth/login.blade.php` to integrate natively into the new Guest UI split-model, removing legacy spacing layers.
 
 ### Security
 - Security-related fixes and hardening.

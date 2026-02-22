@@ -16,29 +16,48 @@
             rel="stylesheet">
         <style>
             [x-cloak] { display: none !important; }
+            :root {
+                --accent-color: {{ $activeProperty->accent_color ?? '#4f46e5' }};
+            }
+            .bg-accent { background-color: var(--accent-color) !important; }
+            .text-accent { color: var(--accent-color) !important; }
+            .border-accent { border-color: var(--accent-color) !important; }
+            .ring-accent:focus { outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.4); border-color: var(--accent-color) !important; }
         </style>
-
-
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+        @php
+            $bgImage = isset($activeProperty) && $activeProperty->background_image_path 
+                ? asset('storage/' . $activeProperty->background_image_path)
+                : null;
+        @endphp
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+        <div class="min-h-screen bg-gray-100 relative">
+            @if($bgImage)
+                <div class="fixed inset-0 z-0 bg-cover bg-center" style="background-image: url('{{ $bgImage }}');">
+                    <div class="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-md"></div>
+                </div>
+            @endif
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+            <div class="relative z-10 min-h-screen flex flex-col">
+                @include('layouts.navigation')
+
+                <!-- Page Heading -->
+                @isset($header)
+                    <header class="bg-white bg-opacity-90 shadow border-b border-gray-200 backdrop-blur">
+                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                            {{ $header }}
+                        </div>
+                    </header>
+                @endisset
+
+                <!-- Page Content -->
+                <main class="flex-grow">
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
 
         {{-- Ok modal --}}
@@ -70,9 +89,9 @@
                     <div class="mt-4 text-center">
                         <button 
                             @click="open = false" 
-                            class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent 
+                            class="inline-flex items-center px-4 py-2 bg-accent border border-transparent 
                                 rounded-md font-semibold text-xs text-white uppercase tracking-widest 
-                                hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                                hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accent 
                                 focus:ring-offset-2 transition"
                         >
                             OK

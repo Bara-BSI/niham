@@ -6,7 +6,11 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        @if(isset($activeProperty) && $activeProperty->logo_path)
+                            <img src="{{ asset('storage/' . $activeProperty->logo_path) }}" alt="{{ $activeProperty->name }} Logo" class="block h-10 w-auto object-contain">
+                        @else
+                            <x-application-logo class="block h-9 w-auto fill-current text-accent" />
+                        @endif
                     </a>
                 </div>
 

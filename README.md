@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Bara-BSI/niham/main/public/niham-logo-cr-rd.png" alt="NIHAM Logo" width="150" height="auto" />
+</p>
+
 # 🏨 NIHAM (New Integrated Hotel Asset Management)
 
 ![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
@@ -24,9 +28,15 @@
 - **Scan & Verify:** Built-in scanner to quickly retrieve asset details via mobile devices.
 - **Public/Private Views:** Secure public resolving of asset information for quick checks.
 
+### 🎨 Dynamic Property Branding & UI Overhauls
+- **Customized UI per Property:** Each property can set its own custom `logo`, `accent_color`, and `background_image`. The authenticated dashboard dynamically injects these properties natively via CSS variables and frosted glass backgrounds (`backdrop-blur`).
+- **Completely Distinct Guest Flow:** The login page is uncoupled from the standard Breeze gray-cards, using a stunning full split-screen design featuring the global NIHAM identity.
+- **Dynamic Property Switching:** Super Admins experience on-the-fly theme switching when they swap contexts between properties.
+
 ### 🛡️ Role & Property-Based Access Control (RBAC)
+- **Global Tenancy Scopes (Auto-Filtering):** Standard users are natively isolated to their assigned `property_id` across all queries using a custom `BelongsToProperty` global scope trait.
 - **Multi-Property Management:** Create and manage distinct databases of assets for entirely isolated hotel locations (e.g., Novotel YIA vs. Ibis YIA).
-- **Super Admin:** Global users that can effortlessly switch contexts between property schemas.
+- **Super Admin Oversight:** Global users bypass the tenancy scope by default (viewing ALL properties at once seamlessly) or can hone in on a specific property context dynamically.
 - **Department Isolation:** Normal users only access assets within their specific department.
 - **Executive Oversight:** Special roles (EXE/PTLP) for property-wide visibility across all departments.
 - **User Roles:** Granular permissions for Admins, Staff, and Viewers within their assigned properties.

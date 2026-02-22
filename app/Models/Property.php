@@ -9,7 +9,7 @@ class Property extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'code', 'address'];
+    protected $fillable = ['name', 'code', 'address', 'logo_path', 'background_image_path', 'accent_color'];
 
     public function users()
     {
