@@ -6,9 +6,9 @@
             </h2>
             <div class="flex gap-2">
                 <a href="{{ route('properties.edit', $property) }}"
-                   class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md 
-                           font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 
-                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                   class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
+                           font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
+                           focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
                     <x-heroicon-s-pencil class="w-4 h-4 mr-2" />
                     {{ __('Edit') }}
                 </a>
@@ -31,7 +31,7 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <!-- Property Details -->
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Property Details</h3>
                 <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -59,7 +59,7 @@
             </div>
 
             <!-- Users in this Property -->
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Users</h3>
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -85,7 +85,7 @@
             </div>
 
             <!-- Departments in this Property -->
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Departments</h3>
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">

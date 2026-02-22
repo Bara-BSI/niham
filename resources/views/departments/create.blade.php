@@ -7,7 +7,7 @@
 
     <div class="py-8">
         <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                 <form method="POST" action="{{ route('departments.store') }}" enctype="multipart/form-data">
                     @csrf
 

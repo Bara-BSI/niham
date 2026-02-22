@@ -6,9 +6,9 @@
             </h2>
             <div>
                 <a href="{{ route('users.create') }}"
-                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md 
-                        font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 
-                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
+                        font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
+                        focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
                     <x-heroicon-s-plus class="w-4 h-4 mr-2" />
                     {{ __('New User') }}
                 </a>
@@ -51,9 +51,9 @@
                 <!-- Submit -->
                 <div class="pt-6">
                     <button type="submit"
-                            class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md 
-                                font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 
-                                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                            class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
+                                font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
+                                focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
                         {{ __('Apply') }}
                     </button>
                 </div>
@@ -61,7 +61,7 @@
             </form>
 
             <!-- Table -->
-            <div class="bg-white shadow-sm sm:rounded-lg overflow-x-scroll rounded">
+            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 overflow-x-scroll">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
@@ -78,7 +78,7 @@
                         @foreach($users as $user)
                             <tr>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ $users->firstItem() + $loop->index }}</td>
-                                <td class="px-4 py-2 text-sm text-indigo-700 font-semibold hover:underline">
+                                <td class="px-4 py-2 text-sm text-accent font-semibold hover:underline">
                                     <a href="{{ route('users.show',$user) }}">{{ $user->name }}</a>
                                 </td>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ optional($user->department)->name ?? '-' }}</td>

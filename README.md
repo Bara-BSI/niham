@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Bara-BSI/niham/main/public/niham-logo-cr-rd.png" alt="NIHAM Logo" width="150" height="auto" />
+  <img src="https://raw.githubusercontent.com/Bara-BSI/niham/main/public/niham-logo.png" alt="NIHAM Logo" width="150" height="auto" />
 </p>
 
 # 🏨 NIHAM (New Integrated Hotel Asset Management)

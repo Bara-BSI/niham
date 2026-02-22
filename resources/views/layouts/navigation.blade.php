@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -74,7 +74,7 @@
                     {{-- Property Switcher for Super Admin --}}
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 border border-indigo-300 text-sm leading-4 font-medium rounded-md text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none transition ease-in-out duration-150">
+                            <button class="inline-flex items-center px-3 py-2 border border-accent text-sm leading-4 font-medium rounded-md text-accent bg-indigo-50 hover:bg-indigo-100 focus:outline-none transition ease-in-out duration-150">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                 </svg>
@@ -119,7 +119,7 @@
                 <!-- Settings Dropdown -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
 
                             <div class="ms-1">
@@ -214,7 +214,7 @@
                 <form method="POST" action="{{ route('properties.switch') }}">
                     @csrf
                     <input type="hidden" name="property_id" value="">
-                    <button type="submit" class="block w-full text-start px-4 py-2 text-sm {{ !$currentProperty ? 'font-bold text-indigo-700' : 'text-gray-600' }}">
+                    <button type="submit" class="block w-full text-start px-4 py-2 text-sm {{ !$currentProperty ? 'font-bold text-accent' : 'text-gray-600' }}">
                         All Properties
                     </button>
                 </form>
@@ -222,7 +222,7 @@
                     <form method="POST" action="{{ route('properties.switch') }}">
                         @csrf
                         <input type="hidden" name="property_id" value="{{ $prop->id }}">
-                        <button type="submit" class="block w-full text-start px-4 py-2 text-sm {{ $currentProperty && $currentProperty->id === $prop->id ? 'font-bold text-indigo-700' : 'text-gray-600' }}">
+                        <button type="submit" class="block w-full text-start px-4 py-2 text-sm {{ $currentProperty && $currentProperty->id === $prop->id ? 'font-bold text-accent' : 'text-gray-600' }}">
                             {{ $prop->name }}
                         </button>
                     </form>

@@ -15,7 +15,7 @@
             <button @click="open = false"
                     class="absolute top-2 right-2 flex items-center justify-center
                         w-5 h-5 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300
-                        focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        focus:outline-none focus:ring-2 focus:ring-accent">
                 <x-heroicon-s-x-mark class="w-4 h-4"/>
             </button>
 
@@ -28,9 +28,9 @@
             <div class="mt-4 text-center">
                 <a href="{{ route('assets.qr',$asset) }}"
                 download="{{ $asset->name }} - {{ $asset->tag }}.png"
-                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent 
+                class="inline-flex items-center px-4 py-2 bg-accent border border-transparent 
                         rounded-md font-semibold text-xs text-white uppercase tracking-widest 
-                        hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                        hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accent 
                         focus:ring-offset-2 transition">
                     ⬇ Download
                 </a>

@@ -7,7 +7,7 @@
 
     <div class="py-6">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
+            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6 space-y-6">
                 
                 {{-- Responsive Two-Column --}}
                 <div class="grid grid-cols-2 gap-1 justify-evenly">
@@ -107,9 +107,9 @@
                     <div class="inline-flex">
                         <!-- Edit Button -->
                         <a href="{{ route('departments.edit', $department) }}"
-                        class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md 
-                                font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 
-                                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                        class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
+                                font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
+                                focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
                             <x-heroicon-s-pencil class="w-4 h-4 mr-2" />
                             Edit
                         </a>

@@ -7,7 +7,7 @@
 
     <div class="py-8">
         <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                 <form method="POST" action="{{ route('assets.update', $asset) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -33,7 +33,7 @@
                                 : previewUrl"
                             class="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
                                 file:rounded-md file:border-0 file:text-sm file:font-semibold
-                                file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                file:bg-indigo-50 file:text-accent hover:file:bg-indigo-100"
                         />
 
                         <x-input-error :messages="$errors->get('attachment')" class="mt-2" />
@@ -62,7 +62,7 @@
                                     id="tag"
                                     value="{{ old('tag', $asset->tag ?? '') }}"
                                     autocomplete="off"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
                                     placeholder="Select or type a new tag"
                                     required
                                 />
@@ -94,7 +94,7 @@
                                 <select
                                     id="category_id"
                                     name="category_id"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-accent"
                                     required
                                 >
                                     @foreach ($categories as $category)
@@ -119,7 +119,7 @@
                                     <select
                                         id="department_id"
                                         name="department_id"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
                                     >
                                         <option value="">—</option>
                                         @foreach ($departments as $department)
@@ -139,7 +139,7 @@
                                         id="department_id"
                                         name="department_id"
                                         disabled
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-500"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent text-gray-500"
                                     >
                                         <option value="{{ old('department_id', $asset->department_id) }}" selected>
                                             {{ old('department_id', $asset->department->name) }}
@@ -157,7 +157,7 @@
                                 <select
                                     id="status"
                                     name="status"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
                                 >
                                     <option value="in_service" {{ old('status', $asset->status) == 'in_service' ? 'selected' : '' }}>In Service</option>
                                     <option value="out_of_service" {{ old('status', $asset->status) == 'out_of_service' ? 'selected' : '' }}>Out of Service</option>

@@ -15,29 +15,29 @@
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white overflow-hidden shadow rounded-lg p-6">
+                <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                     <div class="text-sm font-medium text-gray-500">Total Assets</div>
                     <div class="mt-2 text-3xl font-bold text-gray-900">{{ $totalAssets }}</div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow rounded-lg p-6">
+                <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                     <div class="text-sm font-medium text-gray-500">Active</div>
                     <div class="mt-2 text-3xl font-bold text-green-600">{{ $isAssets }}</div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow rounded-lg p-6">
+                <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                     <div class="text-sm font-medium text-gray-500">Under Maintenance</div>
                     <div class="mt-2 text-3xl font-bold text-yellow-500">{{ $oosAssets }}</div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow rounded-lg p-6">
+                <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                     <div class="text-sm font-medium text-gray-500">Retired</div>
                     <div class="mt-2 text-3xl font-bold text-red-600">{{ $disposedAssets }}</div>
                 </div>
             </div>
 
             <!-- Assets by Department -->
-            <div class="bg-white shadow rounded-lg p-6">
+            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Assets by Department</h3>
                 <ul class="divide-y divide-gray-200">
                     @foreach ($assetsByDepartment as $department => $count)
@@ -50,7 +50,7 @@
             </div>
 
             <!-- Recent Activity -->
-            <div class="bg-white shadow rounded-lg p-6">
+            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Assets</h3>
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead>
