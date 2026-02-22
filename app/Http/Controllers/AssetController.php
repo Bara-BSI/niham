@@ -6,7 +6,6 @@ use App\Exports\AssetsExport;
 use App\Models\Asset;
 use App\Models\Category;
 use App\Models\Department;
-use App\Models\User;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -15,9 +14,11 @@ use Storage;
 
 class AssetController extends Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware(['auth']);
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -29,8 +30,8 @@ class AssetController extends Controller
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
             $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('tag', 'like', '%' . $searchTerm . '%');
+                $q->where('name', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('tag', 'like', '%'.$searchTerm.'%');
             });
         }
 
@@ -39,9 +40,11 @@ class AssetController extends Controller
             $query->where('category_id', $request->category);
         }
 
-        // Pembatasan akses ke departemen lain
-        if (! Auth::user()->inDept('EXE') && ! Auth::user()->inDept('PTLP')) {
-            $query->where('department_id', Auth::user()->department_id);
+        // Pembatasan akses ke departemen lain (non-admin, non-super-admin)
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
+            if (! Auth::user()->inDept('EXE') && ! Auth::user()->inDept('PTLP')) {
+                $query->where('department_id', Auth::user()->department_id);
+            }
         }
 
         // Filter by department
@@ -60,11 +63,12 @@ class AssetController extends Controller
         } else {
             $query->latest();
         }
-        
+
         $assets = $query->paginate(15)->withQueryString();
         $categories = Category::all();
         $departments = Department::all();
-        return view('assets.index', compact('assets','categories','departments'));
+
+        return view('assets.index', compact('assets', 'categories', 'departments'));
     }
 
     /**
@@ -73,6 +77,7 @@ class AssetController extends Controller
     public function create()
     {
         $this->authorize('create', Asset::class);
+
         return view('assets.create', [
             'categories' => Category::all(),
             'departments' => Department::all(),
@@ -102,7 +107,7 @@ class AssetController extends Controller
         ]);
         $data['purchase_cost'] = $request->filled('purchase_cost') ? $request->input('purchase_cost') : null;
         $data['editor'] = Auth::id();
-        
+
         // Warranty Calculation
         $purchaseDate = $request->filled('purchase_date') ? Carbon::parse($request->purchase_date) : null;
         $warrantyDate = null;
@@ -127,6 +132,7 @@ class AssetController extends Controller
         $data['purchase_date'] = $purchaseDate;
         $data['warranty_date'] = $warrantyDate;
 
+        // property_id is auto-assigned by BelongsToProperty trait
         $asset = Asset::create($data);
 
         if ($request->hasFile('attachment')) {
@@ -139,7 +145,7 @@ class AssetController extends Controller
             ]);
         }
 
-        return redirect()->route('assets.show', $asset)->with('ok','Asset Created');
+        return redirect()->route('assets.show', $asset)->with('ok', 'Asset Created');
     }
 
     /**
@@ -164,6 +170,7 @@ class AssetController extends Controller
     public function edit(Asset $asset)
     {
         $this->authorize('update', $asset);
+
         return view('assets.edit', [
             'asset' => $asset,
             'categories' => Category::all(),
@@ -246,6 +253,7 @@ class AssetController extends Controller
                 ]);
             }
         }
+
         return redirect()->route('assets.show', $asset)->with('ok', 'Updated');
     }
 
@@ -266,7 +274,8 @@ class AssetController extends Controller
             $asset->attachments->delete();
         }
         $asset->forceDelete(); // Hard delete
-        return redirect()->route('assets.index')->with('ok','Deleted');
+
+        return redirect()->route('assets.index')->with('ok', 'Deleted');
     }
 
     public function export(Request $request)
@@ -278,8 +287,8 @@ class AssetController extends Controller
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
             $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('tag', 'like', '%' . $searchTerm . '%');
+                $q->where('name', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('tag', 'like', '%'.$searchTerm.'%');
             });
         }
 
@@ -288,9 +297,11 @@ class AssetController extends Controller
             $query->where('category_id', $request->category);
         }
 
-        // Pembatasan akses ke departemen lain
-        if (! Auth::user()->inDept('EXE') && !Auth::user()->inDept('PTLP')) {
-            $query->where('department_id', Auth::user()->department_id);
+        // Pembatasan akses ke departemen lain (non-admin, non-super-admin)
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
+            if (! Auth::user()->inDept('EXE') && ! Auth::user()->inDept('PTLP')) {
+                $query->where('department_id', Auth::user()->department_id);
+            }
         }
 
         // Filter by department
@@ -309,7 +320,7 @@ class AssetController extends Controller
         } else {
             $query->latest();
         }
-        
+
         $assetsToExport = $query->get();
 
         return Excel::download(new AssetsExport($assetsToExport), 'assets.xlsx');

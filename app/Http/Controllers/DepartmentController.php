@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 class DepartmentController extends Controller
 {
     // Extra security redundancy
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware(['auth']);
     }
 
@@ -18,7 +19,8 @@ class DepartmentController extends Controller
     public function index()
     {
         $this->authorize('view', Department::class);
-        $departments = Department::with(['users','assets'])->orderBy('name')->paginate(15);
+        $departments = Department::with(['users', 'assets'])->orderBy('name')->paginate(15);
+
         return view('departments.index', compact('departments'));
     }
 
@@ -28,6 +30,7 @@ class DepartmentController extends Controller
     public function create()
     {
         $this->authorize('create', Department::class);
+
         return view('departments.create');
     }
 
@@ -40,15 +43,16 @@ class DepartmentController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
-            'notes' => 'nullable|string|max:255'
+            'notes' => 'nullable|string|max:255',
         ]);
 
         // Ensure Department name in upper case
-        $data['name']=strtoupper($data['name']);
-        $data['code']=strtoupper($data['code']);
+        $data['name'] = strtoupper($data['name']);
+        $data['code'] = strtoupper($data['code']);
 
         Department::updateOrCreate(['id' => $department->id ?? null], $data);
-        return redirect()->route('departments.index')->with('ok','Department Created');
+
+        return redirect()->route('departments.index')->with('ok', 'Department Created');
     }
 
     /**
@@ -59,12 +63,11 @@ class DepartmentController extends Controller
         $this->authorize('view', $department);
 
         // Paginate related models separately
-        $users  = $department->users()->paginate(5, ['*'], 'users_page');
+        $users = $department->users()->paginate(5, ['*'], 'users_page');
         $assets = $department->assets()->paginate(5, ['*'], 'assets_page');
 
         return view('departments.show', compact('department', 'users', 'assets'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -72,6 +75,7 @@ class DepartmentController extends Controller
     public function edit(Department $department)
     {
         $this->authorize('update', $department);
+
         return view('departments.edit', [
             'department' => $department,
         ]);
@@ -86,15 +90,16 @@ class DepartmentController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
-            'notes' => 'nullable|string|max:255'
+            'notes' => 'nullable|string|max:255',
         ]);
 
         // Ensure Department name in upper case
-        $data['name']=strtoupper($data['name']);
-        $data['code']=strtoupper($data['code']);
+        $data['name'] = strtoupper($data['name']);
+        $data['code'] = strtoupper($data['code']);
 
         $department->update($data);
-        return redirect()->route('departments.show', $department)->with('ok','Updated');
+
+        return redirect()->route('departments.show', $department)->with('ok', 'Updated');
     }
 
     /**
@@ -104,6 +109,7 @@ class DepartmentController extends Controller
     {
         $this->authorize('delete', $department);
         $department->delete();
-        return redirect()->route('departments.index')->with('ok','Deleted');
+
+        return redirect()->route('departments.index')->with('ok', 'Deleted');
     }
 }

@@ -19,7 +19,7 @@ class QrCodeTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-                         ->get(route('assets.qr', $asset));
+            ->get(route('assets.qr', $asset));
 
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'image/png');

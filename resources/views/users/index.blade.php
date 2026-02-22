@@ -69,6 +69,9 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                            @if (Auth::user()->isSuperAdmin())
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -80,6 +83,9 @@
                                 </td>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ optional($user->department)->name ?? '-' }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ optional($user->role)->name ?? '-' }}</td>
+                                @if (Auth::user()->isSuperAdmin())
+                                    <td class="px-4 py-2 text-sm text-gray-700">{{ optional($user->property)->name ?? '-' }}</td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

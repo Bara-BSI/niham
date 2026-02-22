@@ -13,6 +13,7 @@ class QrModal extends Component
      * Create a new component instance.
      */
     public Asset $asset;
+
     public function __construct(Asset $asset)
     {
         $this->asset = $asset;

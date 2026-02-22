@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToProperty;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +10,7 @@ use Str;
 
 class Asset extends Model
 {
-    use HasFactory, SoftDeletes;
+    use BelongsToProperty, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'uuid',
@@ -25,7 +26,8 @@ class Asset extends Model
         'vendor',
         'meta',
         'remarks',
-        'editor'
+        'editor',
+        'property_id',
     ];
 
     protected $casts = [
@@ -34,25 +36,30 @@ class Asset extends Model
         'warranty_date' => 'date',
     ];
 
-    protected static function booted() {
+    protected static function booted()
+    {
         static::creating(function ($asset) {
             $asset->uuid = (string) Str::uuid();
         });
     }
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function department() {
+    public function department()
+    {
         return $this->belongsTo(Department::class);
     }
 
-    public function attachments() {
+    public function attachments()
+    {
         return $this->hasOne(Attachment::class);
     }
 
-    public function editorUser() {
+    public function editorUser()
+    {
         return $this->belongsTo(User::class, 'editor');
     }
 }

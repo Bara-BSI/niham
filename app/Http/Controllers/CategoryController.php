@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     // Extra security redundancy
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware(['auth']);
     }
 
@@ -19,6 +20,7 @@ class CategoryController extends Controller
     {
         $this->authorize('view', Category::class);
         $categories = Category::with(['assets'])->orderBy('name')->paginate(15);
+
         return view('categories.index', compact('categories'));
     }
 
@@ -28,6 +30,7 @@ class CategoryController extends Controller
     public function create()
     {
         $this->authorize('create', Category::class);
+
         return view('categories.create');
     }
 
@@ -40,17 +43,17 @@ class CategoryController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
-            'notes' => 'nullable|string|max:255'
+            'notes' => 'nullable|string|max:255',
         ]);
 
         // Ensure Category name in upper case
-        $data['name']=strtoupper($data['name']);
-        $data['code']=strtoupper($data['code']);
+        $data['name'] = strtoupper($data['name']);
+        $data['code'] = strtoupper($data['code']);
 
         Category::updateOrCreate(['id' => $category->id ?? null], $data);
-        return redirect()->route('categories.index')->with('ok','Category Created');
-    }
 
+        return redirect()->route('categories.index')->with('ok', 'Category Created');
+    }
 
     /**
      * Display the specified resource.
@@ -70,6 +73,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         $this->authorize('update', $category);
+
         return view('categories.edit', [
             'category' => $category,
         ]);
@@ -84,15 +88,16 @@ class CategoryController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
-            'notes' => 'nullable|string|max:255'
+            'notes' => 'nullable|string|max:255',
         ]);
 
         // Ensure Category name in upper case
-        $data['name']=strtoupper($data['name']);
-        $data['code']=strtoupper($data['code']);
+        $data['name'] = strtoupper($data['name']);
+        $data['code'] = strtoupper($data['code']);
 
         $category->update($data);
-        return redirect()->route('categories.show', $category)->with('ok','Updated');
+
+        return redirect()->route('categories.show', $category)->with('ok', 'Updated');
     }
 
     /**
@@ -102,6 +107,7 @@ class CategoryController extends Controller
     {
         $this->authorize('delete', $category);
         $category->delete();
-        return redirect()->route('categories.index')->with('ok','Deleted');
+
+        return redirect()->route('categories.index')->with('ok', 'Deleted');
     }
 }

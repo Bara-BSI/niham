@@ -76,6 +76,27 @@
                         <!-- Right Column -->
                         <div class="col-span-2 md:col-span-1">
 
+                            {{-- Property (Super Admin only) --}}
+                            @if (Auth::user()->isSuperAdmin())
+                                <div>
+                                    <x-input-label for="property_id" :value="__('Property')" />
+                                    <select
+                                        id="property_id"
+                                        name="property_id"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        required
+                                    >
+                                        <option value="">—</option>
+                                        @foreach ($properties as $property)
+                                            <option value="{{ $property->id }}" {{ old('property_id', $user->property_id) == $property->id ? 'selected' : '' }}>
+                                                {{ $property->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <x-input-error :messages="$errors->get('property_id')" class="mt-2" />
+                                </div>
+                            @endif
+
                             <!-- Departments -->
                             <div>
                                 <x-input-label for="department_id" :value="__('Department')" />
