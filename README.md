@@ -20,14 +20,20 @@
 - **Attachments:** Upload and manage images or documents for each asset.
 
 ### 🔍 QR Code Integration
-- **Generate QR Codes:** Automatically generate unique QR codes for every asset.
+- **Generate QR Codes:** Automatically generate unique QR codes for every asset (powered by `php-imagick`).
 - **Scan & Verify:** Built-in scanner to quickly retrieve asset details via mobile devices.
 - **Public/Private Views:** Secure public resolving of asset information for quick checks.
 
-### 🛡️ Role-Based Access Control (RBAC)
-- **Department Isolation:** Users only access assets within their specific department.
-- **Executive Oversight:** Special roles (EXE/PTLP) for global visibility across all departments.
-- **User Roles:** Granular permissions for Admins, Staff, and Viewers.
+### 🛡️ Role & Property-Based Access Control (RBAC)
+- **Multi-Property Management:** Create and manage distinct databases of assets for entirely isolated hotel locations (e.g., Novotel YIA vs. Ibis YIA).
+- **Super Admin:** Global users that can effortlessly switch contexts between property schemas.
+- **Department Isolation:** Normal users only access assets within their specific department.
+- **Executive Oversight:** Special roles (EXE/PTLP) for property-wide visibility across all departments.
+- **User Roles:** Granular permissions for Admins, Staff, and Viewers within their assigned properties.
+
+### 🛠️ Work Logs & Maintenance
+- **Job Tickets:** Create maintenance and service jobs tied directly to hardware assets.
+- **Commenting System:** Log internal notes on asset tickets during servicing.
 
 ### 📦 Data Management
 - **Excel Export:** Download comprehensive asset reports.
@@ -41,8 +47,9 @@ Follow these steps to set up the project locally.
 
 ### Prerequisites
 - PHP 8.2+
+- `php-imagick` extension (Required for QR Code generation)
 - Composer
-- Node.js & NPM
+- Node.js 22.x & NPM
 - MySQL or MariaDB
 
 ### Installation
