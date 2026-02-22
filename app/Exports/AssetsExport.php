@@ -2,14 +2,15 @@
 
 namespace App\Exports;
 
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Illuminate\Support\Collection;
 
 class AssetsExport implements FromCollection, WithHeadings, WithMapping
 {
     protected $assets;
+
     protected $rowIndex = 0; // Property to keep track of the row number
 
     // Accept the collection via the constructor
@@ -19,17 +20,14 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
     }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         // Simply return the collection we received
         return $this->assets;
     }
 
-    /**
-     * @return array
-     */
     public function headings(): array
     {
         // Add the 'No.' column for our sequential number
@@ -45,13 +43,12 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
             'Warranty Date',
             'Purchase Cost',
             'Vendor',
-            'Remarks'
+            'Remarks',
         ];
     }
 
     /**
-     * @param mixed $asset
-     * @return array
+     * @param  mixed  $asset
      */
     public function map($asset): array
     {

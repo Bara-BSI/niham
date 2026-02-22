@@ -3,19 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
 use ZipArchive;
 
 class BackupController extends Controller
 {
     public function download()
     {
-        $filename = 'NihamBackup-' . now()->format('Y-m-d_H-i-s') . '.zip';
-        $zipPath  = storage_path("app/$filename");
+        $filename = 'NihamBackup-'.now()->format('Y-m-d_H-i-s').'.zip';
+        $zipPath = storage_path("app/$filename");
 
         $zip = new ZipArchive;
-        if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
+        if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
             // 1. Dump database
             $dbFile = storage_path('app/db-backup.sql');
             $this->dumpDatabase($dbFile);
@@ -38,15 +36,15 @@ class BackupController extends Controller
         ]);
 
         $file = $request->file('backup');
-        $zip  = new ZipArchive;
+        $zip = new ZipArchive;
 
-        if ($zip->open($file->getRealPath()) === TRUE) {
+        if ($zip->open($file->getRealPath()) === true) {
             $extractPath = storage_path('app/restore-temp');
             $zip->extractTo($extractPath);
             $zip->close();
 
             // 1. Restore database
-            $dbFile = $extractPath . '/db-backup.sql';
+            $dbFile = $extractPath.'/db-backup.sql';
             if (file_exists($dbFile)) {
                 $connection = config('database.connections.mysql');
                 $command = sprintf(
@@ -61,7 +59,7 @@ class BackupController extends Controller
             }
 
             // 2. Restore attachments
-            $attachmentsPath = $extractPath . '/attachments';
+            $attachmentsPath = $extractPath.'/attachments';
             if (is_dir($attachmentsPath)) {
                 $targetPath = storage_path('app/public/attachments');
                 // Clear old attachments
@@ -101,9 +99,9 @@ class BackupController extends Controller
         );
 
         foreach ($files as $file) {
-            if (!$file->isDir()) {
-                $filePath     = $file->getRealPath();
-                $relativePath = $zipFolder . '/' . substr($filePath, strlen($folder) + 1);
+            if (! $file->isDir()) {
+                $filePath = $file->getRealPath();
+                $relativePath = $zipFolder.'/'.substr($filePath, strlen($folder) + 1);
                 $zip->addFile($filePath, $relativePath);
             }
         }

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Asset;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware(['auth']);
     }
 
@@ -18,7 +18,8 @@ class RoleController extends Controller
     public function index()
     {
         $this->authorize('view', Role::class);
-        $roles = Role::with(['users'])->whereNot('name','admin')->latest()->paginate(15);
+        $roles = Role::with(['users'])->whereNot('name', 'admin')->latest()->paginate(15);
+
         return view('roles.index', compact('roles'));
     }
 
@@ -28,6 +29,7 @@ class RoleController extends Controller
     public function create()
     {
         $this->authorize('create', Role::class);
+
         return view('roles.create');
     }
 
@@ -54,10 +56,11 @@ class RoleController extends Controller
         ], $data);
 
         // Ensure role name is in lowercase
-        $data['name']=strtolower($data['name']);
+        $data['name'] = strtolower($data['name']);
 
         Role::updateOrCreate(['id' => $role->id ?? null], $data);
-        return redirect()->route('roles.index')->with('ok','Role Created');
+
+        return redirect()->route('roles.index')->with('ok', 'Role Created');
     }
 
     /**
@@ -66,10 +69,11 @@ class RoleController extends Controller
     public function show(Role $role)
     {
         $this->authorize('view', $role);
-        
+
         // Paginate related models separately
-        $users  = $role->users()->paginate(5, ['*'], 'users_page');
-        return view('roles.show', compact('role','users'));
+        $users = $role->users()->paginate(5, ['*'], 'users_page');
+
+        return view('roles.show', compact('role', 'users'));
     }
 
     /**
@@ -78,6 +82,7 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         $this->authorize('update', $role);
+
         return view('roles.edit', [
             'role' => $role,
         ]);
@@ -106,8 +111,9 @@ class RoleController extends Controller
         ], $data);
 
         // Ensure role name is in lowercase
-        $data['name']=strtolower($data['name']);
+        $data['name'] = strtolower($data['name']);
         $role->update($data);
+
         return redirect()->route('roles.show', $role)->with('ok', 'Updated');
     }
 
@@ -118,6 +124,7 @@ class RoleController extends Controller
     {
         $this->authorize('delete', $role);
         $role->delete();
-        return redirect()->route('roles.index')->with('ok','Deleted');
+
+        return redirect()->route('roles.index')->with('ok', 'Deleted');
     }
 }

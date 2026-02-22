@@ -21,8 +21,8 @@
                         {{ __('Assets') }}
                     </x-nav-link>
                 </div>
-                {{-- Admin menus --}}
-                @if (Auth::user()->isRole('admin'))
+                {{-- Admin / Super Admin menus --}}
+                @if (Auth::user()->isRole('admin') || Auth::user()->isSuperAdmin())
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                             {{ __('Users') }}
@@ -44,10 +44,75 @@
                         </x-nav-link>
                     </div>
                 @endif
+                {{-- Super Admin only: Properties --}}
+                @if (Auth::user()->isSuperAdmin())
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.*')">
+                            {{ __('Properties') }}
+                        </x-nav-link>
+                    </div>
+                @endif
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 sm:gap-4">
+                {{-- Property indicator --}}
+                @php
+                    $currentProperty = null;
+                    if (Auth::user()->isSuperAdmin()) {
+                        $activeId = session('active_property_id');
+                        $currentProperty = $activeId ? \App\Models\Property::find($activeId) : null;
+                    } else {
+                        $currentProperty = Auth::user()->property;
+                    }
+                @endphp
+
+                @if (Auth::user()->isSuperAdmin())
+                    {{-- Property Switcher for Super Admin --}}
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="inline-flex items-center px-3 py-2 border border-indigo-300 text-sm leading-4 font-medium rounded-md text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none transition ease-in-out duration-150">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                                {{ $currentProperty ? $currentProperty->name : __('All Properties') }}
+                                <svg class="fill-current h-4 w-4 ms-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            {{-- All Properties option --}}
+                            <form method="POST" action="{{ route('properties.switch') }}">
+                                @csrf
+                                <input type="hidden" name="property_id" value="">
+                                <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 {{ !$currentProperty ? 'font-bold bg-indigo-50' : '' }}">
+                                    {{ __('All Properties') }}
+                                </button>
+                            </form>
+
+                            @foreach (\App\Models\Property::orderBy('name')->get() as $prop)
+                                <form method="POST" action="{{ route('properties.switch') }}">
+                                    @csrf
+                                    <input type="hidden" name="property_id" value="{{ $prop->id }}">
+                                    <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 {{ $currentProperty && $currentProperty->id === $prop->id ? 'font-bold bg-indigo-50' : '' }}">
+                                        {{ $prop->name }}
+                                    </button>
+                                </form>
+                            @endforeach
+                        </x-slot>
+                    </x-dropdown>
+                @elseif ($currentProperty)
+                    {{-- Property label for normal users --}}
+                    <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        {{ $currentProperty->name }}
+                    </span>
+                @endif
+
+                <!-- Settings Dropdown -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -106,7 +171,7 @@
             </x-responsive-nav-link>
         </div>
 
-        @if (Auth::user()->isRole('admin'))
+        @if (Auth::user()->isRole('admin') || Auth::user()->isSuperAdmin())
             <div class="pt-2 pb-3 space-y-1">
                 <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                     {{ __('Users') }}
@@ -129,7 +194,36 @@
                 <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')">
                     {{ __('Roles') }}
                 </x-responsive-nav-link>
-            </div>  
+            </div>
+        @endif
+
+        @if (Auth::user()->isSuperAdmin())
+            <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.*')">
+                    {{ __('Properties') }}
+                </x-responsive-nav-link>
+            </div>
+
+            {{-- Mobile Property Switcher --}}
+            <div class="pt-2 pb-3 space-y-1 border-t border-gray-200">
+                <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase">Switch Property</div>
+                <form method="POST" action="{{ route('properties.switch') }}">
+                    @csrf
+                    <input type="hidden" name="property_id" value="">
+                    <button type="submit" class="block w-full text-start px-4 py-2 text-sm {{ !$currentProperty ? 'font-bold text-indigo-700' : 'text-gray-600' }}">
+                        All Properties
+                    </button>
+                </form>
+                @foreach (\App\Models\Property::orderBy('name')->get() as $prop)
+                    <form method="POST" action="{{ route('properties.switch') }}">
+                        @csrf
+                        <input type="hidden" name="property_id" value="{{ $prop->id }}">
+                        <button type="submit" class="block w-full text-start px-4 py-2 text-sm {{ $currentProperty && $currentProperty->id === $prop->id ? 'font-bold text-indigo-700' : 'text-gray-600' }}">
+                            {{ $prop->name }}
+                        </button>
+                    </form>
+                @endforeach
+            </div>
         @endif
 
         <!-- Responsive Settings Options -->
@@ -137,6 +231,9 @@
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                @if ($currentProperty)
+                    <div class="font-medium text-xs text-indigo-500 mt-1">{{ $currentProperty->name }}</div>
+                @endif
             </div>
 
             <div class="mt-3 space-y-1">

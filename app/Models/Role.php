@@ -2,19 +2,21 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToProperty;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    use HasFactory;
+    use BelongsToProperty, HasFactory;
 
     protected $fillable = [
         'name',
         'can_create',
         'can_read',
         'can_update',
-        'can_delete'
+        'can_delete',
+        'property_id',
     ];
 
     public function users()

@@ -29,7 +29,7 @@ return new class extends Migration
                 'can_create',
                 'can_read',
                 'can_update',
-                'can_delete'
+                'can_delete',
             ]);
         });
     }

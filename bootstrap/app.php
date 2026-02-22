@@ -25,7 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register route middleware aliases
         $middleware->alias([
             'auth' => Authenticate::class,
-            'verified' => EnsureEmailIsVerified::class
+            'verified' => EnsureEmailIsVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -12,7 +12,7 @@ class Attachment extends Model
     protected $fillable = [
         'asset_id',
         'path',
-        'type'
+        'type',
     ];
 
     public function asset()

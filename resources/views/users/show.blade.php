@@ -25,6 +25,7 @@
                         <div><strong>Username:</strong> {{ $user->username }}</div>
                         <div><strong>Department:</strong> {{ $user->department->name ?? '-' }}</div>
                         <div><strong>Role:</strong> {{ $user->role->name ?? '-' }}</div>
+                        <div><strong>Property:</strong> {{ $user->property->name ?? '-' }}</div>
                     </div>
 
                     <div class="col-span-2 md:col-span-1">

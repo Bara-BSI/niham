@@ -2,6 +2,11 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
+            @if ($activeProperty)
+                <span class="text-sm font-normal text-gray-500">— {{ $activeProperty->name }}</span>
+            @elseif (Auth::user()->isSuperAdmin())
+                <span class="text-sm font-normal text-gray-500">— All Properties</span>
+            @endif
         </h2>
     </x-slot>
 

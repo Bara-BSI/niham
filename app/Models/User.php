@@ -24,6 +24,8 @@ class User extends Authenticatable
         'password',
         'role_id',
         'department_id',
+        'property_id',
+        'is_super_admin',
     ];
 
     /**
@@ -46,10 +48,12 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_super_admin' => 'boolean',
         ];
     }
 
-    public function role() {
+    public function role()
+    {
         return $this->belongsTo(Role::class);
     }
 
@@ -58,12 +62,37 @@ class User extends Authenticatable
         return optional($this->role)->name === $name;
     }
 
-    public function department() {
+    public function department()
+    {
         return $this->belongsTo(Department::class);
+    }
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return (bool) $this->is_super_admin;
     }
 
     public function inDept(string $code): bool
     {
         return optional($this->department)->code === $code;
+    }
+
+    /**
+     * Get the active property id for this user.
+     * Super admin: from session or null (all).
+     * Normal user: from their property_id.
+     */
+    public function activePropertyId(): ?int
+    {
+        if ($this->isSuperAdmin()) {
+            return session('active_property_id');
+        }
+
+        return $this->property_id;
     }
 }

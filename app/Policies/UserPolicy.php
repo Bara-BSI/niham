@@ -3,10 +3,21 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
+    /**
+     * Super admin can do everything.
+     */
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
