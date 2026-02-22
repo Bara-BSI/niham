@@ -45,7 +45,17 @@ class PropertyController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:properties,code',
             'address' => 'nullable|string|max:500',
+            'accent_color' => 'nullable|string|max:7',
+            'logo' => 'nullable|image|max:2048',
+            'background_image' => 'nullable|image|max:5120',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $data['logo_path'] = $request->file('logo')->store('branding', 'public');
+        }
+        if ($request->hasFile('background_image')) {
+            $data['background_image_path'] = $request->file('background_image')->store('branding', 'public');
+        }
 
         $data['code'] = strtoupper($data['code']);
 
@@ -88,7 +98,19 @@ class PropertyController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:properties,code,'.$property->id,
             'address' => 'nullable|string|max:500',
+            'accent_color' => 'nullable|string|max:7',
+            'logo' => 'nullable|image|max:2048',
+            'background_image' => 'nullable|image|max:5120',
         ]);
+
+        if ($request->hasFile('logo')) {
+            if ($property->logo_path) \Illuminate\Support\Facades\Storage::disk('public')->delete($property->logo_path);
+            $data['logo_path'] = $request->file('logo')->store('branding', 'public');
+        }
+        if ($request->hasFile('background_image')) {
+            if ($property->background_image_path) \Illuminate\Support\Facades\Storage::disk('public')->delete($property->background_image_path);
+            $data['background_image_path'] = $request->file('background_image')->store('branding', 'public');
+        }
 
         $data['code'] = strtoupper($data['code']);
 

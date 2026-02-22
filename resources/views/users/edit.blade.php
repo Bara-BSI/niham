@@ -5,9 +5,9 @@
         </h2>
     </x-slot>
 
-    <div class="py-8">
-        <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+    <div class="py-4 sm:py-8">
+        <div class="mx-auto max-w-4xl px-3 sm:px-6 lg:px-8">
+            <div class="glass-card p-6">
                 <form method="POST" action="{{ route('users.update', $user) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -83,7 +83,7 @@
                                     <select
                                         id="property_id"
                                         name="property_id"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
                                         required
                                     >
                                         <option value="">—</option>
@@ -103,7 +103,7 @@
                                 <select
                                     id="department_id"
                                     name="department_id"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
                                 >
                                     <option value="">—</option>
                                     @foreach ($departments as $department)
@@ -127,7 +127,7 @@
                                 <select
                                     id="role_id"
                                     name="role_id"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
                                 >
                                     <option value="">—</option>
                                     @foreach ($roles as $role)

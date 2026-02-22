@@ -7,7 +7,7 @@
 
     <div class="py-6">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
+            <div class="glass-card p-6 space-y-6">
                 
                 {{-- Responsive Two-Column --}}
                 <div class="grid grid-cols-2 gap-1 justify-evenly">
@@ -31,7 +31,7 @@
                     @if($category->assets->isNotEmpty())
                         <div class="overflow-x-auto">
                             <table class="min-w-full border border-gray-200 divide-y divide-gray-200 text-sm">
-                                <thead class="bg-gray-50">
+                                <thead class="bg-gray-50/50">
                                     <tr>
                                         <th class="px-4 py-2 text-left font-medium text-gray-600">Tag</th>
                                         <th class="px-4 py-2 text-left font-medium text-gray-600">Name</th>
@@ -72,9 +72,9 @@
                     <div class="inline-flex">
                         <!-- Edit Button -->
                         <a href="{{ route('categories.edit', $category) }}"
-                        class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md 
-                                font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 
-                                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                        class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
+                                font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
+                                focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
                             <x-heroicon-s-pencil class="w-4 h-4 mr-2" />
                             Edit
                         </a>

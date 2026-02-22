@@ -6,9 +6,9 @@
             </h2>
             <div>
                 <a href="{{ route('properties.create') }}"
-                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md 
-                        font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 
-                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
+                        font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
+                        focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
                     <x-heroicon-s-plus class="w-4 h-4 mr-2" />
                     {{ __('New Property') }}
                 </a>
@@ -19,9 +19,9 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-2">
             <!-- Table -->
-            <div class="bg-white shadow-sm sm:rounded-lg overflow-x-scroll rounded">
+            <div class="glass-card overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-gray-50/50">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
@@ -32,11 +32,11 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Departments</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="divide-y divide-gray-200">
                         @foreach($properties as $property)
                             <tr>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ $properties->firstItem() + $loop->index }}</td>
-                                <td class="px-4 py-2 text-sm text-indigo-700 font-semibold hover:underline">
+                                <td class="px-4 py-2 text-sm text-accent font-semibold hover:underline">
                                     <a href="{{ route('properties.show', $property) }}">{{ $property->name }}</a>
                                 </td>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ $property->code }}</td>

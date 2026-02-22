@@ -18,17 +18,34 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="h-20" />
-                </a>
-            </div>
-            {{-- <div><h5>Hotel Asset Management</h5></div> --}}
+    <body class="font-sans text-gray-900 antialiased min-h-screen">
+        <!-- Fixed background image (works on all devices including mobile) -->
+        <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('global-background.png') }}');"></div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+        <!-- Dark overlay for contrast -->
+        <div class="fixed inset-0 bg-black/30 z-0"></div>
+
+        <!-- Centered floating card -->
+        <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-4 sm:p-6">
+            
+            <!-- Glass Login Card -->
+            <div class="w-full max-w-md">
+                <!-- The floating glass card (logo inside) -->
+                <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/20">
+                    <!-- Logo & Brand inside the card -->
+                    <div class="flex flex-col items-center mb-4">
+                        <a href="/" class="mb-6">
+                            <x-application-logo class="h-16 w-auto" />
+                        </a>
+                    </div>
+
+                    {{ $slot }}
+                </div>
+
+                <!-- Footer text -->
+                <p class="text-center text-sm text-white/70 mt-8">
+                    &copy; {{ date('Y') }} NIHAM Systems &mdash; New Integrated Hotel Asset Management.
+                </p>
             </div>
         </div>
     </body>
