@@ -39,23 +39,23 @@
         <!-- Subtle dark overlay so content is readable -->
         <div class="fixed inset-0 bg-black/20 z-0"></div>
 
-        <!-- Floating layout wrapper — p-4 creates the visible gap around all edges -->
-        <div class="relative z-10 min-h-screen flex flex-col p-3 sm:p-4 gap-3 sm:gap-4">
+        <!-- Floating layout wrapper — centered with max-w, p-4 gaps around edges -->
+        <div class="relative z-10 min-h-screen flex flex-col p-3 sm:p-4 gap-3 sm:gap-4 max-w-7xl w-full mx-auto">
 
-            <!-- Floating Navbar Pill -->
-            @include('layouts.navigation')
+            <!-- Floating Navbar Pill (z-30 so dropdowns appear above everything) -->
+            <div class="relative z-30">
+                @include('layouts.navigation')
+            </div>
 
             <!-- Floating Header Pill -->
             @isset($header)
-                <header class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 px-4 sm:px-6 lg:px-8 py-5">
-                    <div class="max-w-7xl mx-auto">
-                        {{ $header }}
-                    </div>
+                <header class="relative z-20 bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 px-4 sm:px-6 lg:px-8 py-5">
+                    {{ $header }}
                 </header>
             @endisset
 
             <!-- Floating Main Content Card -->
-            <main class="flex-grow bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+            <main class="relative z-10 flex-grow bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20">
                 {{ $slot }}
             </main>
         </div>
