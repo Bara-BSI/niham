@@ -18,6 +18,22 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 ### Security
 - Security-related fixes and hardening.
 
+## [0.4.0] - 2026-02-22
+### Added
+- **Floating Glass Aesthetic:** Implemented a global premium frosted-glass aesthetic for both guest and authenticated layouts (`.glass-panel`, `.glass-card`).
+- **Collapsible Filter Panels:** Filter forms in Assets and Users views have been moved to clean, collapsible Alpine.js panels with responsive grids, saving vertical screen real-estate.
+- **Translucent Interactive States:** Hover, focus, and active item indicators across dropdowns and menus now use glass-friendly translucent backgrounds (`bg-gray-500/10` or dynamic `bg-accent/10`).
+
+### Changed
+- Refactored `layout/app.blade.php`: Detached the navbar, header, and main content into floating `z`-layered panels with uniform gaps and a constrained `max-w-7xl` centered wrapper.
+- Refactored `layout/guest.blade.php`: Swapped the split-screen design for a full-screen background overlay with a centered floating glass card, including an independently floating logo.
+- Enhanced Responsive Layouts: Adjusted mobile vertical/horizontal padding across 25+ inner views.
+- Converted the mobile property switcher into a sleek collapsible dropdown to keep the mobile menu clean.
+
+### Fixed
+- Fixed mobile browser background rendering issues (iOS Safari) by replacing `bg-fixed` with a `fixed inset-0` div.
+- Addressed horizontal overflow clipping caused by data tables stretching beyond their wrappers on mobile devices.
+
 ## [0.3.0] - 2026-02-22
 ### Added
 - **Property Isolation Architecture:** Core tables (Assets, Categories, Departments, Roles, Users) are now fully property-scoped (e.g., Novotel YIA vs. Ibis YIA).

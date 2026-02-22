@@ -11,33 +11,33 @@
     </x-slot>
 
     <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
+                <div class="glass-card p-6">
                     <div class="text-sm font-medium text-gray-500">Total Assets</div>
                     <div class="mt-2 text-3xl font-bold text-gray-900">{{ $totalAssets }}</div>
                 </div>
 
-                <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
+                <div class="glass-card p-6">
                     <div class="text-sm font-medium text-gray-500">Active</div>
                     <div class="mt-2 text-3xl font-bold text-green-600">{{ $isAssets }}</div>
                 </div>
 
-                <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
+                <div class="glass-card p-6">
                     <div class="text-sm font-medium text-gray-500">Under Maintenance</div>
                     <div class="mt-2 text-3xl font-bold text-yellow-500">{{ $oosAssets }}</div>
                 </div>
 
-                <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
+                <div class="glass-card p-6">
                     <div class="text-sm font-medium text-gray-500">Retired</div>
                     <div class="mt-2 text-3xl font-bold text-red-600">{{ $disposedAssets }}</div>
                 </div>
             </div>
 
             <!-- Assets by Department -->
-            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
+            <div class="glass-card p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Assets by Department</h3>
                 <ul class="divide-y divide-gray-200">
                     @foreach ($assetsByDepartment as $department => $count)
@@ -50,32 +50,36 @@
             </div>
 
             <!-- Recent Activity -->
-            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6">
+            <div class="glass-card p-4 sm:p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Assets</h3>
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead>
-                        <tr>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Name</th>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Department</th>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Status</th>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Updated</th>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Editor</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @foreach ($recentAssets as $asset)
-                            <tr>
-                                <td class="px-4 py-2">{{ $asset->name }}</td>
-                                <td class="px-4 py-2">{{ $asset->department?->name ?? 'N/A' }}</td>
-                                <td class="px-4 py-2">
-                                    <x-status-badge :status="$asset->status" />
-                                </td>
-                                <td class="px-4 py-2">{{ $asset->updated_at->diffForHumans() }}</td>
-                                <td class="px-4 py-2">{{ $asset->editorUser ? $asset->editorUser->name : 'N/A' }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto -mx-4 sm:-mx-6">
+                    <div class="inline-block min-w-full px-4 sm:px-6">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Name</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Department</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Status</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Updated</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Editor</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @foreach ($recentAssets as $asset)
+                                    <tr>
+                                        <td class="px-4 py-2 whitespace-nowrap">{{ $asset->name }}</td>
+                                        <td class="px-4 py-2 whitespace-nowrap">{{ $asset->department?->name ?? 'N/A' }}</td>
+                                        <td class="px-4 py-2 whitespace-nowrap">
+                                            <x-status-badge :status="$asset->status" />
+                                        </td>
+                                        <td class="px-4 py-2 whitespace-nowrap">{{ $asset->updated_at->diffForHumans() }}</td>
+                                        <td class="px-4 py-2 whitespace-nowrap">{{ $asset->editorUser ? $asset->editorUser->name : 'N/A' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
         </div>

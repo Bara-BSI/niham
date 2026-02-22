@@ -18,10 +18,10 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body
-        class="font-sans text-gray-900 antialiased min-h-screen bg-cover bg-center bg-fixed bg-no-repeat"
-        style="background-image: url('{{ asset('global-background.png') }}');"
-    >
+    <body class="font-sans text-gray-900 antialiased min-h-screen">
+        <!-- Fixed background image (works on all devices including mobile) -->
+        <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('global-background.png') }}');"></div>
+
         <!-- Dark overlay for contrast -->
         <div class="fixed inset-0 bg-black/30 z-0"></div>
 
@@ -30,15 +30,15 @@
             
             <!-- Glass Login Card -->
             <div class="w-full max-w-md">
-                <!-- Logo above card -->
-                <div class="flex justify-center mb-8">
-                    <a href="/" class="flex items-center space-x-3">
-                        <x-application-logo class="h-14 w-auto drop-shadow-lg" />
-                    </a>
-                </div>
-
-                <!-- The floating glass card -->
+                <!-- The floating glass card (logo inside) -->
                 <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/20">
+                    <!-- Logo & Brand inside the card -->
+                    <div class="flex flex-col items-center mb-4">
+                        <a href="/" class="mb-6">
+                            <x-application-logo class="h-16 w-auto" />
+                        </a>
+                    </div>
+
                     {{ $slot }}
                 </div>
 

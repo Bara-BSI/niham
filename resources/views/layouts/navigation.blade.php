@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20">
+<nav x-data="{ open: false }" class="glass-panel">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -74,7 +74,7 @@
                     {{-- Property Switcher for Super Admin --}}
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 border border-accent text-sm leading-4 font-medium rounded-md text-accent bg-indigo-50 hover:bg-indigo-100 focus:outline-none transition ease-in-out duration-150">
+                            <button class="inline-flex items-center px-3 py-2 border border-accent text-sm leading-4 font-medium rounded-md text-accent bg-accent/10 hover:bg-accent/20 focus:outline-none transition ease-in-out duration-150">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                 </svg>
@@ -90,7 +90,7 @@
                             <form method="POST" action="{{ route('properties.switch') }}">
                                 @csrf
                                 <input type="hidden" name="property_id" value="">
-                                <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 {{ !$currentProperty ? 'font-bold bg-indigo-50' : '' }}">
+                                <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-500/10 focus:outline-none focus:bg-gray-500/10 {{ !$currentProperty ? 'font-bold bg-accent/10' : '' }}">
                                     {{ __('All Properties') }}
                                 </button>
                             </form>
@@ -99,7 +99,7 @@
                                 <form method="POST" action="{{ route('properties.switch') }}">
                                     @csrf
                                     <input type="hidden" name="property_id" value="{{ $prop->id }}">
-                                    <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 {{ $currentProperty && $currentProperty->id === $prop->id ? 'font-bold bg-indigo-50' : '' }}">
+                                    <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-500/10 focus:outline-none focus:bg-gray-500/10 {{ $currentProperty && $currentProperty->id === $prop->id ? 'font-bold bg-accent/10' : '' }}">
                                         {{ $prop->name }}
                                     </button>
                                 </form>
@@ -151,7 +151,7 @@
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-500/10 focus:outline-none focus:bg-gray-500/10 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -208,25 +208,42 @@
                 </x-responsive-nav-link>
             </div>
 
-            {{-- Mobile Property Switcher --}}
-            <div class="pt-2 pb-3 space-y-1 border-t border-gray-200">
-                <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase">Switch Property</div>
-                <form method="POST" action="{{ route('properties.switch') }}">
-                    @csrf
-                    <input type="hidden" name="property_id" value="">
-                    <button type="submit" class="block w-full text-start px-4 py-2 text-sm {{ !$currentProperty ? 'font-bold text-accent' : 'text-gray-600' }}">
-                        All Properties
-                    </button>
-                </form>
-                @foreach (\App\Models\Property::orderBy('name')->get() as $prop)
+            {{-- Mobile Property Switcher (collapsible) --}}
+            <div class="pt-2 pb-3 border-t border-gray-200" x-data="{ switcherOpen: false }">
+                <button
+                    @click="switcherOpen = !switcherOpen"
+                    type="button"
+                    class="w-full flex items-center justify-between px-4 py-2 text-sm font-semibold text-gray-700"
+                >
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        <span>{{ $currentProperty ? $currentProperty->name : 'All Properties' }}</span>
+                    </span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="switcherOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+
+                <div x-show="switcherOpen" x-collapse x-cloak class="space-y-1 mt-1">
                     <form method="POST" action="{{ route('properties.switch') }}">
                         @csrf
-                        <input type="hidden" name="property_id" value="{{ $prop->id }}">
-                        <button type="submit" class="block w-full text-start px-4 py-2 text-sm {{ $currentProperty && $currentProperty->id === $prop->id ? 'font-bold text-accent' : 'text-gray-600' }}">
-                            {{ $prop->name }}
+                        <input type="hidden" name="property_id" value="">
+                        <button type="submit" class="block w-full text-start px-8 py-2 text-sm {{ !$currentProperty ? 'font-bold text-accent' : 'text-gray-600' }} hover:bg-gray-500/10 transition">
+                            All Properties
                         </button>
                     </form>
-                @endforeach
+                    @foreach (\App\Models\Property::orderBy('name')->get() as $prop)
+                        <form method="POST" action="{{ route('properties.switch') }}">
+                            @csrf
+                            <input type="hidden" name="property_id" value="{{ $prop->id }}">
+                            <button type="submit" class="block w-full text-start px-8 py-2 text-sm {{ $currentProperty && $currentProperty->id === $prop->id ? 'font-bold text-accent' : 'text-gray-600' }} hover:bg-gray-500/10 transition">
+                                {{ $prop->name }}
+                            </button>
+                        </form>
+                    @endforeach
+                </div>
             </div>
         @endif
 
@@ -236,7 +253,7 @@
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                 @if ($currentProperty)
-                    <div class="font-medium text-xs text-indigo-500 mt-1">{{ $currentProperty->name }}</div>
+                    <div class="font-medium text-xs text-accent mt-1">{{ $currentProperty->name }}</div>
                 @endif
             </div>
 

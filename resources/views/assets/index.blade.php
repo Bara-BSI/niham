@@ -19,87 +19,131 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-2">
-            <!-- Filter and Sort -->
-            <form method="GET" action="{{ route('assets.index') }}" class="mb-6 w-max flex flex-wrap gap-4 items-center">
-                <!-- Category Filter -->
-                <div>
-                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-                    <select name="category" id="category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="">All</option>
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Department Filter -->
-                @if (Auth::user()->inDept('EXE') || Auth::user()->inDept('PTLP'))
-                    <div>
-                        <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
-                        <select name="department" id="department" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                            <option value="">All</option>
-                            @foreach ($departments as $department)
-                                <option value="{{ $department->id }}" {{ request('department') == $department->id ? 'selected' : '' }}>
-                                    {{ $department->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                @endif
-
-                <!-- Status Filter -->
-                <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                    <select name="status" id="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="">All</option>
-                        <option value="in_service" {{ request('status') == 'in_service' ? 'selected' : '' }}>In Service</option>
-                        <option value="out_of_service" {{ request('status') == 'out_of_service' ? 'selected' : '' }}>Out of Service</option>
-                        <option value="disposed" {{ request('status') == 'disposed' ? 'selected' : '' }}>Disposed</option>
-                    </select>
-                </div>
-
-                <!-- Sort By -->
-                <div>
-                    <label for="sort" class="block text-sm font-medium text-gray-700">Sort By</label>
-                    <select name="sort" id="sort" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name</option>
-                        <option value="tag" {{ request('sort') == 'tag' ? 'selected' : '' }}>Tag</option>
-                        <option value="status" {{ request('sort') == 'status' ? 'selected' : '' }}>Status</option>
-                    </select>
-                </div>
-
-                {{-- Search --}}
-                <div>
-                    <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Search by name or tag" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
-                </div>
-
-                <!-- Buttons -->
-                <div class="pt-6 flex gap-2">
-                    <button type="submit"
-                            class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
-                                font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
-                                focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
-                        {{ __('Apply') }}
+            <!-- Filter Toggle & Panel -->
+            @php
+                $activeFilters = collect(['category', 'department', 'status', 'sort', 'search'])
+                    ->filter(fn($f) => request($f))->count();
+            @endphp
+            <div x-data="{ filtersOpen: {{ $activeFilters > 0 ? 'true' : 'false' }} }" class="mb-4">
+                <!-- Toggle Button -->
+                <div class="flex items-center gap-2">
+                    <button
+                        @click="filtersOpen = !filtersOpen"
+                        type="button"
+                        class="inline-flex items-center gap-2 px-4 py-2 glass-card text-sm font-medium text-gray-700 hover:bg-gray-500/10 transition rounded-xl"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                        <span>Filters</span>
+                        @if($activeFilters > 0)
+                            <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-accent rounded-full">{{ $activeFilters }}</span>
+                        @endif
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="filtersOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
                     </button>
 
-                    <button type="submit" formaction="{{ route('assets.export') }}"
-                            class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md 
-                                font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 
-                                focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition">
-                        {{ __('Export') }}
-                    </button>
+                    @if($activeFilters > 0)
+                        <a href="{{ route('assets.index') }}" class="text-sm text-gray-500 hover:text-gray-700 underline">Clear all</a>
+                    @endif
                 </div>
 
-                
-            </form>
+                <!-- Collapsible Filter Panel -->
+                <div
+                    x-show="filtersOpen"
+                    x-collapse
+                    x-cloak
+                >
+                    <form method="GET" action="{{ route('assets.index') }}" class="glass-card p-4 sm:p-5 mt-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                            <!-- Category -->
+                            <div>
+                                <label for="category" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Category</label>
+                                <select name="category" id="category" class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-accent focus:border-accent">
+                                    <option value="">All</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Department -->
+                            @if (Auth::user()->inDept('EXE') || Auth::user()->inDept('PTLP'))
+                                <div>
+                                    <label for="department" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Department</label>
+                                    <select name="department" id="department" class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-accent focus:border-accent">
+                                        <option value="">All</option>
+                                        @foreach ($departments as $department)
+                                            <option value="{{ $department->id }}" {{ request('department') == $department->id ? 'selected' : '' }}>
+                                                {{ $department->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
+                            <!-- Status -->
+                            <div>
+                                <label for="status" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Status</label>
+                                <select name="status" id="status" class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-accent focus:border-accent">
+                                    <option value="">All</option>
+                                    <option value="in_service" {{ request('status') == 'in_service' ? 'selected' : '' }}>In Service</option>
+                                    <option value="out_of_service" {{ request('status') == 'out_of_service' ? 'selected' : '' }}>Out of Service</option>
+                                    <option value="disposed" {{ request('status') == 'disposed' ? 'selected' : '' }}>Disposed</option>
+                                </select>
+                            </div>
+
+                            <!-- Sort -->
+                            <div>
+                                <label for="sort" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Sort By</label>
+                                <select name="sort" id="sort" class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-accent focus:border-accent">
+                                    <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name</option>
+                                    <option value="tag" {{ request('sort') == 'tag' ? 'selected' : '' }}>Tag</option>
+                                    <option value="status" {{ request('sort') == 'status' ? 'selected' : '' }}>Status</option>
+                                </select>
+                            </div>
+
+                            <!-- Search -->
+                            <div>
+                                <label for="search" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Search</label>
+                                <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Name or tag..."
+                                    class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-accent focus:border-accent" />
+                            </div>
+                        </div>
+
+                        <!-- Action buttons -->
+                        <div class="flex items-center gap-3 mt-4 pt-3 border-t border-gray-200/50">
+                            <button type="submit"
+                                class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-lg
+                                    font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90
+                                    focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                {{ __('Apply') }}
+                            </button>
+
+                            <button type="submit" formaction="{{ route('assets.export') }}"
+                                class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-lg
+                                    font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500
+                                    focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                {{ __('Export') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <!-- Table -->
-            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 overflow-x-scroll">
+            <div class="glass-card overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-gray-50/50">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tag</th>
@@ -113,7 +157,7 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QR</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="divide-y divide-gray-200">
                         @foreach($assets as $a)
                             <tr>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ $assets->firstItem() + $loop->index }}</td>

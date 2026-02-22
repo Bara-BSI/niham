@@ -7,7 +7,7 @@
 
     <div class="py-6">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6 space-y-6">
+            <div class="glass-card p-6 space-y-6">
                 
                 {{-- Responsive Two-Column --}}
                 <div class="grid grid-cols-2 gap-1 justify-evenly">
@@ -35,7 +35,7 @@
                     @if($role->users->isNotEmpty())
                         <div class="overflow-x-auto">
                             <table class="min-w-full border border-gray-200 divide-y divide-gray-200 text-sm">
-                                <thead class="bg-gray-50">
+                                <thead class="bg-gray-50/50">
                                     <tr>
                                         <th class="px-4 py-2 text-left font-medium text-gray-600">Name</th>
                                         <th class="px-4 py-2 text-left font-medium text-gray-600">Department</th>

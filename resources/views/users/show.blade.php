@@ -5,9 +5,9 @@
         </h2>
     </x-slot>
 
-    <div class="py-8">
-        <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
-            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 p-6 space-y-6">
+    <div class="py-4 sm:py-8">
+        <div class="mx-auto max-w-4xl px-3 sm:px-6 lg:px-8">
+            <div class="glass-card p-6 space-y-6">
 
                 {{-- <!-- Image Preview -->
                 @if ($account->attachments->first())

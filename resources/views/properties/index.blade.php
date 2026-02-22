@@ -19,9 +19,9 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-2">
             <!-- Table -->
-            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 overflow-x-scroll">
+            <div class="glass-card overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-gray-50/50">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
@@ -32,7 +32,7 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Departments</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="divide-y divide-gray-200">
                         @foreach($properties as $property)
                             <tr>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ $properties->firstItem() + $loop->index }}</td>

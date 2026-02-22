@@ -21,9 +21,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-2">
             
             <!-- Table -->
-            <div class="bg-white/70 backdrop-blur-sm shadow-md rounded-xl border border-white/30 overflow-x-scroll">
+            <div class="glass-card overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-gray-50/50">
                         <tr>
                             <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" rowspan="2">No</th>
                             <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" rowspan="2">Name</th>
@@ -39,7 +39,7 @@
                             <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Delete</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="divide-y divide-gray-200">
                         @foreach($roles as $role)
                             <tr>
                                 <!-- No -->

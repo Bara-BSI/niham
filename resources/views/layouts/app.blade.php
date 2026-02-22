@@ -32,10 +32,10 @@
             ? asset('storage/' . $activeProperty->background_image_path)
             : asset('global-background.png');
     @endphp
-    <body
-        class="font-sans antialiased min-h-screen bg-cover bg-center bg-fixed bg-no-repeat"
-        style="background-image: url('{{ $bgImage }}');"
-    >
+    <body class="font-sans antialiased min-h-screen">
+        <!-- Fixed background image (works on all devices including mobile) -->
+        <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ $bgImage }}');"></div>
+
         <!-- Subtle dark overlay so content is readable -->
         <div class="fixed inset-0 bg-black/20 z-0"></div>
 
@@ -49,13 +49,13 @@
 
             <!-- Floating Header Pill -->
             @isset($header)
-                <header class="relative z-20 bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 px-4 sm:px-6 lg:px-8 py-5">
+                <header class="relative z-20 glass-panel px-4 sm:px-6 lg:px-8 py-5">
                     {{ $header }}
                 </header>
             @endisset
 
             <!-- Floating Main Content Card -->
-            <main class="relative z-10 flex-grow bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20">
+            <main class="relative z-10 flex-grow glass-panel overflow-x-auto">
                 {{ $slot }}
             </main>
         </div>

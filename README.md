@@ -29,9 +29,10 @@
 - **Public/Private Views:** Secure public resolving of asset information for quick checks.
 
 ### 🎨 Dynamic Property Branding & UI Overhauls
-- **Customized UI per Property:** Each property can set its own custom `logo`, `accent_color`, and `background_image`. The authenticated dashboard dynamically injects these properties natively via CSS variables and frosted glass backgrounds (`backdrop-blur`).
-- **Completely Distinct Guest Flow:** The login page is uncoupled from the standard Breeze gray-cards, using a stunning full split-screen design featuring the global NIHAM identity.
-- **Dynamic Property Switching:** Super Admins experience on-the-fly theme switching when they swap contexts between properties.
+- **Floating Glass Aesthetic:** Both guest and authenticated layouts utilize a premium modern aesthetic, featuring `.glass-panel` and `.glass-card` styling with backdrop blurring floating over dynamic, screen-spanning global backgrounds.
+- **Customized UI per Property:** Each property can set its own custom `logo`, `accent_color`, and `background_image`. The authenticated context dynamically injects these properties natively via CSS variables and blade-rendered style tags.
+- **Completely Distinct Guest Flow:** The login page is uncoupled from the standard Breeze gray-cards, using a stunning full-screen translucent background and a centered floating glass card featuring an independently floating global NIHAM identity logo.
+- **Dynamic Property Switching:** Super Admins experience on-the-fly theme and data-context switching when swapping between properties via the sleek collapsible context menus.
 
 ### 🛡️ Role & Property-Based Access Control (RBAC)
 - **Global Tenancy Scopes (Auto-Filtering):** Standard users are natively isolated to their assigned `property_id` across all queries using a custom `BelongsToProperty` global scope trait.
