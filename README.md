@@ -52,10 +52,6 @@
 - **Executive Oversight:** Special roles (EXE/PTLP) for property-wide visibility across all departments.
 - **User Roles:** Granular permissions for Admins, Staff, and Viewers within their assigned properties.
 
-### 🛠️ Work Logs & Maintenance
-- **Job Tickets:** Create maintenance and service jobs tied directly to hardware assets.
-- **Commenting System:** Log internal notes on asset tickets during servicing.
-
 ### 📦 Data Management
 - **PDF & Excel Export:** Download comprehensive asset reports automatically compiled into styled PDFs via mPDF or raw `.xlsx` datasets.
 - **Backup & Restore:** Integrated tools for database and file backups (Strictly authorized endpoints).

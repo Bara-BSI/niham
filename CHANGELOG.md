@@ -18,9 +18,10 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 ### Security
 - Security-related fixes and hardening.
 
-## [0.6.0] - <?php echo date('Y-m-d'); ?>
+## [0.6.0] - 2026-02-25
 ### Added
 - **Google Socialite Integration:** Seamless Single Sign-On (SSO) authentication allowing users to log in securely via their Google Workspace accounts.
+- **Asset History Tracking:** Comprehensive chronological logging of all asset events (creation, modifications, status changes, and soft deletions) managed natively by `AssetObserver`.
 - **Advanced Export Engine:** Upgraded asset reporting to generate beautifully formatted PDF exports (using mPDF/DomPDF) alongside standard Excel spreadsheets, complete with UI export selector modals.
 - **Progressive UI Disclosure:** Intelligently hides/shows action buttons (Edit, Delete, Status Update) natively based on the user's specific Role and Department permissions across all views.
 - **Custom Themed Error Pages:** Replaced default Laravel exception pages (403, 404, 500) with custom-designed glassmorphism Error Pages that natively adhere to the active property's branding.
@@ -29,7 +30,7 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 ### Changed
 - **Massive DRY UI Refactoring:** Surgically abstracted thousands of lines of duplicated Blade Boilerplate logic into reusable `<x-hover-card>`, `<x-modal-export>`, and `<x-modal-update-status>` Laravel Blade components.
 - **Expansive Desktop Layouts:** Radically refactored the constrained `max-w-4xl` layouts across `assets/show`, `users/show`, `departments/show` into massive `max-w-6xl` dual-column flex experiences for desktop monitors.
-- **Client-Side Image Compression:** Asset image uploads are now intelligently downscaled to 1920px (JPEG format) directly within the user's browser via JavaScript *before* hitting the server, entirely neutralizing `PostTooLargeException` failures.
+- **Client-Side Image Compression:** Asset image uploads are now intelligently downscaled to 1920px (JPEG format) directly within the user's browser via JavaScript *before* hitting the server.
 - **Strict Login Validation:** Hardened the login interfaces, actively stripping standard password recovery links and enforcing strict database-only validation rules inside the GoogleLoginController.
 
 ### Fixed
