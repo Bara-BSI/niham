@@ -62,6 +62,9 @@
                                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Status</th>
                                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Updated</th>
                                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Editor</th>
+                                    @if(Auth::user()->hasExecutiveOversight())
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
@@ -74,6 +77,11 @@
                                         </td>
                                         <td class="px-4 py-2 whitespace-nowrap">{{ $asset->updated_at->diffForHumans() }}</td>
                                         <td class="px-4 py-2 whitespace-nowrap">{{ $asset->editorUser ? $asset->editorUser->name : 'N/A' }}</td>
+                                        @if(Auth::user()->hasExecutiveOversight())
+                                        <td class="px-4 py-2 whitespace-nowrap">
+                                            <a href="{{ route('assets.history', $asset) }}" class="text-accent hover:underline text-sm font-medium">History</a>
+                                        </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

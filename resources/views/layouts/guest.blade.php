@@ -50,5 +50,7 @@
                 </p>
             </div>
         </div>
+
+        <x-modal-alert />
     </body>
 </html>

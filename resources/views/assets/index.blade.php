@@ -57,7 +57,8 @@
                     x-collapse
                     x-cloak
                 >
-                    <form method="GET" action="{{ route('assets.index') }}" class="glass-card p-4 sm:p-5 mt-3">
+                    <form id="filter-form" method="GET" action="{{ route('assets.index') }}" class="glass-card p-4 sm:p-5 mt-3">
+                        <input type="hidden" name="format" id="export-format" value="">
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                             <!-- Category -->
                             <div>
@@ -117,9 +118,9 @@
                         </div>
 
                         <!-- Action buttons -->
-                        <div class="flex items-center gap-3 mt-4 pt-3 border-t border-gray-200/50">
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 pt-3 border-t border-gray-200/50">
                             <button type="submit"
-                                class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-lg
+                                class="w-full sm:w-auto justify-center inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-lg
                                     font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90
                                     focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
                                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,15 +129,7 @@
                                 {{ __('Apply') }}
                             </button>
 
-                            <button type="submit" formaction="{{ route('assets.export') }}"
-                                class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-lg
-                                    font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500
-                                    focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition">
-                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                                {{ __('Export') }}
-                            </button>
+                                <x-modal-export route="{{ route('assets.export') }}" />
                         </div>
                     </form>
                 </div>
@@ -164,8 +157,10 @@
                             <tr>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ $assets->firstItem() + $loop->index }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ $a->tag }}</td>
-                                <td class="px-4 py-2 text-sm text-accent font-semibold hover:underline">
-                                    <a href="{{ route('assets.show',$a) }}">{{ $a->name }}</a>
+                                <td class="px-4 py-2 text-sm text-accent font-semibold relative">
+                                    <x-hover-card :asset="$a">
+                                        <a href="{{ route('assets.show',$a) }}" class="transition-colors hover:underline" :class="hovering ? 'text-red-500 font-bold' : ''">{{ $a->name }}</a>
+                                    </x-hover-card>
                                 </td>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ $a->category->name }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ optional($a->department)->name ?? '-' }}</td>
@@ -238,8 +233,7 @@
                                 </p>
 
                                 <form action="{{ route('backup.restore') }}" method="POST" enctype="multipart/form-data"
-                                    class="mt-4 space-y-4"
-                                    onsubmit="return confirm('⚠️ This will overwrite all data. Continue?');">
+                                    class="mt-4 space-y-4">
                                     @csrf
                                     <input type="file" name="backup" accept=".zip" required
                                         class="block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring focus:ring-accent" />
@@ -258,6 +252,10 @@
                     </template>
                 </div>
             @endif
+
+
+
+
 
         </div>
     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
@@ -18,7 +19,14 @@ class RoleController extends Controller
     public function index()
     {
         $this->authorize('view', Role::class);
-        $roles = Role::with(['users'])->whereNot('name', 'admin')->latest()->paginate(15);
+        
+        $query = Role::with(['users']);
+        
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
+            $query->where('name', '!=', 'admin');
+        }
+
+        $roles = $query->latest()->paginate(15);
 
         return view('roles.index', compact('roles'));
     }
@@ -72,6 +80,10 @@ class RoleController extends Controller
     {
         $this->authorize('view', $role);
 
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && strtolower($role->name) === 'admin') {
+            abort(403, 'You do not have permission to view the admin role.');
+        }
+
         // Paginate related models separately
         $users = $role->users()->paginate(5, ['*'], 'users_page');
 
@@ -85,6 +97,10 @@ class RoleController extends Controller
     {
         $this->authorize('update', $role);
 
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && strtolower($role->name) === 'admin') {
+            abort(403, 'You do not have permission to edit the admin role.');
+        }
+
         return view('roles.edit', [
             'role' => $role,
         ]);
@@ -96,6 +112,11 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $this->authorize('update', $role);
+
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && strtolower($role->name) === 'admin') {
+            abort(403, 'You do not have permission to update the admin role.');
+        }
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'perm_assets' => 'nullable|string',
@@ -127,6 +148,11 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         $this->authorize('delete', $role);
+
+        if (strtolower($role->name) === 'admin') {
+            abort(403, 'The admin role cannot be deleted.');
+        }
+
         $role->delete();
 
         return redirect()->route('roles.index')->with('ok', 'Deleted');

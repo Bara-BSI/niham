@@ -9,6 +9,10 @@ class BackupController extends Controller
 {
     public function download()
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->isRole('admin') && !\Illuminate\Support\Facades\Auth::user()->isSuperAdmin()) {
+            abort(403, 'Unauthorized. Only administrators can perform backups.');
+        }
+
         $filename = 'NihamBackup-'.now()->format('Y-m-d_H-i-s').'.zip';
         $zipPath = storage_path("app/$filename");
 
@@ -31,6 +35,10 @@ class BackupController extends Controller
 
     public function restore(Request $request)
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->isRole('admin') && !\Illuminate\Support\Facades\Auth::user()->isSuperAdmin()) {
+            abort(403, 'Unauthorized. Only administrators can restore backups.');
+        }
+
         $request->validate([
             'backup' => 'required|file|mimes:zip',
         ]);

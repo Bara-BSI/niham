@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Property;
+use App\Models\Asset;
+use App\Observers\AssetObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Asset::observe(AssetObserver::class);
+
         View::composer('*', function ($view) {
             $activeProperty = null;
 

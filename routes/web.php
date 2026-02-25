@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\Auth\GoogleLoginController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -32,6 +33,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('users', UserController::class);
 
+    // History Routes
+    Route::get('/assets/{asset}/history', [AssetController::class, 'history'])->name('assets.history');
+    Route::get('/assets/{asset}/history/export', [AssetController::class, 'exportHistory'])->name('assets.history.export');
+
     // Property Routes
     Route::resource('properties', PropertyController::class);
     Route::post('/properties/switch', [PropertyController::class, 'switchProperty'])->name('properties.switch');
@@ -62,5 +67,10 @@ Route::middleware('auth')->group(function () {
 // Public signed resolution endpoint (no auth)
 Route::get('/qr/resolve/{uuid}', [QrController::class, 'resolve'])
     ->name('qr.resolve');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/google', [GoogleLoginController::class, 'redirectToGoogle'])->name('login.google');
+    Route::get('/auth/google/callback', [GoogleLoginController::class, 'handleGoogleCallback']);
+});
 
 require __DIR__.'/auth.php';

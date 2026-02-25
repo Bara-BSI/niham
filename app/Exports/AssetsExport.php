@@ -14,9 +14,14 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
     protected $rowIndex = 0; // Property to keep track of the row number
 
     // Accept the collection via the constructor
-    public function __construct(Collection $assets)
+    protected $filters;
+    protected $property;
+
+    public function __construct(Collection $assets, array $filters = [], string $property = '')
     {
         $this->assets = $assets;
+        $this->filters = $filters;
+        $this->property = $property;
     }
 
     /**
@@ -30,8 +35,22 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
+        $headers = [];
+        $headers[] = ['Property: ' . $this->property];
+        
+        if (!empty($this->filters)) {
+            $filtersText = 'Filters Applied: ';
+            foreach ($this->filters as $key => $value) {
+                $filtersText .= ucfirst($key) . ': ' . $value . ' | ';
+            }
+            $headers[] = [rtrim($filtersText, ' | ')];
+        } else {
+            $headers[] = ['Filters Applied: None'];
+        }
+        $headers[] = ['']; // Empty row
+
         // Add the 'No.' column for our sequential number
-        return [
+        $headers[] = [
             'No.',
             'Tag',
             'Asset Name',
@@ -45,6 +64,8 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
             'Vendor',
             'Remarks',
         ];
+
+        return $headers;
     }
 
     /**
@@ -57,8 +78,8 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
             ++$this->rowIndex, // This is our sequential number
             $asset->tag,
             $asset->name,
-            $asset->category->name,
-            $asset->department->name,
+            $asset->category?->name ?? 'N/A',
+            $asset->department?->name ?? 'N/A',
             $asset->status,
             $asset->serial_number,
             $asset->purchase_date ? $asset->purchase_date->format('Y-m-d') : 'N/A',

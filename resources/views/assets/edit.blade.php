@@ -20,7 +20,77 @@
                             : null;
                     @endphp
 
-                    <div x-data='@json(["previewUrl" => $previewPath])' class="m-8">
+                    <div x-data="{
+                            previewUrl: @js($previewPath),
+                            compressing: false,
+                            async compressImage(file) {
+                                return new Promise((resolve) => {
+                                    const reader = new FileReader();
+                                    reader.readAsDataURL(file);
+                                    reader.onload = (event) => {
+                                        const img = new Image();
+                                        img.src = event.target.result;
+                                        img.onload = () => {
+                                            const canvas = document.createElement('canvas');
+                                            let width = img.width;
+                                            let height = img.height;
+                                            const maxDim = 1920;
+
+                                            if (width > maxDim || height > maxDim) {
+                                                if (width > height) {
+                                                    height = Math.round(height * (maxDim / width));
+                                                    width = maxDim;
+                                                } else {
+                                                    width = Math.round(width * (maxDim / height));
+                                                    height = maxDim;
+                                                }
+                                            }
+
+                                            canvas.width = width;
+                                            canvas.height = height;
+                                            const ctx = canvas.getContext('2d');
+                                            ctx.drawImage(img, 0, 0, width, height);
+
+                                            canvas.toBlob((blob) => {
+                                                const newFile = new File([blob], file.name, {
+                                                    type: 'image/jpeg',
+                                                    lastModified: Date.now()
+                                                });
+                                                resolve(newFile);
+                                            }, 'image/jpeg', 0.8);
+                                        };
+                                    };
+                                });
+                            },
+                            async handleFileSelect(event) {
+                                const input = event.target;
+                                if (!input.files.length) {
+                                    return;
+                                }
+                                
+                                const originalFile = input.files[0];
+                                if (!originalFile.type.startsWith('image/')) {
+                                    this.previewUrl = URL.createObjectURL(originalFile);
+                                    return;
+                                }
+
+                                this.compressing = true;
+                                try {
+                                    const compressedFile = await this.compressImage(originalFile);
+                                    
+                                    const dataTransfer = new DataTransfer();
+                                    dataTransfer.items.add(compressedFile);
+                                    input.files = dataTransfer.files;
+                                    
+                                    this.previewUrl = URL.createObjectURL(compressedFile);
+                                } catch (error) {
+                                    console.error('Image compression error:', error);
+                                    this.previewUrl = URL.createObjectURL(originalFile);
+                                } finally {
+                                    this.compressing = false;
+                                }
+                            }
+                        }" class="m-8">
                         <x-input-label for="attachment" :value="__('Asset Image')" />
 
                         <input
@@ -28,15 +98,21 @@
                             name="attachment"
                             type="file"
                             accept="image/*"
-                            @change="previewUrl = $event.target.files.length 
-                                ? URL.createObjectURL($event.target.files[0]) 
-                                : previewUrl"
+                            @change="handleFileSelect($event)"
                             class="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
                                 file:rounded-md file:border-0 file:text-sm file:font-semibold
                                 file:bg-indigo-50 file:text-accent hover:file:bg-indigo-100"
                         />
 
                         <x-input-error :messages="$errors->get('attachment')" class="mt-2" />
+
+                        <div x-show="compressing" class="mt-2 text-sm text-accent flex items-center gap-2" x-cloak>
+                            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Optimizing image...
+                        </div>
 
                         <!-- Preview -->
                         <div class="mt-4" x-show="previewUrl">
@@ -64,7 +140,18 @@
                                         method: 'POST',
                                         body: formData
                                     })
-                                    .then(res => res.json())
+                                    .then(async res => {
+                                        if (!res.ok) {
+                                            const errText = await res.text();
+                                            try {
+                                                const errJson = JSON.parse(errText);
+                                                throw new Error(errJson.error || 'Server error: ' + res.status);
+                                            } catch (e) {
+                                                throw new Error('Server error: ' + res.status);
+                                            }
+                                        }
+                                        return res.json();
+                                    })
                                     .then(data => {
                                         scanning = false;
                                         if(data.error) throw new Error(data.error);

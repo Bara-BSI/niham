@@ -18,6 +18,25 @@ class UserPolicy
         return null;
     }
 
+    private function canManageUser(User $authUser, User $model): bool
+    {
+        if ($authUser->isSuperAdmin() || $authUser->isRole('admin')) {
+            return true;
+        }
+
+        if ($authUser->property_id !== $model->property_id) {
+            return false;
+        }
+
+        if (!$authUser->hasExecutiveOversight()) {
+            if ($authUser->department_id !== $model->department_id) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -29,8 +48,9 @@ class UserPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user): bool
+    public function view(User $user, User $model): bool
     {
+        if (!$this->canManageUser($user, $model)) return false;
         return $user->hasPermission('perm_users', 'view');
     }
 
@@ -45,32 +65,36 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user): bool
+    public function update(User $user, User $model): bool
     {
+        if (!$this->canManageUser($user, $model)) return false;
         return $user->hasPermission('perm_users', 'update');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user): bool
+    public function delete(User $user, User $model): bool
     {
+        if (!$this->canManageUser($user, $model)) return false;
         return $user->hasPermission('perm_users', 'delete');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user): bool
+    public function restore(User $user, User $model): bool
     {
+        if (!$this->canManageUser($user, $model)) return false;
         return $user->hasPermission('perm_users', 'delete');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user): bool
+    public function forceDelete(User $user, User $model): bool
     {
+        if (!$this->canManageUser($user, $model)) return false;
         return $user->hasPermission('perm_users', 'delete');
     }
 }

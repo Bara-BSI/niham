@@ -135,6 +135,10 @@ class PropertyController extends Controller
      */
     public function switchProperty(Request $request)
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->isSuperAdmin()) {
+            abort(403, 'Unauthorized.');
+        }
+
         $request->validate([
             'property_id' => 'nullable|exists:properties,id',
         ]);
