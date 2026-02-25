@@ -18,6 +18,30 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 ### Security
 - Security-related fixes and hardening.
 
+## [0.6.0] - <?php echo date('Y-m-d'); ?>
+### Added
+- **Google Socialite Integration:** Seamless Single Sign-On (SSO) authentication allowing users to log in securely via their Google Workspace accounts.
+- **Advanced Export Engine:** Upgraded asset reporting to generate beautifully formatted PDF exports (using mPDF/DomPDF) alongside standard Excel spreadsheets, complete with UI export selector modals.
+- **Progressive UI Disclosure:** Intelligently hides/shows action buttons (Edit, Delete, Status Update) natively based on the user's specific Role and Department permissions across all views.
+- **Custom Themed Error Pages:** Replaced default Laravel exception pages (403, 404, 500) with custom-designed glassmorphism Error Pages that natively adhere to the active property's branding.
+- **Department Oversight System:** Granular RBAC enhancement enabling specific users/roles to natively oversee and manage users and assets *across* departments without breaking physical property scopes.
+
+### Changed
+- **Massive DRY UI Refactoring:** Surgically abstracted thousands of lines of duplicated Blade Boilerplate logic into reusable `<x-hover-card>`, `<x-modal-export>`, and `<x-modal-update-status>` Laravel Blade components.
+- **Expansive Desktop Layouts:** Radically refactored the constrained `max-w-4xl` layouts across `assets/show`, `users/show`, `departments/show` into massive `max-w-6xl` dual-column flex experiences for desktop monitors.
+- **Client-Side Image Compression:** Asset image uploads are now intelligently downscaled to 1920px (JPEG format) directly within the user's browser via JavaScript *before* hitting the server, entirely neutralizing `PostTooLargeException` failures.
+- **Strict Login Validation:** Hardened the login interfaces, actively stripping standard password recovery links and enforcing strict database-only validation rules inside the GoogleLoginController.
+
+### Fixed
+- **Dashboard Data Leakage:** Secured the `DashboardController` ensuring non-executive users can no longer see property-wide aggregate metrics without explicit departmental authorization.
+- **Hover Card Image Null-Pointer:** Fixed the `first() on null` Blade compilation crash when hovering over assets missing attachment relations.
+- **Database Seeder Integrity:** Synchronized the `DatabaseSeeder` with the rewritten `v0.5.0` granular string-based permission schemas.
+- **Component Scope Isolation:** Resolved Alpine Javascript collisions by cleanly detaching `x-teleport` modals from constrained table data blocks.
+
+### Security
+- **Backup Controller Lockdown:** Explicitly patched severe authorization bypasses inside `BackupController`, ensuring standard users cannot invoke database extraction dumps.
+- **Property Context Hijacking:** Secured the `PropertyController` to definitively reject property-switching POST requests from all users lacking the explicit Super Admin designation.
+- **OCR Client Crash Resilience:** Fortified the frontend Javascript `fetch` loop to elegantly trap and alert HTTP 500 exceptions from the OCR endpoint without corrupting Alpine component state.
 ## [0.5.0] - 2026-02-25
 ### Added
 - **AI-Powered OCR Scanning:** Integrated OCR.space API to intelligently parse uploaded asset images and auto-fill Asset Name, Brand, and Serial Number fields.

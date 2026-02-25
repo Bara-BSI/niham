@@ -107,5 +107,7 @@
                 </div>
             </div>
         @endif
+
+        <x-modal-alert />
     </body>
 </html>

@@ -16,8 +16,15 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $departmentsQuery = \App\Models\Department::query();
+        if (! Auth::user()->isSuperAdmin()) {
+            $departmentsQuery->where('property_id', Auth::user()->property_id);
+        }
+
         return view('profile.edit', [
             'user' => $request->user(),
+            'departments' => $departmentsQuery->get(),
+            'roles' => \App\Models\Role::all(),
         ]);
     }
 

@@ -12,18 +12,39 @@
                     <x-heroicon-s-pencil class="w-4 h-4 mr-2" />
                     {{ __('Edit') }}
                 </a>
-                <form method="POST" action="{{ route('properties.destroy', $property) }}" 
-                      onsubmit="return confirm('Are you sure you want to delete this property?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
+                <div x-data="{ openDeleteModal: false }" class="inline-flex">
+                    <button type="button" @click="openDeleteModal = true"
                             class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md 
                                     font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 
                                     focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition">
                         <x-heroicon-s-trash class="w-4 h-4 mr-2" />
                         {{ __('Delete') }}
                     </button>
-                </form>
+
+                    <template x-teleport="body">
+                        <div x-show="openDeleteModal"
+                            x-cloak
+                            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                            <div class="bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-md p-6 relative" @click.outside="openDeleteModal = false">
+                                <button @click="openDeleteModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                                    <x-heroicon-s-x-mark class="w-5 h-5"/>
+                                </button>
+                                
+                                <h2 class="text-lg font-bold text-gray-900 mb-2">Delete Property</h2>
+                                <p class="text-sm text-gray-600 mb-6">Are you sure you want to permanently delete this property? This action cannot be undone.</p>
+                                
+                                <form action="{{ route('properties.destroy', $property) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <div class="flex justify-end gap-3">
+                                        <x-secondary-button type="button" @click="openDeleteModal = false">Cancel</x-secondary-button>
+                                        <x-danger-button type="submit">Yes, Delete</x-danger-button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </template>
+                </div>
             </div>
         </div>
     </x-slot>

@@ -57,8 +57,15 @@
 - **Commenting System:** Log internal notes on asset tickets during servicing.
 
 ### 📦 Data Management
-- **Excel Export:** Download comprehensive asset reports.
-- **Backup & Restore:** Integrated tools for database and file backups.
+- **PDF & Excel Export:** Download comprehensive asset reports automatically compiled into styled PDFs via mPDF or raw `.xlsx` datasets.
+- **Backup & Restore:** Integrated tools for database and file backups (Strictly authorized endpoints).
+
+### 🌐 Google Workspace Authentication
+- **Single Sign-On (SSO):** Frictionless, secure login flow powered by Laravel Socialite, allowing staff authentications strictly mapped to internal corporate Google accounts.
+
+### 📱 Adaptive Dual-Column Layouts
+- **Expansive Desktop UI:** Maximizes ultra-wide monitors natively by breaking data out into beautiful dual-column side-by-side grids.
+- **Seamless Mobile Stacking:** Instantly collapses back into a touch-friendly, vertical experience on mobile devices.
 
 ---
 

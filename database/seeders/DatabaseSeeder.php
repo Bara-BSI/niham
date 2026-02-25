@@ -33,29 +33,29 @@ class DatabaseSeeder extends Seeder
         // Novotel roles
         $adminRoleNvt = Role::updateOrCreate(
             ['name' => 'admin', 'property_id' => $novotel->id],
-            ['can_create' => true, 'can_read' => true, 'can_update' => true, 'can_delete' => true]
+            ['perm_assets' => 'full access', 'perm_users' => 'full access', 'perm_categories' => 'full access', 'perm_departments' => 'full access', 'perm_roles' => 'full access']
         );
         $staffRoleNvt = Role::updateOrCreate(
             ['name' => 'staff', 'property_id' => $novotel->id],
-            ['can_create' => true, 'can_read' => true, 'can_update' => false, 'can_delete' => false]
+            ['perm_assets' => 'view, create', 'perm_users' => 'view', 'perm_categories' => 'view', 'perm_departments' => 'view', 'perm_roles' => 'no access']
         );
         $managerRoleNvt = Role::updateOrCreate(
             ['name' => 'manager', 'property_id' => $novotel->id],
-            ['can_create' => true, 'can_read' => true, 'can_update' => true, 'can_delete' => false]
+            ['perm_assets' => 'view, create, update', 'perm_users' => 'view', 'perm_categories' => 'view', 'perm_departments' => 'view', 'perm_roles' => 'no access']
         );
 
         // Ibis roles
         $adminRoleIbis = Role::updateOrCreate(
             ['name' => 'admin', 'property_id' => $ibis->id],
-            ['can_create' => true, 'can_read' => true, 'can_update' => true, 'can_delete' => true]
+            ['perm_assets' => 'full access', 'perm_users' => 'full access', 'perm_categories' => 'full access', 'perm_departments' => 'full access', 'perm_roles' => 'full access']
         );
         $staffRoleIbis = Role::updateOrCreate(
             ['name' => 'staff', 'property_id' => $ibis->id],
-            ['can_create' => true, 'can_read' => true, 'can_update' => false, 'can_delete' => false]
+            ['perm_assets' => 'view, create', 'perm_users' => 'view', 'perm_categories' => 'view', 'perm_departments' => 'view', 'perm_roles' => 'no access']
         );
         $managerRoleIbis = Role::updateOrCreate(
             ['name' => 'manager', 'property_id' => $ibis->id],
-            ['can_create' => true, 'can_read' => true, 'can_update' => true, 'can_delete' => false]
+            ['perm_assets' => 'view, create, update', 'perm_users' => 'view', 'perm_categories' => 'view', 'perm_departments' => 'view', 'perm_roles' => 'no access']
         );
 
         // ── Departments (Novotel) ─────────────────────────────────

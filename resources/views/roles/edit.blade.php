@@ -25,7 +25,15 @@
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
                     @php
-                        $options = ['no access', 'only view', 'can create', 'can update', 'can delete', 'can create and update', 'can create and delete', 'can update and delete', 'full access'];
+                        $options = [
+                            'no access' => 'No Access',
+                            'view' => 'View Only',
+                            'view, create' => 'View & Create',
+                            'view, update' => 'View & Update',
+                            'view, create, update' => 'View, Create & Update',
+                            'view, create, update, delete' => 'View, Create, Update & Delete',
+                            'full access' => 'Full Access'
+                        ];
                         $perms = ['perm_assets' => 'Assets', 'perm_users' => 'Users', 'perm_categories' => 'Categories', 'perm_departments' => 'Departments', 'perm_roles' => 'Roles'];
                     @endphp
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -33,9 +41,9 @@
                         <div>
                             <x-input-label :for="$field" :value="__($label . ' Permissions')" />
                             <select id="{{ $field }}" name="{{ $field }}" class="block w-full mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                @foreach($options as $opt)
-                                    <option value="{{ $opt }}" {{ old($field, $role->$field ?? 'no access') === $opt ? 'selected' : '' }}>
-                                        {{ ucwords($opt) }}
+                                @foreach($options as $val => $text)
+                                    <option value="{{ $val }}" {{ old($field, $role->$field ?? 'no access') === $val ? 'selected' : '' }}>
+                                        {{ $text }}
                                     </option>
                                 @endforeach
                             </select>

@@ -312,11 +312,12 @@ class AssetController extends Controller
     public function export(Request $request)
     {
         $query = Asset::query();
+        $appliedFilters = [];
 
         // Search
-        // Search by 'name' or 'tag' fields if a search term is provided
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
+            $appliedFilters['search'] = $searchTerm;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'like', '%'.$searchTerm.'%')
                     ->orWhere('tag', 'like', '%'.$searchTerm.'%');
@@ -325,35 +326,89 @@ class AssetController extends Controller
 
         // Filter by category
         if ($request->filled('category')) {
+            $cat = Category::find($request->category);
+            $appliedFilters['category'] = $cat ? $cat->name : $request->category;
             $query->where('category_id', $request->category);
         }
 
         // Pembatasan akses ke departemen lain (non-admin, non-super-admin)
         if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
             if (! Auth::user()->hasExecutiveOversight()) {
+                $appliedFilters['department_scope'] = Auth::user()->department->name;
                 $query->where('department_id', Auth::user()->department_id);
             }
         }
 
         // Filter by department
         if ($request->filled('department')) {
+            $dept = Department::find($request->department);
+            $appliedFilters['department'] = $dept ? $dept->name : $request->department;
             $query->where('department_id', $request->department);
         }
 
         // Filter by status
         if ($request->filled('status')) {
+            $appliedFilters['status'] = str_replace('_', ' ', ucfirst($request->status));
             $query->where('status', $request->status);
         }
 
         // Sort
         if ($request->filled('sort')) {
+            $appliedFilters['sort'] = ucfirst($request->sort);
             $query->orderBy($request->sort);
         } else {
             $query->latest();
         }
 
         $assetsToExport = $query->get();
+        $property = Auth::user()->isSuperAdmin() && session('active_property_id') ? \App\Models\Property::find(session('active_property_id'))?->name ?? 'All Properties' : (Auth::user()->isSuperAdmin() ? 'All Properties' : Auth::user()->property->name);
 
-        return Excel::download(new AssetsExport($assetsToExport), 'assets.xlsx');
+        if ($request->input('format') === 'pdf') {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('assets.pdf', [
+                'assets' => $assetsToExport,
+                'propertyName' => $property,
+                'filters' => $appliedFilters,
+            ])->setPaper('a4', 'landscape');
+            return $pdf->stream('assets.pdf');
+        }
+
+        return Excel::download(new AssetsExport($assetsToExport, $appliedFilters, $property), 'assets.xlsx');
+    }
+
+    public function history(Asset $asset)
+    {
+        abort_unless(Auth::user()->hasExecutiveOversight(), 403);
+        $histories = \App\Models\AssetHistory::where('asset_id', $asset->id)->with('user')->latest()->paginate(15);
+        return view('assets.history', compact('asset', 'histories'));
+    }
+
+    public function exportHistory(Asset $asset)
+    {
+        abort_unless(Auth::user()->hasExecutiveOversight(), 403);
+        $histories = \App\Models\AssetHistory::where('asset_id', $asset->id)->with('user')->latest()->get();
+        
+        $callback = function() use ($histories) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['ID', 'Date', 'Action', 'User', 'Details']);
+            foreach ($histories as $history) {
+                $details = $history->changes ? json_encode($history->changes) : '';
+                fputcsv($file, [
+                    $history->id,
+                    $history->created_at->format('Y-m-d H:i:s'),
+                    $history->action,
+                    $history->user ? $history->user->name : 'System',
+                    $details
+                ]);
+            }
+            fclose($file);
+        };
+        $filename = "asset_{$asset->tag}_history.csv";
+        return response()->streamDownload($callback, $filename, [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ]);
     }
 }

@@ -6,139 +6,119 @@
     </x-slot>
 
     <div class="py-4 sm:py-8">
-        <div class="mx-auto max-w-4xl px-3 sm:px-6 lg:px-8">
-            <div class="glass-card p-6 space-y-6">
+        <div class="mx-auto max-w-6xl px-3 sm:px-6 lg:px-8">
+            <div class="glass-card p-6 md:p-8 space-y-6">
 
-                <!-- Image Preview -->
-                @if ($asset->attachments)
-                    <div class="flex justify-center">
-                        <img src="{{ asset('storage/' . $asset->attachments->path) }}"
-                             alt="Asset Image"
-                             class="max-w-xs rounded-md shadow-md border border-gray-200" />
-                    </div>
-                @endif
-
-                <!-- Asset Info -->
-                <div class="grid grid-cols-2 gap-1 justify-evenly mx-5">
-                    <div class="col-span-2 md:col-span-1">
-                        <div><strong>Tag:</strong> {{ $asset->tag }}</div>
-                        <div><strong>Name:</strong> {{ $asset->name }}</div>
-                        <div><strong>Category:</strong> {{ $asset->category->name ?? '-' }}</div>
-                        <div><strong>Department:</strong> {{ $asset->department->name ?? '-' }}</div>
-                        <div class="flex items-center gap-2">
-                            <strong>Status:</strong> 
-                            <span>{{ ucfirst(str_replace('_', ' ', $asset->status)) }}</span>
-                            @can('update', $assetClass)
-                            <div x-data="{ openUpdateModal: false }" class="inline-flex">
-                                <button @click="openUpdateModal = true; $event.preventDefault();" type="button" class="text-accent hover:text-indigo-800 transition" title="Update Status">
-                                    <x-heroicon-s-pencil-square class="w-4 h-4"/>
-                                </button>
-                                
-                                <template x-teleport="body">
-                                    <div x-show="openUpdateModal"
-                                        x-cloak
-                                        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                                        <div class="bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-lg p-6 relative" @click.outside="openUpdateModal = false">
-                                            <button @click="openUpdateModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                                                <x-heroicon-s-x-mark class="w-5 h-5"/>
-                                            </button>
-                                            
-                                            <h2 class="text-lg font-bold text-gray-900 mb-4">Update Asset Status</h2>
-                                            
-                                            <form action="{{ route('assets.update', $asset) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                
-                                                <input type="hidden" name="name" value="{{ $asset->name }}">
-                                                <input type="hidden" name="tag" value="{{ $asset->tag }}">
-                                                <input type="hidden" name="category_id" value="{{ $asset->category_id }}">
-                                                <input type="hidden" name="department_id" value="{{ $asset->department_id }}">
-                                                <input type="hidden" name="property_id" value="{{ $asset->property_id }}">
-                                                <input type="hidden" name="condition" value="{{ $asset->condition }}">
-                                                
-                                                <div class="mb-4">
-                                                    <x-input-label for="modal_status" :value="__('Status')" />
-                                                    <select id="modal_status" name="status" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                                        <option value="good" {{ $asset->status == 'good' ? 'selected' : '' }}>Good</option>
-                                                        <option value="need_repair" {{ $asset->status == 'need_repair' ? 'selected' : '' }}>Need Repair</option>
-                                                        <option value="broken" {{ $asset->status == 'broken' ? 'selected' : '' }}>Broken</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="mb-4">
-                                                    <x-input-label for="modal_remarks" :value="__('Remarks')" />
-                                                    <textarea id="modal_remarks" name="remarks" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="3">{{ $asset->remarks }}</textarea>
-                                                </div>
-
-                                                <div class="flex justify-end gap-3 mt-6">
-                                                    <x-secondary-button type="button" @click="openUpdateModal = false">Cancel</x-secondary-button>
-                                                    <x-primary-button type="submit">Save Changes</x-primary-button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </template>
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- Left Column: Image & QR -->
+                    <div class="w-full lg:w-1/3 flex flex-col items-center space-y-6">
+                        <!-- Image Preview -->
+                        @if ($asset->attachments)
+                            <div class="w-full flex justify-center">
+                                <img src="{{ asset('storage/' . $asset->attachments->path) }}"
+                                     alt="Asset Image"
+                                     class="w-full max-w-md lg:max-w-full rounded-xl shadow-lg border border-gray-200/60 object-contain bg-white/50" />
                             </div>
-                            @endcan
+                        @else
+                            <div class="w-full max-w-md lg:max-w-full aspect-square bg-gray-100/50 rounded-xl shadow-sm border border-gray-200/60 flex items-center justify-center">
+                                <span class="text-gray-400">No Image Available</span>
+                            </div>
+                        @endif
+
+                        <div class="w-full flex justify-center">
+                            {{-- QR --}}
+                            <x-qr-modal :asset="$asset" />
                         </div>
-                        <div><strong>Serial Number:</strong> {{ $asset->serial_number ?: '-' }}</div>
                     </div>
 
-                    <div class="col-span-2 md:col-span-1">
-                        <div><strong>Purchase Date:</strong> {{ $asset->purchase_date?->format('d M Y') ?? '-' }}</div>
-                        <div>
-                            <strong>Warranty Status:</strong>
+                    <!-- Right Column: Details -->
+                    <div class="w-full lg:w-2/3 space-y-6">
+                        <!-- Asset Info Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                            <div class="space-y-3">
+                                <div><strong class="text-gray-900">Tag:</strong> <span class="text-gray-700">{{ $asset->tag }}</span></div>
+                                <div><strong class="text-gray-900">Name:</strong> <span class="text-gray-700">{{ $asset->name }}</span></div>
+                                <div><strong class="text-gray-900">Category:</strong> <span class="text-gray-700">{{ $asset->category->name ?? '-' }}</span></div>
+                                <div><strong class="text-gray-900">Department:</strong> <span class="text-gray-700">{{ $asset->department->name ?? '-' }}</span></div>
+                                <div class="flex items-center gap-2">
+                                    <strong class="text-gray-900">Status:</strong> 
+                                    <span class="text-gray-700">{{ ucfirst(str_replace('_', ' ', $asset->status)) }}</span>
+                                    @can('update', $assetClass)
+                                    <x-modal-update-status :asset="$asset">
+                                        <x-slot name="trigger">
+                                            <button type="button" class="text-accent hover:text-indigo-800 transition" title="Update Status">
+                                                <x-heroicon-s-pencil-square class="w-4 h-4"/>
+                                            </button>
+                                        </x-slot>
+                                    </x-modal-update-status>
+                                    @endcan
+                                </div>
+                                <div><strong class="text-gray-900">Serial Number:</strong> <span class="text-gray-700">{{ $asset->serial_number ?: '-' }}</span></div>
+                            </div>
 
-                            @if ($asset->warranty_date)
-                                @php
-                                    $expired = \Carbon\Carbon::parse($asset->warranty_date)->isPast();
-                                @endphp
-
-                                @if ($expired)
-                                    <span class="px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded">
-                                        Expired ({{ \Carbon\Carbon::parse($asset->warranty_date)->format('d M Y') }})
-                                    </span>
-                                @else
-                                    <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded">
-                                        Active until {{ \Carbon\Carbon::parse($asset->warranty_date)->format('d M Y') }}
-                                    </span>
-                                @endif
-                            @else
-                                <span class="px-2 py-1 text-xs font-semibold text-gray-600 bg-gray-100 rounded">
-                                    No Warranty
-                                </span>
-                            @endif
+                            <div class="space-y-3 pt-4 md:pt-0 border-t md:border-none border-gray-200/50">
+                                <div><strong class="text-gray-900">Purchase Date:</strong> <span class="text-gray-700">{{ $asset->purchase_date?->format('d M Y') ?? '-' }}</span></div>
+                                <div>
+                                    <strong class="text-gray-900 flex items-center mb-1 md:inline-block md:mb-0 md:mr-2">Warranty Status:</strong>
+                                    @if ($asset->warranty_date)
+                                        @php
+                                            $expired = \Carbon\Carbon::parse($asset->warranty_date)->isPast();
+                                        @endphp
+                                        @if ($expired)
+                                            <span class="px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded shadow-sm">
+                                                Expired ({{ \Carbon\Carbon::parse($asset->warranty_date)->format('d M Y') }})
+                                            </span>
+                                        @else
+                                            <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded shadow-sm">
+                                                Active until {{ \Carbon\Carbon::parse($asset->warranty_date)->format('d M Y') }}
+                                            </span>
+                                        @endif
+                                    @else
+                                        <span class="px-2 py-1 text-xs font-semibold text-gray-600 bg-gray-100/80 rounded shadow-sm">
+                                            No Warranty
+                                        </span>
+                                    @endif
+                                </div>
+                                <div><strong class="text-gray-900">Purchase Cost:</strong> <span class="text-gray-700">{{ $asset->purchase_cost ? 'Rp ' . number_format($asset->purchase_cost, 0, ',', '.') : '-' }}</span></div>
+                                <div><strong class="text-gray-900">Vendor:</strong> <span class="text-gray-700">{{ $asset->vendor ?: '-' }}</span></div>
+                                <div><strong class="text-gray-900">Last Editor:</strong> <span class="text-gray-700">{{ $asset->editorUser->name ?: 'N/A' }}</span></div>
+                            </div>
                         </div>
 
-                        <div><strong>Purchase Cost:</strong> {{ $asset->purchase_cost ? 'Rp ' . number_format($asset->purchase_cost, 0, ',', '.') : '-' }}</div>
-                        <div><strong>Vendor:</strong> {{ $asset->vendor ?: '-' }}</div>
-                        <div><strong>Last Editor:</strong> {{ $asset->editorUser->name ?: 'N/A' }}</div>
+                        <!-- Remarks Block -->
+                        <div class="pt-4 border-t border-gray-200/50">
+                            <strong class="text-gray-900 block mb-2">Remarks:</strong>
+                            <div class="bg-gray-50/80 p-4 rounded-lg border border-gray-200/40 text-gray-700 whitespace-pre-line shadow-sm" style="overflow-wrap: anywhere;">
+                                {{ $asset->remarks ?: 'No remarks provided.' }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="mx-5">
-                    <strong>Remarks:</strong>
-                    <p class=" bg-gray-100"  style="overflow-wrap: anywhere;"> {{ $asset->remarks ?: '-' }} </p>
-                </div>
-                <div class="flex justify-center w-full mb-6">
-                    {{-- QR --}}
-                    <x-qr-modal :asset="$asset" />
-                </div>
 
-                <div class="mt-6 flex justify-between items-center">
+                <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <!-- Back Button -->
                     <a href="{{ route('assets.index') }}"
-                    class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md 
+                    class="w-full sm:w-auto justify-center inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md 
                             font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 
                             focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
                         <x-heroicon-s-arrow-left class="w-4 h-4 mr-2" />
                         Back
                     </a>
 
-                    <div class="inline-flex">
+                    <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
+                        @if (Auth::user()->hasExecutiveOversight())
+                            <a href="{{ route('assets.history', $asset) }}"
+                            class="w-full sm:w-auto justify-center inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md 
+                                    font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 
+                                    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                                <x-heroicon-s-clock class="w-4 h-4 mr-2" />
+                                History
+                            </a>
+                        @endif
                         @can('update', $assetClass)
                             <!-- Edit Button -->
                             <a href="{{ route('assets.edit', $asset) }}"
-                            class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
+                            class="w-full sm:w-auto justify-center inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
                                     font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
                                     focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
                                 <x-heroicon-s-pencil class="w-4 h-4 mr-2" />
@@ -146,19 +126,40 @@
                             </a>
                         @endcan
                         @can('delete', $assetClass)
-                            <!-- Delete Button -->
-                            <form action="{{ route('assets.destroy', $asset) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this asset?');">
-                                @csrf
-                                @method('DELETE')
-
-                                <button type="submit"
-                                        class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md 
+                            <!-- Delete Button & Modal -->
+                            <div x-data="{ openDeleteModal: false }" class="inline-flex w-full sm:w-auto">
+                                <button type="button" @click="openDeleteModal = true"
+                                        class="w-full sm:w-auto justify-center inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md 
                                             font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 
-                                            focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ml-1">
+                                            focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition">
                                     <x-heroicon-s-trash class="w-4 h-4 mr-2" />
                                     Delete
                                 </button>
-                            </form>
+
+                                <template x-teleport="body">
+                                    <div x-show="openDeleteModal"
+                                        x-cloak
+                                        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                                        <div class="bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-md p-6 relative" @click.outside="openDeleteModal = false">
+                                            <button @click="openDeleteModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                                                <x-heroicon-s-x-mark class="w-5 h-5"/>
+                                            </button>
+                                            
+                                            <h2 class="text-lg font-bold text-gray-900 mb-2">Delete Asset</h2>
+                                            <p class="text-sm text-gray-600 mb-6">Are you sure you want to delete this asset? This action cannot be undone.</p>
+                                            
+                                            <form action="{{ route('assets.destroy', $asset) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <div class="flex justify-end gap-3">
+                                                    <x-secondary-button type="button" @click="openDeleteModal = false">Cancel</x-secondary-button>
+                                                    <x-danger-button type="submit">Yes, Delete</x-danger-button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
                         @endcan
                     </div>
                 </div>

@@ -30,6 +30,11 @@ class UserController extends Controller
         // Property scoping for non-super-admin
         if (! Auth::user()->isSuperAdmin()) {
             $query->where('property_id', Auth::user()->property_id);
+            
+            // Department scoping for non-admin without executive oversight
+            if (! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+                $query->where('department_id', Auth::user()->department_id);
+            }
         } else {
             // Super admin: scope to active property if set
             $activePropertyId = session('active_property_id');
@@ -51,7 +56,15 @@ class UserController extends Controller
         $users = $query->whereNot('name', 'Admin')
             ->where('is_super_admin', false) // don't show super admins in regular list
             ->paginate(15)->withQueryString();
-        $departments = Department::all();
+            
+        $departmentsQuery = Department::query();
+        if (! Auth::user()->isSuperAdmin()) {
+            $departmentsQuery->where('property_id', Auth::user()->property_id);
+            if (! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+                $departmentsQuery->where('id', Auth::user()->department_id);
+            }
+        }
+        $departments = $departmentsQuery->get();
         $roles = Role::all();
         $properties = Auth::user()->isSuperAdmin() ? Property::all() : collect();
 
@@ -65,9 +78,23 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
+        $departmentsQuery = Department::query();
+        if (! Auth::user()->isSuperAdmin()) {
+            $departmentsQuery->where('property_id', Auth::user()->property_id);
+            if (! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+                $departmentsQuery->where('id', Auth::user()->department_id);
+            }
+        }
+        $departments = $departmentsQuery->get();
+
+        $rolesQuery = Role::query();
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
+            $rolesQuery->where('name', '!=', 'admin');
+        }
+
         return view('users.create', [
-            'roles' => Role::all(),
-            'departments' => Department::all(),
+            'roles' => $rolesQuery->get(),
+            'departments' => $departments,
             'properties' => Auth::user()->isSuperAdmin() ? Property::all() : collect(),
         ]);
     }
@@ -94,6 +121,21 @@ class UserController extends Controller
         }
 
         $request->validate($rules);
+
+        // Enforce department selection restriction
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+            if ($request->department_id != Auth::user()->department_id) {
+                abort(403, 'You can only assign users to your own department.');
+            }
+        }
+
+        // Enforce Admin Role assignment restriction
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
+            $assignedRole = Role::find($request->role_id);
+            if ($assignedRole && strtolower($assignedRole->name) === 'admin') {
+                abort(403, 'You do not have permission to assign the admin role.');
+            }
+        }
 
         $userData = [
             'name' => $request->name,
@@ -140,10 +182,24 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
+        $departmentsQuery = Department::query();
+        if (! Auth::user()->isSuperAdmin()) {
+            $departmentsQuery->where('property_id', Auth::user()->property_id);
+            if (! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+                $departmentsQuery->where('id', Auth::user()->department_id);
+            }
+        }
+        $departments = $departmentsQuery->get();
+
+        $rolesQuery = Role::query();
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
+            $rolesQuery->where('name', '!=', 'admin');
+        }
+
         return view('users.edit', [
             'user' => $user,
-            'roles' => Role::all(),
-            'departments' => Department::all(),
+            'roles' => $rolesQuery->get(),
+            'departments' => $departments,
             'properties' => Auth::user()->isSuperAdmin() ? Property::all() : collect(),
         ]);
     }
@@ -168,6 +224,21 @@ class UserController extends Controller
         }
 
         $data = $request->validate($rules);
+
+        // Enforce department selection restriction
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+            if ($request->department_id != Auth::user()->department_id) {
+                abort(403, 'You can only assign users to your own department.');
+            }
+        }
+
+        // Enforce Admin Role assignment restriction
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
+            $assignedRole = Role::find($request->role_id);
+            if ($assignedRole && strtolower($assignedRole->name) === 'admin') {
+                abort(403, 'You do not have permission to assign or maintain the admin role for this user.');
+            }
+        }
 
         // Assign property
         if (Auth::user()->isSuperAdmin() && $request->filled('property_id')) {

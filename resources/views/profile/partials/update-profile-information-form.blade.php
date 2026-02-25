@@ -23,20 +23,52 @@
 
         <div>
             <x-input-label for="username" :value="__('Username')" />
-            <x-text-input id="username" name="username" type="text" class="mt-1 block w-full text-gray-400" :value="old('username', $user->username)" required autofocus autocomplete="username" disabled="true" />
+            @if (Auth::user()->isRole('admin') || Auth::user()->isSuperAdmin())
+                <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('username', $user->username)" required autofocus autocomplete="username" />
+            @else
+                <x-text-input id="username" name="username" type="text" class="mt-1 block w-full text-gray-400" :value="old('username', $user->username)" required autofocus autocomplete="username" disabled="true" />
+            @endif
             <x-input-error class="mt-2" :messages="$errors->get('username')" />
         </div>
 
         <div>
-            <x-input-label for="department" :value="__('Department')" />
-            <x-text-input id="department" name="department" type="text" class="mt-1 block w-full text-gray-400" :value="old('department', $user->department?->name)" required autofocus autocomplete="department" disabled="true" />
-            <x-input-error class="mt-2" :messages="$errors->get('department')" />
+            <x-input-label for="department_id" :value="__('Department')" />
+            @if (Auth::user()->isRole('admin') || Auth::user()->isSuperAdmin())
+                <select id="department_id" name="department_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent" required>
+                    <option value="">—</option>
+                    @foreach ($departments as $department)
+                        <option value="{{ $department->id }}" {{ old('department_id', $user->department_id) == $department->id ? 'selected' : '' }}>
+                            {{ $department->name }}{{ Auth::user()->isSuperAdmin() && $department->property ? ' - ' . $department->property->name : '' }}
+                        </option>
+                    @endforeach
+                </select>
+            @else
+                <x-text-input id="department" name="department" type="text" class="mt-1 block w-full text-gray-400" :value="old('department', $user->department?->name)" required autofocus autocomplete="department" disabled="true" />
+            @endif
+            <x-input-error class="mt-2" :messages="$errors->get('department_id')" />
         </div>
 
         <div>
-            <x-input-label for="role" :value="__('Role')" />
-            <x-text-input id="role" name="role" type="text" class="mt-1 block w-full text-gray-400" :value="old('role', $user->role?->name)" required autofocus autocomplete="role" disabled="true" />
-            <x-input-error class="mt-2" :messages="$errors->get('role')" />
+            <x-input-label for="role_id" :value="__('Role')" />
+            @if (Auth::user()->isRole('admin') || Auth::user()->isSuperAdmin())
+                <select id="role_id" name="role_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent" required>
+                    <option value="">—</option>
+                    @foreach ($roles as $role)
+                        @if (old('role_id', $user->role_id) == $role->id)
+                            <option value="{{ $role->id }}" selected>
+                                {{ $role->name }}{{ Auth::user()->isSuperAdmin() && $role->property ? ' - ' . $role->property->name : '' }}
+                            </option>
+                        @else
+                            <option value="{{ $role->id }}">
+                                {{ $role->name }}{{ Auth::user()->isSuperAdmin() && $role->property ? ' - ' . $role->property->name : '' }}
+                            </option>
+                        @endif
+                    @endforeach
+                </select>
+            @else
+                <x-text-input id="role" name="role" type="text" class="mt-1 block w-full text-gray-400" :value="old('role', $user->role?->name)" required autofocus autocomplete="role" disabled="true" />
+            @endif
+            <x-input-error class="mt-2" :messages="$errors->get('role_id')" />
         </div>
 
         <div>
