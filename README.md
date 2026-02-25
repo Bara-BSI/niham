@@ -25,7 +25,7 @@
 - **Auto-Compression:** Uploaded asset attachments are silently intercepted and compressed utilizing Intervention Image v3 to maximize visual clarity while minimizing server storage footprint.
 
 ### 📊 Interactive Dashboard
-- Real-time statistics on total asset value, status distribution, and departmental breakdowns.
+- Real-time statistics on total asset status distribution and departmental breakdowns.
 - Quick view of recent asset activities.
 
 ### 🏷️ Asset Lifecycle Management
@@ -34,7 +34,7 @@
 - **Attachments:** Upload and manage images or documents for each asset.
 
 ### 🔍 QR Code Integration
-- **Generate QR Codes:** Automatically generate unique QR codes for every asset (powered by `php-imagick`).
+- **Generate QR Codes:** Automatically generate unique QR codes overlaid with dynamic property logos and Asset Tags for every asset (powered by `php-imagick`).
 - **Scan & Verify:** Built-in scanner to quickly retrieve asset details via mobile devices.
 - **Public/Private Views:** Secure public resolving of asset information for quick checks.
 
@@ -43,6 +43,7 @@
 - **Customized UI per Property:** Each property can set its own custom `logo`, `accent_color`, and `background_image`. The authenticated context dynamically injects these properties natively via CSS variables and blade-rendered style tags.
 - **Completely Distinct Guest Flow:** The login page is uncoupled from the standard Breeze gray-cards, using a stunning full-screen translucent background and a centered floating glass card featuring an independently floating global NIHAM identity logo.
 - **Dynamic Property Switching:** Super Admins experience on-the-fly theme and data-context switching when swapping between properties via the sleek collapsible context menus.
+- **Rapid-action Teleport Modals:** Enhanced mobile interactions and seamless user experience utilizing Alpine.js.
 
 ### 🛡️ Role & Property-Based Access Control (RBAC)
 - **Global Tenancy Scopes (Auto-Filtering):** Standard users are natively isolated to their assigned `property_id` across all queries using a custom `BelongsToProperty` global scope trait.
@@ -99,7 +100,7 @@ Follow these steps to set up the project locally.
     ```bash
     cp .env.example .env
     ```
-    *Update `.env` with your database details (DB_DATABASE, DB_USERNAME, DB_PASSWORD).*
+    *Update `.env` with your database details (DB_DATABASE, DB_USERNAME, DB_PASSWORD). Set Google Auth details if testing SSO.*
 
 5.  **Generate App Key**
     ```bash
@@ -132,12 +133,22 @@ Follow these steps to set up the project locally.
 
 ---
 
+## 📖 Usage
+1. **Login:** Use either robust password authentication or seamless Google Workspace SSO to enter the dashboard.
+2. **Dashboard Overview:** Monitor asset distributions, system statistics, and recent updates at a glance natively filtered to your assigned property.
+3. **Register Assets:** Upload a picture of a valid serial plate to harness the AI OCR engine for lightning-fast population, or fill forms manually.
+4. **Manage Inventory:** Scan an asset's designated QR code to immediately retrieve location context, physical state, status logs, and warranty expiration details.
+5. **Generate Reports:** With single-click generation, compile property data into crisp PDF summaries or comprehensive multi-sheet Excel exports depending on auditing requirements.
+6. **Property Switching:** (Super Admins Only) Select a different active context from the floating navigation pill to instantly migrate dashboard data and theme overlays to another established hotel domain.
+
+---
+
 ## 🛠️ Technology Stack
 
 - **Backend:** Laravel 11/12
 - **Frontend:** Blade Templates, Alpine.js, TailwindCSS
 - **Database:** MySQL / MariaDB (Supports SQLite for testing)
-- **Tools:** Vite, PHPUnit, Pest
+- **Tools:** Vite, PHPUnit, Pest, mPDF, Intervention Image v3, dompdf
 
 ---
 
