@@ -18,6 +18,23 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 ### Security
 - Security-related fixes and hardening.
 
+## [0.5.0] - 2026-02-25
+### Added
+- **AI-Powered OCR Scanning:** Integrated OCR.space API to intelligently parse uploaded asset images and auto-fill Asset Name, Brand, and Serial Number fields.
+- **Granular String-Based Permissions:** Completely replaced the legacy boolean permission system (`can_create`, etc.) with a modular string matrix (`perm_assets`, `perm_users`, etc.).
+- **Executive Oversight Roles:** Added a new `is_executive_oversight` flag to Departments, definitively resolving hardcoded checks.
+- **Intervention Image Processing (v3):** Asset image uploads are now automatically compressed to a maximum of 1920px (80% JPEG quality) to dramatically reduce storage bloat.
+- **Advanced QR Code Architectures:** Generated QR codes now dynamically embed the active Property's logo in the center and automatically render the `Asset Tag` explicitly underneath.
+- **Rapid-Action UI Modals:** Created a highly responsive "Update Status" rapid-action teleport modal accessible directly from the asset views.
+
+### Changed
+- **Eloquent File Deletion:** Offloaded physical file deletion from Controller methods directly to Eloquent `deleting` and `forceDeleted` events on the `Asset` model.
+- **Policy Overhauls:** All 5 core system Policies (`AssetPolicy`, `UserPolicy`, etc.) have been completely rewritten to check the new `User::hasPermission()` and `User::hasExecutiveOversight()` abstractions.
+
+### Fixed
+- **Mobile Background Stretching Defect:** Replaced erratic CSS `bg-fixed` implementations on `app.blade` and `guest.blade` with flawless full-screen `<img class="object-cover w-full h-full">` wrappers, curing the vh-stretch layout bug permanently.
+- **Z-Index Clipping Issues:** Standardized all UI modals with Tailwind `z-50` bindings and Alpine `<template x-teleport="body">` tags to escape messy container clipping constraints.
+
 ## [0.4.0] - 2026-02-22
 ### Added
 - **Floating Glass Aesthetic:** Implemented a global premium frosted-glass aesthetic for both guest and authenticated layouts (`.glass-panel`, `.glass-card`).

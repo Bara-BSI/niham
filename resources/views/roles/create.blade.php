@@ -22,26 +22,24 @@
                         />
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <label class="flex items-center">
-                            <input type="checkbox" name="can_create" value="1" {{ old('can_create', $role->can_create ?? false) ? 'checked' : '' }}>
-                            <span class="ml-2">Create</span>
-                        </label>
-
-                        <label class="flex items-center">
-                            <input type="checkbox" name="can_read" value="1" {{ old('can_read', $role->can_read ?? true) ? 'checked' : '' }}>
-                            <span class="ml-2">Read</span>
-                        </label>
-
-                        <label class="flex items-center">
-                            <input type="checkbox" name="can_update" value="1" {{ old('can_update', $role->can_update ?? false) ? 'checked' : '' }}>
-                            <span class="ml-2">Update</span>
-                        </label>
-
-                        <label class="flex items-center">
-                            <input type="checkbox" name="can_delete" value="1" {{ old('can_delete', $role->can_delete ?? false) ? 'checked' : '' }}>
-                            <span class="ml-2">Delete</span>
-                        </label>
+                    @php
+                        $options = ['no access', 'only view', 'can create', 'can update', 'can delete', 'can create and update', 'can create and delete', 'can update and delete', 'full access'];
+                        $perms = ['perm_assets' => 'Assets', 'perm_users' => 'Users', 'perm_categories' => 'Categories', 'perm_departments' => 'Departments', 'perm_roles' => 'Roles'];
+                    @endphp
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        @foreach($perms as $field => $label)
+                        <div>
+                            <x-input-label :for="$field" :value="__($label . ' Permissions')" />
+                            <select id="{{ $field }}" name="{{ $field }}" class="block w-full mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                @foreach($options as $opt)
+                                    <option value="{{ $opt }}" {{ old($field, $role->$field ?? 'no access') === $opt ? 'selected' : '' }}>
+                                        {{ ucwords($opt) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get($field)" class="mt-2" />
+                        </div>
+                        @endforeach
                     </div>
 
 

@@ -20,12 +20,13 @@
                     <!-- Permissions -->
                     <div class="col-span-2 md:col-span-1">
                         <h3 class="text-lg font-medium text-gray-900">Role Permissions</h3>
-                        <p class="text-lg text-gray-600">
-                            {{ $role->can_create ? 'Create,':'' }}
-                            {{ $role->can_read ? 'Read,':'' }}
-                            {{ $role->can_update ? 'Update,':'' }}
-                            {{ $role->can_delete ? 'Delete,':'' }}
-                        </p>
+                            <ul class="list-disc pl-5 mt-2">
+                                <li><strong>Assets:</strong> {{ ucwords($role->perm_assets ?? 'no access') }}</li>
+                                <li><strong>Users:</strong> {{ ucwords($role->perm_users ?? 'no access') }}</li>
+                                <li><strong>Categories:</strong> {{ ucwords($role->perm_categories ?? 'no access') }}</li>
+                                <li><strong>Departments:</strong> {{ ucwords($role->perm_departments ?? 'no access') }}</li>
+                                <li><strong>Roles:</strong> {{ ucwords($role->perm_roles ?? 'no access') }}</li>
+                            </ul>
                     </div>
                 </div>
                 

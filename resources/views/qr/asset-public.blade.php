@@ -84,19 +84,77 @@
                     </dl>
 
                     <div class="pt-6 flex justify-between items-center">
-                        <a href="{{ url('/') }}"
-                           class="inline-flex items-center px-4 py-2 bg-accent border border-transparent 
-                                  rounded-md font-semibold text-xs text-white uppercase tracking-widest 
-                                  hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accent 
-                                  focus:ring-offset-2 transition">
+                        <x-primary-button tag="a" href="{{ url('/') }}">
                             {{ __('Go to system') }}
-                        </a>
-                        <a href="{{ route('assets.show', $asset) }}"
-                        class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md 
-                                font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 
-                                focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
-                            {{ __('See Details') }}
-                        </a>
+                        </x-primary-button>
+                        
+                        <div class="flex gap-2">
+                            <!-- Update Status Button (Only for Auth Users With Permission) -->
+                            @auth
+                                @can('update', $asset)
+                                <div x-data="{ openUpdateModal: false }">
+                                    <x-primary-button @click="openUpdateModal = true" type="button" class="bg-indigo-600 hover:bg-indigo-700">
+                                        Update Status
+                                    </x-primary-button>
+
+                                    <template x-teleport="body">
+                                        <div x-show="openUpdateModal"
+                                            x-cloak
+                                            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                                            <div class="bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-lg p-6 relative" @click.outside="openUpdateModal = false">
+                                                <button @click="openUpdateModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                                                    <x-heroicon-s-x-mark class="w-5 h-5"/>
+                                                </button>
+                                                
+                                                <h2 class="text-lg font-bold text-gray-900 mb-4">Update Asset Status</h2>
+                                                
+                                                <form action="{{ route('assets.update', $asset) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    
+                                                    <!-- Keep required fields hidden to pass validation -->
+                                                    <input type="hidden" name="name" value="{{ $asset->name }}">
+                                                    <input type="hidden" name="tag" value="{{ $asset->tag }}">
+                                                    <input type="hidden" name="category_id" value="{{ $asset->category_id }}">
+                                                    <input type="hidden" name="department_id" value="{{ $asset->department_id }}">
+                                                    <input type="hidden" name="property_id" value="{{ $asset->property_id }}">
+                                                    <input type="hidden" name="condition" value="{{ $asset->condition }}">
+                                                    
+                                                    <!-- Status -->
+                                                    <div class="mb-4">
+                                                        <x-input-label for="modal_status" :value="__('Status')" />
+                                                        <select id="modal_status" name="status" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                                            <option value="good" {{ $asset->status == 'good' ? 'selected' : '' }}>Good</option>
+                                                            <option value="need_repair" {{ $asset->status == 'need_repair' ? 'selected' : '' }}>Need Repair</option>
+                                                            <option value="broken" {{ $asset->status == 'broken' ? 'selected' : '' }}>Broken</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Remarks -->
+                                                    <div class="mb-4">
+                                                        <x-input-label for="modal_remarks" :value="__('Remarks')" />
+                                                        <textarea id="modal_remarks" name="remarks" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="3">{{ $asset->remarks }}</textarea>
+                                                    </div>
+
+                                                    <div class="flex justify-end gap-3 mt-6">
+                                                        <x-secondary-button type="button" @click="openUpdateModal = false">Cancel</x-secondary-button>
+                                                        <x-primary-button type="submit">Save Changes</x-primary-button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                @endcan
+                            @endauth
+
+                            <a href="{{ route('assets.show', $asset) }}"
+                            class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md 
+                                    font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 
+                                    focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
+                                {{ __('See Details') }}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

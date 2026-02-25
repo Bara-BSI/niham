@@ -77,11 +77,6 @@ class User extends Authenticatable
         return (bool) $this->is_super_admin;
     }
 
-    public function inDept(string $code): bool
-    {
-        return optional($this->department)->code === $code;
-    }
-
     /**
      * Get the active property id for this user.
      * Super admin: from session or null (all).
@@ -94,5 +89,38 @@ class User extends Authenticatable
         }
 
         return $this->property_id;
+    }
+
+    /**
+     * Check if user has explicit string permission on a module.
+     */
+    public function hasPermission(string $module, string $action): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        $perm = $this->role->{$module} ?? 'no access';
+
+        if ($perm === 'full access') {
+            return true;
+        }
+
+        if ($action === 'view') {
+            return $perm !== 'no access';
+        }
+
+        return str_contains($perm, $action);
+    }
+
+    /**
+     * Determine if user has executive oversight based on their department.
+     */
+    public function hasExecutiveOversight(): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        return optional($this->department)->is_executive_oversight == true;
     }
 }

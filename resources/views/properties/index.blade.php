@@ -5,6 +5,7 @@
                 {{ __('Properties') }}
             </h2>
             <div>
+                @can('create', App\Models\Property::class)
                 <a href="{{ route('properties.create') }}"
                 class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
                         font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
@@ -12,6 +13,7 @@
                     <x-heroicon-s-plus class="w-4 h-4 mr-2" />
                     {{ __('New Property') }}
                 </a>
+                @endcan
             </div>
         </div>
     </x-slot>

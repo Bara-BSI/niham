@@ -23,7 +23,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_users', 'view');
     }
 
     /**
@@ -31,7 +31,7 @@ class UserPolicy
      */
     public function view(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_users', 'view');
     }
 
     /**
@@ -39,7 +39,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_users', 'create');
     }
 
     /**
@@ -47,7 +47,7 @@ class UserPolicy
      */
     public function update(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_users', 'update');
     }
 
     /**
@@ -55,7 +55,7 @@ class UserPolicy
      */
     public function delete(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_users', 'delete');
     }
 
     /**
@@ -63,7 +63,7 @@ class UserPolicy
      */
     public function restore(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_users', 'delete');
     }
 
     /**
@@ -71,6 +71,6 @@ class UserPolicy
      */
     public function forceDelete(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_users', 'delete');
     }
 }

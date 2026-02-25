@@ -44,7 +44,9 @@ class DepartmentController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
             'notes' => 'nullable|string|max:255',
+            'is_executive_oversight' => 'nullable|boolean',
         ]);
+        $data['is_executive_oversight'] = $request->has('is_executive_oversight');
 
         // Ensure Department name in upper case
         $data['name'] = strtoupper($data['name']);
@@ -91,7 +93,9 @@ class DepartmentController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
             'notes' => 'nullable|string|max:255',
+            'is_executive_oversight' => 'nullable|boolean',
         ]);
+        $data['is_executive_oversight'] = $request->has('is_executive_oversight');
 
         // Ensure Department name in upper case
         $data['name'] = strtoupper($data['name']);

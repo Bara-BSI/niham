@@ -34,7 +34,9 @@
     @endphp
     <body class="font-sans antialiased min-h-screen">
         <!-- Fixed background image (works on all devices including mobile) -->
-        <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ $bgImage }}');"></div>
+        <div class="fixed inset-0 z-0">
+            <img src="{{ $bgImage }}" alt="Background" class="object-cover w-full h-full" />
+        </div>
 
         <!-- Subtle dark overlay so content is readable -->
         <div class="fixed inset-0 bg-black/20 z-0"></div>

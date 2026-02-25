@@ -14,6 +14,16 @@
 
 ## ✨ Key Features
 
+### 🤖 Smart Asset Entry (AI OCR)
+- **Automated Data Extraction:** Upload an image of an asset's data plate, and the integrated OCR.space API engine will intelligently scan and auto-fill the Serial Number, Brand, and Asset Name instantaneously.
+
+### 🔐 Granular Role Permissions & Executive Oversight
+- **String-Based Modular Access:** Control precise capabilities (e.g., `only view`, `can create`, `full access`) individually for Assets, Users, Categories, and Departments.
+- **Executive Oversight:** Empower specific departments with global property-wide visibility, entirely abstracting complex hierarchy checks from the application layer.
+
+### 🖼️ Advanced Image Optimization
+- **Auto-Compression:** Uploaded asset attachments are silently intercepted and compressed utilizing Intervention Image v3 to maximize visual clarity while minimizing server storage footprint.
+
 ### 📊 Interactive Dashboard
 - Real-time statistics on total asset value, status distribution, and departmental breakdowns.
 - Quick view of recent asset activities.

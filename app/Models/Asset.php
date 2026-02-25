@@ -41,6 +41,17 @@ class Asset extends Model
         static::creating(function ($asset) {
             $asset->uuid = (string) Str::uuid();
         });
+
+        static::deleting(function ($asset) {
+            if ($asset->isForceDeleting()) {
+                if ($attachment = $asset->attachments) {
+                    if (\Storage::disk('public')->exists($attachment->path)) {
+                        \Storage::disk('public')->delete($attachment->path);
+                    }
+                    $attachment->delete();
+                }
+            }
+        });
     }
 
     public function category()

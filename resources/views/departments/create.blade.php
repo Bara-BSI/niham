@@ -46,6 +46,13 @@
                                 />
                                 <x-input-error :messages="$errors->get('code')" class="mt-2" />
                             </div>
+                            <!-- Oversight -->
+                            <div class="mt-4">
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="is_executive_oversight" value="1" {{ old('is_executive_oversight') ? 'checked' : '' }} class="h-4 w-4 text-accent border-gray-300 rounded focus:ring-accent">
+                                    <span class="ml-2 text-sm text-gray-600">{{ __('Executive Oversight') }}</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
