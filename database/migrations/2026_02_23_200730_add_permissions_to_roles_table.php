@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name'); // nama kategori
-            $table->string('code')->unique(); // misal CABLE, MONITOR
-            $table->timestamps();
+        Schema::table('roles', function (Blueprint $table) {
+            //
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::table('roles', function (Blueprint $table) {
+            //
+        });
     }
 };

@@ -5,6 +5,7 @@
                 {{ __('Users') }}
             </h2>
             <div>
+                @can('create', App\Models\User::class)
                 <a href="{{ route('users.create') }}"
                 class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
                         font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
@@ -12,6 +13,7 @@
                     <x-heroicon-s-plus class="w-4 h-4 mr-2" />
                     {{ __('New User') }}
                 </a>
+                @endcan
             </div>
         </div>
     </x-slot>
@@ -124,7 +126,11 @@
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ optional($user->department)->name ?? '-' }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ optional($user->role)->name ?? '-' }}</td>
                                 @if (Auth::user()->isSuperAdmin())
-                                    <td class="px-4 py-2 text-sm text-gray-700">{{ optional($user->property)->name ?? '-' }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-700">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-white shadow-sm" style="background-color: {{ optional($user->property)->accent_color ?? '#6b7280' }}">
+                                            {{ optional($user->property)->name ?? '-' }}
+                                        </span>
+                                    </td>
                                 @endif
                             </tr>
                         @endforeach

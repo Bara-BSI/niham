@@ -41,19 +41,21 @@ class RoleController extends Controller
         $this->authorize('create', Role::class);
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'can_create' => 'nullable|boolean',
-            'can_read' => 'nullable|boolean',
-            'can_update' => 'nullable|boolean',
-            'can_delete' => 'nullable|boolean',
+            'perm_assets' => 'nullable|string',
+            'perm_users' => 'nullable|string',
+            'perm_categories' => 'nullable|string',
+            'perm_departments' => 'nullable|string',
+            'perm_roles' => 'nullable|string',
         ]);
 
-        // Ensure unchecked boxes become false
+        // Ensure unfilled permissions become 'no access'
         $data = array_merge([
-            'can_create' => false,
-            'can_read' => false,
-            'can_update' => false,
-            'can_delete' => false,
-        ], $data);
+            'perm_assets' => 'no access',
+            'perm_users' => 'no access',
+            'perm_categories' => 'no access',
+            'perm_departments' => 'no access',
+            'perm_roles' => 'no access',
+        ], array_filter($data));
 
         // Ensure role name is in lowercase
         $data['name'] = strtolower($data['name']);
@@ -96,19 +98,21 @@ class RoleController extends Controller
         $this->authorize('update', $role);
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'can_create' => 'nullable|boolean',
-            'can_read' => 'nullable|boolean',
-            'can_update' => 'nullable|boolean',
-            'can_delete' => 'nullable|boolean',
+            'perm_assets' => 'nullable|string',
+            'perm_users' => 'nullable|string',
+            'perm_categories' => 'nullable|string',
+            'perm_departments' => 'nullable|string',
+            'perm_roles' => 'nullable|string',
         ]);
 
-        // Ensure unchecked boxes become false
+        // Ensure unfilled permissions become 'no access'
         $data = array_merge([
-            'can_create' => false,
-            'can_read' => false,
-            'can_update' => false,
-            'can_delete' => false,
-        ], $data);
+            'perm_assets' => 'no access',
+            'perm_users' => 'no access',
+            'perm_categories' => 'no access',
+            'perm_departments' => 'no access',
+            'perm_roles' => 'no access',
+        ], array_filter($data));
 
         // Ensure role name is in lowercase
         $data['name'] = strtolower($data['name']);

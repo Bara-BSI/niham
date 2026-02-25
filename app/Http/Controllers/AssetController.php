@@ -9,6 +9,8 @@ use App\Models\Department;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Maatwebsite\Excel\Facades\Excel;
 use Storage;
 
@@ -42,7 +44,7 @@ class AssetController extends Controller
 
         // Pembatasan akses ke departemen lain (non-admin, non-super-admin)
         if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
-            if (! Auth::user()->inDept('EXE') && ! Auth::user()->inDept('PTLP')) {
+            if (! Auth::user()->hasExecutiveOversight()) {
                 $query->where('department_id', Auth::user()->department_id);
             }
         }
@@ -137,11 +139,27 @@ class AssetController extends Controller
 
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $path = $file->store('attachments', 'public');
+            $extension = $file->getClientOriginalExtension();
+            if(!in_array(strtolower($extension), ['jpg','jpeg','png','webp'])) {
+                $extension = 'jpg';
+            }
+            $filename = uniqid('asset_') . '.' . $extension;
+            $relativePath = 'attachments/' . $filename;
+            
+            // Create ImageManager instance
+            $manager = new ImageManager(new Driver());
+            
+            // Read, Resize & Compress
+            $image = $manager->read($file->getRealPath());
+            $image->scaleDown(width: 1920);
+            $encoded = $image->toJpeg(80);
+            
+            // Store physically
+            Storage::disk('public')->put($relativePath, $encoded->toString());
 
             $asset->attachments()->create([
-                'path' => $path,
-                'type' => $file->getClientMimeType(),
+                'path' => $relativePath,
+                'type' => 'image/jpeg',
             ]);
         }
 
@@ -186,6 +204,7 @@ class AssetController extends Controller
     {
         $this->authorize('update', $asset);
         $data = $request->validate([
+            'tag' => 'required|string|max:64',
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'department_id' => 'nullable|exists:departments,id',
@@ -198,38 +217,60 @@ class AssetController extends Controller
             'remarks' => 'nullable|string|max:120',
             'attachment' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Max 2MB
         ]);
-        $data['purchase_cost'] = $request->filled('purchase_cost') ? $request->input('purchase_cost') : null;
-        $data['editor'] = Auth::id();
-        // Warranty Calculation
-        $purchaseDate = $request->filled('purchase_date') ? Carbon::parse($request->purchase_date) : null;
-        $warrantyDate = null;
-
-        if ($purchaseDate) {
-            switch ($request->warranty_duration) {
-                case '6m':
-                    $warrantyDate = $purchaseDate->copy()->addMonths(6);
-                    break;
-                case '1y':
-                    $warrantyDate = $purchaseDate->copy()->addYear();
-                    break;
-                case '2y':
-                    $warrantyDate = $purchaseDate->copy()->addYears(2);
-                    break;
-                case '3y':
-                    $warrantyDate = $purchaseDate->copy()->addYears(3);
-                    break;
-            }
+        if ($request->has('purchase_cost')) {
+            $data['purchase_cost'] = $request->filled('purchase_cost') ? $request->input('purchase_cost') : null;
         }
+        
+        $data['editor'] = Auth::id();
+        
+        // Warranty Calculation (Only if purchase_date is present in the request)
+        if ($request->has('purchase_date')) {
+            $purchaseDate = $request->filled('purchase_date') ? Carbon::parse($request->purchase_date) : null;
+            $warrantyDate = null;
 
-        $data['purchase_date'] = $purchaseDate;
-        $data['warranty_date'] = $warrantyDate;
+            if ($purchaseDate) {
+                switch ($request->warranty_duration) {
+                    case '6m':
+                        $warrantyDate = $purchaseDate->copy()->addMonths(6);
+                        break;
+                    case '1y':
+                        $warrantyDate = $purchaseDate->copy()->addYear();
+                        break;
+                    case '2y':
+                        $warrantyDate = $purchaseDate->copy()->addYears(2);
+                        break;
+                    case '3y':
+                        $warrantyDate = $purchaseDate->copy()->addYears(3);
+                        break;
+                }
+            }
+
+            $data['purchase_date'] = $purchaseDate;
+            $data['warranty_date'] = $warrantyDate;
+        }
 
         $asset->update($data);
 
         // Attachment
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $path = $file->store('attachments', 'public');
+            $extension = $file->getClientOriginalExtension();
+            if(!in_array(strtolower($extension), ['jpg','jpeg','png','webp'])) {
+                $extension = 'jpg';
+            }
+            $filename = uniqid('asset_') . '.' . $extension;
+            $relativePath = 'attachments/' . $filename;
+            
+            // Create ImageManager instance
+            $manager = new ImageManager(new Driver());
+            
+            // Read, Resize & Compress
+            $image = $manager->read($file->getRealPath());
+            $image->scaleDown(width: 1920);
+            $encoded = $image->toJpeg(80);
+            
+            // Store physically
+            Storage::disk('public')->put($relativePath, $encoded->toString());
 
             // If the asset already has an attachment, delete the old file + record
             if ($asset->attachments()->exists()) {
@@ -242,14 +283,14 @@ class AssetController extends Controller
 
                 // Update the existing record instead of creating a new one
                 $oldAttachment->update([
-                    'path' => $path,
-                    'type' => $file->getClientMimeType(),
+                    'path' => $relativePath,
+                    'type' => 'image/jpeg',
                 ]);
             } else {
                 // If no attachment exists, just create a new one
                 $asset->attachments()->create([
-                    'path' => $path,
-                    'type' => $file->getClientMimeType(),
+                    'path' => $relativePath,
+                    'type' => 'image/jpeg',
                 ]);
             }
         }
@@ -263,16 +304,6 @@ class AssetController extends Controller
     public function destroy(Asset $asset)
     {
         $this->authorize('delete', $asset);
-        // Delete the image if it exists
-        if ($asset->attachments && $asset->attachments->path) {
-            $path = $asset->attachments->path;
-
-            if (Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->delete($path);
-            }
-
-            $asset->attachments->delete();
-        }
         $asset->forceDelete(); // Hard delete
 
         return redirect()->route('assets.index')->with('ok', 'Deleted');
@@ -299,7 +330,7 @@ class AssetController extends Controller
 
         // Pembatasan akses ke departemen lain (non-admin, non-super-admin)
         if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
-            if (! Auth::user()->inDept('EXE') && ! Auth::user()->inDept('PTLP')) {
+            if (! Auth::user()->hasExecutiveOversight()) {
                 $query->where('department_id', Auth::user()->department_id);
             }
         }

@@ -5,6 +5,7 @@
                 {{ __('Categories') }}
             </h2>
             <div>
+                @can('create', App\Models\Category::class)
                 <a href="{{ route('categories.create') }}"
                 class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
                         font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
@@ -12,6 +13,7 @@
                     <x-heroicon-s-plus class="w-4 h-4 mr-2" />
                     {{ __('New Category') }}
                 </a>
+                @endcan
             </div>
         </div>
     </x-slot>
@@ -45,7 +47,7 @@
                                 <td class="px-4 py-2 text-sm text-gray-700">{{ $category->notes??'_' }}</td>
                                 @if(Auth::user()->isSuperAdmin())
                                     <td class="px-4 py-2 text-sm text-gray-700">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-white shadow-sm" style="background-color: {{ optional($category->property)->accent_color ?? '#6b7280' }}">
                                             {{ optional($category->property)->name ?? '-' }}
                                         </span>
                                     </td>

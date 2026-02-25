@@ -20,34 +20,43 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+                @can('viewAny', App\Models\Asset::class)
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('assets.index')" :active="request()->routeIs('assets.*')">
                         {{ __('Assets') }}
                     </x-nav-link>
                 </div>
-                {{-- Admin / Super Admin menus --}}
-                @if (Auth::user()->isRole('admin') || Auth::user()->isSuperAdmin())
+                @endcan
+
+                {{-- Feature menus --}}
+                @can('viewAny', App\Models\User::class)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                             {{ __('Users') }}
                         </x-nav-link>
                     </div>
+                @endcan
+                @can('viewAny', App\Models\Category::class)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
                             {{ __('Categories') }}
                         </x-nav-link>
                     </div>
+                @endcan
+                @can('viewAny', App\Models\Department::class)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.*')">
                             {{ __('Departments') }}
                         </x-nav-link>
                     </div>
+                @endcan
+                @can('viewAny', App\Models\Role::class)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
                             {{ __('Roles') }}
                         </x-nav-link>
                     </div>
-                @endif
+                @endcan
                 {{-- Super Admin only: Properties --}}
                 @if (Auth::user()->isSuperAdmin())
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -169,37 +178,45 @@
             </x-responsive-nav-link>
         </div>
 
+        @can('viewAny', App\Models\Asset::class)
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('assets.index')" :active="request()->routeIs('assets.index')">
                 {{ __('Assets') }}
             </x-responsive-nav-link>
         </div>
+        @endcan
 
-        @if (Auth::user()->isRole('admin') || Auth::user()->isSuperAdmin())
+        @can('viewAny', App\Models\User::class)
             <div class="pt-2 pb-3 space-y-1">
                 <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                     {{ __('Users') }}
                 </x-responsive-nav-link>
             </div>
+        @endcan
 
+        @can('viewAny', App\Models\Category::class)
             <div class="pt-2 pb-3 space-y-1">
                 <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
                     {{ __('Categories') }}
                 </x-responsive-nav-link>
             </div>
+        @endcan
 
+        @can('viewAny', App\Models\Department::class)
             <div class="pt-2 pb-3 space-y-1">
                 <x-responsive-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.index')">
                     {{ __('Departments') }}
                 </x-responsive-nav-link>
             </div>
+        @endcan
 
+        @can('viewAny', App\Models\Role::class)
             <div class="pt-2 pb-3 space-y-1">
                 <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')">
                     {{ __('Roles') }}
                 </x-responsive-nav-link>
             </div>
-        @endif
+        @endcan
 
         @if (Auth::user()->isSuperAdmin())
             <div class="pt-2 pb-3 space-y-1">

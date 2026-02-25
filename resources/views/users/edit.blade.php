@@ -109,11 +109,11 @@
                                     @foreach ($departments as $department)
                                         @if (old('department_id', $user->department_id) == $department->id)
                                             <option value="{{ $department->id }}" selected>
-                                                {{ $department->name }}
+                                                {{ $department->name }}{{ Auth::user()->isSuperAdmin() && $department->property ? ' - ' . $department->property->name : '' }}
                                             </option>
                                         @else
                                             <option value="{{ $department->id }}">
-                                                {{ $department->name }}
+                                                {{ $department->name }}{{ Auth::user()->isSuperAdmin() && $department->property ? ' - ' . $department->property->name : '' }}
                                             </option>
                                         @endif
                                     @endforeach
@@ -133,11 +133,11 @@
                                     @foreach ($roles as $role)
                                         @if (old('role_id', $user->role_id) == $role->id)
                                             <option value="{{ $role->id }}" selected>
-                                                {{ $role->name }}
+                                                {{ $role->name }}{{ Auth::user()->isSuperAdmin() && $role->property ? ' - ' . $role->property->name : '' }}
                                             </option>
                                         @else
                                             <option value="{{ $role->id }}">
-                                                {{ $role->name }}
+                                                {{ $role->name }}{{ Auth::user()->isSuperAdmin() && $role->property ? ' - ' . $role->property->name : '' }}
                                             </option>
                                         @endif
                                     @endforeach

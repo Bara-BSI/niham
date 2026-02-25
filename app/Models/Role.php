@@ -12,11 +12,12 @@ class Role extends Model
 
     protected $fillable = [
         'name',
-        'can_create',
-        'can_read',
-        'can_update',
-        'can_delete',
         'property_id',
+        'perm_assets',
+        'perm_users',
+        'perm_categories',
+        'perm_departments',
+        'perm_roles',
     ];
 
     public function users()

@@ -110,14 +110,14 @@
                                         <option value="">—</option>
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->id }}">
-                                                {{ $department->name }}
+                                                {{ $department->name }}{{ Auth::user()->isSuperAdmin() && $department->property ? ' - ' . $department->property->name : '' }}
                                             </option>
                                         @endforeach
                                     </select>
 
-                                    <!-- Tooltip/note appears only if EXE is selected -->
-                                    <p x-show="selected && $el.previousElementSibling.value == '{{ $departments->firstWhere('code','EXE')->id ?? '' }}'"
-                                    class="mt-1 text-sm text-yellow-700 mb-3">
+                                    <!-- Tooltip/note appears only if the specific department has executive oversight -->
+                                    <p x-cloak x-show="selected && {{ $departments->where('is_executive_oversight', true)->pluck('id') }}.includes(parseInt(selected))"
+                                    class="mt-1 text-sm text-accent mb-3 font-semibold text-center italic">
                                         Executive can oversee other departments
                                     </p>
                                 </div>
@@ -137,11 +137,11 @@
                                     @foreach ($roles as $role)
                                         @if (old('role_id') == $role->id)
                                             <option value="{{ $role->id }}" selected>
-                                                {{ $role->name }}
+                                                {{ $role->name }}{{ Auth::user()->isSuperAdmin() && $role->property ? ' - ' . $role->property->name : '' }}
                                             </option>
                                         @else
                                             <option value="{{ $role->id }}">
-                                                {{ $role->name }}
+                                                {{ $role->name }}{{ Auth::user()->isSuperAdmin() && $role->property ? ' - ' . $role->property->name : '' }}
                                             </option>
                                         @endif
                                     @endforeach

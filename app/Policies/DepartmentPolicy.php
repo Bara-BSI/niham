@@ -24,7 +24,7 @@ class DepartmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_departments', 'view');
     }
 
     /**
@@ -32,7 +32,7 @@ class DepartmentPolicy
      */
     public function view(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_departments', 'view');
     }
 
     /**
@@ -40,7 +40,7 @@ class DepartmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_departments', 'create');
     }
 
     /**
@@ -48,7 +48,7 @@ class DepartmentPolicy
      */
     public function update(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_departments', 'update');
     }
 
     /**
@@ -56,7 +56,7 @@ class DepartmentPolicy
      */
     public function delete(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_departments', 'delete');
     }
 
     /**
@@ -64,7 +64,7 @@ class DepartmentPolicy
      */
     public function restore(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_departments', 'delete');
     }
 
     /**
@@ -72,6 +72,6 @@ class DepartmentPolicy
      */
     public function forceDelete(User $user, Department $department): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_departments', 'delete');
     }
 }

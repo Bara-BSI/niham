@@ -20,7 +20,9 @@
     </head>
     <body class="font-sans text-gray-900 antialiased min-h-screen">
         <!-- Fixed background image (works on all devices including mobile) -->
-        <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('global-background.png') }}');"></div>
+        <div class="fixed inset-0 z-0">
+            <img src="{{ asset('global-background.png') }}" alt="Background" class="object-cover w-full h-full" />
+        </div>
 
         <!-- Dark overlay for contrast -->
         <div class="fixed inset-0 bg-black/30 z-0"></div>

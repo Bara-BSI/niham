@@ -10,7 +10,7 @@ class Department extends Model
 {
     use BelongsToProperty, HasFactory;
 
-    protected $fillable = ['name', 'code', 'notes', 'property_id'];
+    protected $fillable = ['name', 'code', 'notes', 'property_id', 'is_executive_oversight'];
 
     public function assets()
     {

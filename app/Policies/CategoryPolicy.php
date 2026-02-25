@@ -23,7 +23,7 @@ class CategoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_categories', 'view');
     }
 
     /**
@@ -31,7 +31,7 @@ class CategoryPolicy
      */
     public function view(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_categories', 'view');
     }
 
     /**
@@ -39,7 +39,7 @@ class CategoryPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_categories', 'create');
     }
 
     /**
@@ -47,7 +47,7 @@ class CategoryPolicy
      */
     public function update(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_categories', 'update');
     }
 
     /**
@@ -55,7 +55,7 @@ class CategoryPolicy
      */
     public function delete(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_categories', 'delete');
     }
 
     /**
@@ -63,7 +63,7 @@ class CategoryPolicy
      */
     public function restore(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_categories', 'delete');
     }
 
     /**
@@ -71,6 +71,6 @@ class CategoryPolicy
      */
     public function forceDelete(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_categories', 'delete');
     }
 }

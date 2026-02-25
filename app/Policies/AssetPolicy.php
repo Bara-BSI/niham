@@ -23,7 +23,7 @@ class AssetPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_assets', 'view');
     }
 
     /**
@@ -31,7 +31,7 @@ class AssetPolicy
      */
     public function view(User $user): bool
     {
-        return $user->role->can_read == true;
+        return $user->hasPermission('perm_assets', 'view');
     }
 
     /**
@@ -39,7 +39,7 @@ class AssetPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role->can_create == true;
+        return $user->hasPermission('perm_assets', 'create');
     }
 
     /**
@@ -47,7 +47,7 @@ class AssetPolicy
      */
     public function update(User $user): bool
     {
-        return $user->role->can_update == true;
+        return $user->hasPermission('perm_assets', 'update');
     }
 
     /**
@@ -55,7 +55,7 @@ class AssetPolicy
      */
     public function delete(User $user): bool
     {
-        return $user->role->can_delete == true;
+        return $user->hasPermission('perm_assets', 'delete');
     }
 
     /**
@@ -63,7 +63,7 @@ class AssetPolicy
      */
     public function restore(User $user): bool
     {
-        return $user->role->can_delete == true;
+        return $user->hasPermission('perm_assets', 'delete');
     }
 
     /**
@@ -71,6 +71,6 @@ class AssetPolicy
      */
     public function forceDelete(User $user): bool
     {
-        return $user->isRole('admin');
+        return $user->hasPermission('perm_assets', 'delete');
     }
 }

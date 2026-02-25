@@ -43,6 +43,52 @@
                             <p class="text-sm text-gray-600 mb-2">{{ __('Current / New Preview') }}</p>
                             <img :src="previewUrl" alt="Preview" class="max-h-24 rounded-md border border-gray-200 shadow-sm">
                         </div>
+
+                        <!-- AI Scan -->
+                        <div class="mt-4" x-data="{ scanning: false, error: null, success: null }">
+                            <x-primary-button type="button" 
+                                @click="
+                                    if(document.getElementById('attachment').files.length === 0) { 
+                                        error = 'Please select a new image first'; 
+                                        success = null;
+                                        return; 
+                                    }
+                                    error = null;
+                                    success = null;
+                                    scanning = true;
+                                    let formData = new FormData();
+                                    formData.append('image', document.getElementById('attachment').files[0]);
+                                    formData.append('_token', '{{ csrf_token() }}');
+                                    
+                                    fetch('{{ route('assets.ocr-scan') }}', {
+                                        method: 'POST',
+                                        body: formData
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        scanning = false;
+                                        if(data.error) throw new Error(data.error);
+                                        
+                                        if(data.extracted.asset_name) document.getElementById('name').value = data.extracted.asset_name;
+                                        if(data.extracted.serial_number) document.getElementById('serial_number').value = data.extracted.serial_number;
+                                        if(data.extracted.brand) document.getElementById('vendor').value = data.extracted.brand;
+                                        
+                                        success = 'Scan completed successfully! Please verify the extracted details.';
+                                    })
+                                    .catch(err => {
+                                        scanning = false;
+                                        error = err.message || 'Failed to scan image';
+                                    });
+                                "
+                                x-bind:disabled="scanning"
+                            >
+                                <span x-show="!scanning">✨ AI Scan Details</span>
+                                <span x-show="scanning" x-cloak>Scanning... ⏳</span>
+                            </x-primary-button>
+                            <p x-show="error" class="text-sm text-red-600 mt-2" x-text="error" x-cloak></p>
+                            <p x-show="success" class="text-sm text-green-600 mt-2" x-text="success" x-cloak></p>
+                            <p class="text-xs text-gray-500 mt-1 italic">Disclaimer: AI scans may occasionally be inaccurate. Always verify the auto-filled information.</p>
+                        </div>
                     </div>
 
                     <!-- Responsive Two-Column Layout -->
@@ -100,11 +146,11 @@
                                     @foreach ($categories as $category)
                                         @if (old('category_id', $asset->category_id) == $category->id)
                                             <option value="{{ $category->id }}" selected>
-                                                {{ $category->name }}
+                                                {{ $category->name }}{{ Auth::user()->isSuperAdmin() && $category->property ? ' - ' . $category->property->name : '' }}
                                             </option>
                                         @else
                                             <option value="{{ $category->id }}">
-                                                {{ $category->name }}
+                                                {{ $category->name }}{{ Auth::user()->isSuperAdmin() && $category->property ? ' - ' . $category->property->name : '' }}
                                             </option>
                                         @endif
                                     @endforeach
@@ -112,7 +158,7 @@
                                 <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
                             </div>
 
-                            @if (Auth::user()->inDept('EXE') || Auth::user()->inDept('PTLP'))
+                            @if (Auth::user()->hasExecutiveOversight())
                                 <!-- Executive can choose any department -->
                                 <div>
                                     <x-input-label for="department_id" :value="__('Department')" />
@@ -125,7 +171,7 @@
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->id }}"
                                                 @selected(old('department_id', $asset->department_id) == $department->id)>
-                                                {{ $department->name }}
+                                                {{ $department->name }}{{ Auth::user()->isSuperAdmin() && $department->property ? ' - ' . $department->property->name : '' }}
                                             </option>
                                         @endforeach
                                     </select>

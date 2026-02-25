@@ -5,6 +5,7 @@
                 {{ __('Assets') }}
             </h2>
             <div>
+                @can('create', App\Models\Asset::class)
                 <a href="{{ route('assets.create') }}"
                 class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
                         font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
@@ -12,6 +13,7 @@
                     <x-heroicon-s-plus class="w-4 h-4 mr-2" />
                     {{ __('New Asset') }}
                 </a>
+                @endcan
             </div>
         </div>
     </x-slot>
@@ -71,7 +73,7 @@
                             </div>
 
                             <!-- Department -->
-                            @if (Auth::user()->inDept('EXE') || Auth::user()->inDept('PTLP'))
+                            @if (Auth::user()->hasExecutiveOversight() || Auth::user()->isRole('admin') || Auth::user()->isSuperAdmin())
                                 <div>
                                     <label for="department" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Department</label>
                                     <select name="department" id="department" class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-accent focus:border-accent">
@@ -182,7 +184,7 @@
                                 </td>
                                 @if(Auth::user()->isSuperAdmin())
                                     <td class="px-4 py-2 text-sm text-gray-700">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-white shadow-sm" style="background-color: {{ optional($a->property)->accent_color ?? '#6b7280' }}">
                                             {{ optional($a->property)->name ?? '-' }}
                                         </span>
                                     </td>
@@ -218,40 +220,42 @@
                     </x-danger-button>
 
                     <!-- Modal -->
-                    <div 
-                        x-data="{ open: false }"
-                        x-on:open-restore-modal.window="open = true"
-                        x-show="open"
-                        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-                        x-cloak
-                    >
-                        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                            <h2 class="text-lg font-semibold text-gray-800">
-                                ⚠️ Restore Backup
-                            </h2>
-                            <p class="mt-2 text-sm text-gray-600">
-                                Restoring a backup will <strong>replace ALL current data and attachments</strong>.
-                                Please select a backup file to continue.
-                            </p>
+                    <template x-teleport="body">
+                        <div 
+                            x-data="{ open: false }"
+                            x-on:open-restore-modal.window="open = true"
+                            x-show="open"
+                            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                            x-cloak
+                        >
+                            <div class="bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+                                <h2 class="text-lg font-semibold text-gray-800">
+                                    ⚠️ Restore Backup
+                                </h2>
+                                <p class="mt-2 text-sm text-gray-600">
+                                    Restoring a backup will <strong>replace ALL current data and attachments</strong>.
+                                    Please select a backup file to continue.
+                                </p>
 
-                            <form action="{{ route('backup.restore') }}" method="POST" enctype="multipart/form-data"
-                                class="mt-4 space-y-4"
-                                onsubmit="return confirm('⚠️ This will overwrite all data. Continue?');">
-                                @csrf
-                                <input type="file" name="backup" accept=".zip" required
-                                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring focus:ring-accent" />
+                                <form action="{{ route('backup.restore') }}" method="POST" enctype="multipart/form-data"
+                                    class="mt-4 space-y-4"
+                                    onsubmit="return confirm('⚠️ This will overwrite all data. Continue?');">
+                                    @csrf
+                                    <input type="file" name="backup" accept=".zip" required
+                                        class="block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring focus:ring-accent" />
 
-                                <div class="flex justify-end gap-2">
-                                    <x-secondary-button type="button" @click="open = false">
-                                        Cancel
-                                    </x-secondary-button>
-                                    <x-danger-button type="submit">
-                                        Restore Now
-                                    </x-danger-button>
-                                </div>
-                            </form>
+                                    <div class="flex justify-end gap-2">
+                                        <x-secondary-button type="button" @click="open = false">
+                                            Cancel
+                                        </x-secondary-button>
+                                        <x-danger-button type="submit">
+                                            Restore Now
+                                        </x-danger-button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    </template>
                 </div>
             @endif
 

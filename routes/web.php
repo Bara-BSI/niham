@@ -43,6 +43,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/assets/attachments/{attachment}', [AssetController::class, 'destroyAttachment'])->name('assets.attachments.destroy');
     Route::get('/assets/{asset}/attachments/download/all', [AssetController::class, 'downloadAllAttachments'])->name('assets.attachments.download-all');
 
+    // OCR Scan Endpoints
+    Route::post('/assets/ocr-scan', [\App\Http\Controllers\OcrScanController::class, 'scan'])->name('assets.ocr-scan');
+
     // Jobs
     Route::resource('jobs', \App\Http\Controllers\JobController::class);
     Route::patch('/jobs/{job}/status', [\App\Http\Controllers\JobController::class, 'updateStatus'])->name('jobs.status');

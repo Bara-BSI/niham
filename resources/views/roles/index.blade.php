@@ -5,6 +5,7 @@
                 {{ __('Roles') }}
             </h2>
             <div>
+                @can('create', App\Models\Role::class)
                 <a href="{{ route('roles.create') }}"
                 class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
                         font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
@@ -12,6 +13,7 @@
                     <x-heroicon-s-plus class="w-4 h-4 mr-2" />
                     {{ __('New Role') }}
                 </a>
+                @endcan
             </div>
         </div>
     </x-slot>
@@ -30,13 +32,14 @@
                             @if(Auth::user()->isSuperAdmin())
                                 <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" rowspan="2">Property</th>
                             @endif
-                            <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" colspan="4">Permissions</th>
+                            <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" colspan="5">Permissions</th>
                         </tr>
                         <tr>
-                            <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Create</th>
-                            <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Read</th>
-                            <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Update</th>
-                            <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Delete</th>
+                            <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ass</th>
+                            <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Usr</th>
+                            <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Cat</th>
+                            <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Dep</th>
+                            <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -54,28 +57,37 @@
 
                                 @if(Auth::user()->isSuperAdmin())
                                     <td class="px-4 py-2 text-center text-sm text-gray-700">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-white shadow-sm" style="background-color: {{ optional($role->property)->accent_color ?? '#6b7280' }}">
                                             {{ optional($role->property)->name ?? '-' }}
                                         </span>
                                     </td>
                                 @endif
 
                                 <!-- Permissions -->
-                                <td class="px-4 py-2 text-center">
-                                    <input type="checkbox" disabled {{ $role->can_create ? 'checked' : '' }}
-                                        class="h-4 w-4 text-gray-600 border-gray-300 rounded">
+                                <td class="px-1 py-2 text-center">
+                                    <span class="text-xs px-2 py-1 rounded {{ $role->perm_assets == 'no access' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                        {{ mb_substr(ucwords($role->perm_assets), 0, 4) }}..
+                                    </span>
                                 </td>
-                                <td class="px-4 py-2 text-center">
-                                    <input type="checkbox" disabled {{ $role->can_read ? 'checked' : '' }}
-                                        class="h-4 w-4 text-gray-600 border-gray-300 rounded">
+                                <td class="px-1 py-2 text-center">
+                                    <span class="text-xs px-2 py-1 rounded {{ $role->perm_users == 'no access' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                        {{ mb_substr(ucwords($role->perm_users), 0, 4) }}..
+                                    </span>
                                 </td>
-                                <td class="px-4 py-2 text-center">
-                                    <input type="checkbox" disabled {{ $role->can_update ? 'checked' : '' }}
-                                        class="h-4 w-4 text-gray-600 border-gray-300 rounded">
+                                <td class="px-1 py-2 text-center">
+                                    <span class="text-xs px-2 py-1 rounded {{ $role->perm_categories == 'no access' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                        {{ mb_substr(ucwords($role->perm_categories), 0, 4) }}..
+                                    </span>
                                 </td>
-                                <td class="px-4 py-2 text-center">
-                                    <input type="checkbox" disabled {{ $role->can_delete ? 'checked' : '' }}
-                                        class="h-4 w-4 text-gray-600 border-gray-300 rounded">
+                                <td class="px-1 py-2 text-center">
+                                    <span class="text-xs px-2 py-1 rounded {{ $role->perm_departments == 'no access' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                        {{ mb_substr(ucwords($role->perm_departments), 0, 4) }}..
+                                    </span>
+                                </td>
+                                <td class="px-1 py-2 text-center">
+                                    <span class="text-xs px-2 py-1 rounded {{ $role->perm_roles == 'no access' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                        {{ mb_substr(ucwords($role->perm_roles), 0, 4) }}..
+                                    </span>
                                 </td>
                             </tr>
                         @endforeach
