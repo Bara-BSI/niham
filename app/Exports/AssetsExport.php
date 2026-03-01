@@ -41,7 +41,7 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
         if (!empty($this->filters)) {
             $filtersText = 'Filters Applied: ';
             foreach ($this->filters as $key => $value) {
-                $filtersText .= ucfirst($key) . ': ' . $value . ' | ';
+                $filtersText .= ucfirst((string) $key) . ': ' . $value . ' | ';
             }
             $headers[] = [rtrim($filtersText, ' | ')];
         } else {

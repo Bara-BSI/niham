@@ -50,9 +50,9 @@ class ProfileController extends Controller
     public function updateNotifications(Request $request): RedirectResponse
     {
         $request->user()->update([
-            'notify_department' => $request->has('notify_department') ? $request->boolean('notify_department') : false,
-            'notify_all_properties' => $request->has('notify_all_properties') ? $request->boolean('notify_all_properties') : false,
-            'notify_email' => $request->has('notify_email') ? $request->boolean('notify_email') : false,
+            'notify_department' => $request->has('notify_department') && $request->boolean('notify_department'),
+            'notify_all_properties' => $request->has('notify_all_properties') && $request->boolean('notify_all_properties'),
+            'notify_email' => $request->has('notify_email') && $request->boolean('notify_email'),
             'email_frequency' => $request->input('email_frequency', 'immediate')
         ]);
 

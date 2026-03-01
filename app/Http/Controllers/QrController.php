@@ -104,7 +104,7 @@ class QrController extends Controller
         $asset = Asset::where('uuid', $uuid)->firstOrFail();
 
         // Opsi 1: tampilkan halaman minimal yang bisa diakses umum
-        return view('qr.asset-public', compact('asset'));
+        return view('qr.asset-public', ['asset' => $asset]);
         // Opsi 2: memerlukan login
         // return redirect()->route('assets.show', $asset);
     }

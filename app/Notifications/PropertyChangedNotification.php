@@ -11,18 +11,11 @@ class PropertyChangedNotification extends Notification
 {
     use Queueable;
 
-    public $property;
-    public $action;
-    public $changes;
-
     /**
      * Create a new notification instance.
      */
-    public function __construct($property, $action, $changes = [])
+    public function __construct(public $property, public $action, public $changes = [])
     {
-        $this->property = $property;
-        $this->action = $action;
-        $this->changes = $changes;
     }
 
     /**
@@ -43,7 +36,7 @@ class PropertyChangedNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $actionText = ucfirst($this->action);
+        $actionText = ucfirst((string) $this->action);
         $message = (new MailMessage)
             ->subject("Property {$actionText}: {$this->property->name}")
             ->line("The property '{$this->property->name}' has been {$this->action}.");
@@ -52,7 +45,7 @@ class PropertyChangedNotification extends Notification
             $message->line('Changes made:');
             foreach ($this->changes as $key => $value) {
                 if ($key !== 'updated_at') {
-                    $message->line("- **" . ucfirst($key) . "**: {$value}");
+                    $message->line("- **" . ucfirst((string) $key) . "**: {$value}");
                 }
             }
         }

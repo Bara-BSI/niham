@@ -22,7 +22,7 @@ class PropertyController extends Controller
             ->orderBy('name')
             ->paginate(15);
 
-        return view('properties.index', compact('properties'));
+        return view('properties.index', ['properties' => $properties]);
     }
 
     /**
@@ -57,7 +57,7 @@ class PropertyController extends Controller
             $data['background_image_path'] = $request->file('background_image')->store('branding', 'public');
         }
 
-        $data['code'] = strtoupper($data['code']);
+        $data['code'] = strtoupper((string) $data['code']);
 
         Property::create($data);
 
@@ -75,7 +75,7 @@ class PropertyController extends Controller
         $users = $property->users()->with('role')->paginate(10, ['*'], 'users_page');
         $departments = $property->departments()->paginate(10, ['*'], 'depts_page');
 
-        return view('properties.show', compact('property', 'users', 'departments'));
+        return view('properties.show', ['property' => $property, 'users' => $users, 'departments' => $departments]);
     }
 
     /**
@@ -85,7 +85,7 @@ class PropertyController extends Controller
     {
         $this->authorize('update', $property);
 
-        return view('properties.edit', compact('property'));
+        return view('properties.edit', ['property' => $property]);
     }
 
     /**
@@ -104,15 +104,19 @@ class PropertyController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            if ($property->logo_path) \Illuminate\Support\Facades\Storage::disk('public')->delete($property->logo_path);
+            if ($property->logo_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($property->logo_path);
+            }
             $data['logo_path'] = $request->file('logo')->store('branding', 'public');
         }
         if ($request->hasFile('background_image')) {
-            if ($property->background_image_path) \Illuminate\Support\Facades\Storage::disk('public')->delete($property->background_image_path);
+            if ($property->background_image_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($property->background_image_path);
+            }
             $data['background_image_path'] = $request->file('background_image')->store('branding', 'public');
         }
 
-        $data['code'] = strtoupper($data['code']);
+        $data['code'] = strtoupper((string) $data['code']);
 
         $property->update($data);
 

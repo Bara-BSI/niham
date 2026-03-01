@@ -28,7 +28,7 @@ class RoleController extends Controller
 
         $roles = $query->latest()->paginate(15);
 
-        return view('roles.index', compact('roles'));
+        return view('roles.index', ['roles' => $roles]);
     }
 
     /**
@@ -66,7 +66,7 @@ class RoleController extends Controller
         ], array_filter($data));
 
         // Ensure role name is in lowercase
-        $data['name'] = strtolower($data['name']);
+        $data['name'] = strtolower((string) $data['name']);
 
         Role::create($data);
 
@@ -87,7 +87,7 @@ class RoleController extends Controller
         // Paginate related models separately
         $users = $role->users()->paginate(5, ['*'], 'users_page');
 
-        return view('roles.show', compact('role', 'users'));
+        return view('roles.show', ['role' => $role, 'users' => $users]);
     }
 
     /**
@@ -136,7 +136,7 @@ class RoleController extends Controller
         ], array_filter($data));
 
         // Ensure role name is in lowercase
-        $data['name'] = strtolower($data['name']);
+        $data['name'] = strtolower((string) $data['name']);
         $role->update($data);
 
         return redirect()->route('roles.show', $role)->with('ok', 'Updated');

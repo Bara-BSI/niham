@@ -21,7 +21,7 @@ class CategoryController extends Controller
         $this->authorize('view', Category::class);
         $categories = Category::with(['assets'])->orderBy('name')->paginate(15);
 
-        return view('categories.index', compact('categories'));
+        return view('categories.index', ['categories' => $categories]);
     }
 
     /**
@@ -47,8 +47,8 @@ class CategoryController extends Controller
         ]);
 
         // Ensure Category name in upper case
-        $data['name'] = strtoupper($data['name']);
-        $data['code'] = strtoupper($data['code']);
+        $data['name'] = strtoupper((string) $data['name']);
+        $data['code'] = strtoupper((string) $data['code']);
 
         Category::create($data);
 
@@ -64,7 +64,7 @@ class CategoryController extends Controller
 
         $assets = $category->assets()->paginate(5, ['*'], 'assets_page');
 
-        return view('categories.show', compact('category', 'assets'));
+        return view('categories.show', ['category' => $category, 'assets' => $assets]);
     }
 
     /**
@@ -92,8 +92,8 @@ class CategoryController extends Controller
         ]);
 
         // Ensure Category name in upper case
-        $data['name'] = strtoupper($data['name']);
-        $data['code'] = strtoupper($data['code']);
+        $data['name'] = strtoupper((string) $data['name']);
+        $data['code'] = strtoupper((string) $data['code']);
 
         $category->update($data);
 

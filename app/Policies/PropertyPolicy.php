@@ -26,10 +26,7 @@ class PropertyPolicy
 
     public function view(User $user, Property $property): bool
     {
-        if (strtolower(optional($user->role)->name) === 'admin' && $user->property_id === $property->id) {
-            return true;
-        }
-        return false;
+        return strtolower((string) optional($user->role)->name) === 'admin' && $user->property_id === $property->id;
     }
 
     public function create(User $user): bool
@@ -39,10 +36,7 @@ class PropertyPolicy
 
     public function update(User $user, Property $property): bool
     {
-        if (strtolower(optional($user->role)->name) === 'admin' && $user->property_id === $property->id) {
-            return true;
-        }
-        return false;
+        return strtolower((string) optional($user->role)->name) === 'admin' && $user->property_id === $property->id;
     }
 
     public function delete(User $user, Property $property): bool

@@ -43,10 +43,8 @@ class AssetController extends Controller
         }
 
         // Pembatasan akses ke departemen lain (non-admin, non-super-admin)
-        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
-            if (! Auth::user()->hasExecutiveOversight()) {
-                $query->where('department_id', Auth::user()->department_id);
-            }
+        if (! Auth::user()->isSuperAdmin() && !Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+            $query->where('department_id', Auth::user()->department_id);
         }
 
         // Filter by department
@@ -70,7 +68,7 @@ class AssetController extends Controller
         $categories = Category::all();
         $departments = Department::all();
 
-        return view('assets.index', compact('assets', 'categories', 'departments'));
+        return view('assets.index', ['assets' => $assets, 'categories' => $categories, 'departments' => $departments]);
     }
 
     /**
@@ -114,7 +112,7 @@ class AssetController extends Controller
         $purchaseDate = $request->filled('purchase_date') ? Carbon::parse($request->purchase_date) : null;
         $warrantyDate = null;
 
-        if ($purchaseDate) {
+        if ($purchaseDate instanceof \Carbon\Carbon) {
             switch ($request->warranty_duration) {
                 case '6m':
                     $warrantyDate = $purchaseDate->copy()->addMonths(6);
@@ -184,7 +182,7 @@ class AssetController extends Controller
             ->take(3)
             ->get();
 
-        return view('assets.show', compact('asset', 'assetClass', 'recentHistories'));
+        return view('assets.show', ['asset' => $asset, 'assetClass' => $assetClass, 'recentHistories' => $recentHistories]);
     }
 
     /**
@@ -233,7 +231,7 @@ class AssetController extends Controller
             $purchaseDate = $request->filled('purchase_date') ? Carbon::parse($request->purchase_date) : null;
             $warrantyDate = null;
 
-            if ($purchaseDate) {
+            if ($purchaseDate instanceof \Carbon\Carbon) {
                 switch ($request->warranty_duration) {
                     case '6m':
                         $warrantyDate = $purchaseDate->copy()->addMonths(6);
@@ -337,11 +335,9 @@ class AssetController extends Controller
         }
 
         // Pembatasan akses ke departemen lain (non-admin, non-super-admin)
-        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
-            if (! Auth::user()->hasExecutiveOversight()) {
-                $appliedFilters['department_scope'] = Auth::user()->department->name;
-                $query->where('department_id', Auth::user()->department_id);
-            }
+        if (! Auth::user()->isSuperAdmin() && !Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+            $appliedFilters['department_scope'] = Auth::user()->department->name;
+            $query->where('department_id', Auth::user()->department_id);
         }
 
         // Filter by department
@@ -384,7 +380,7 @@ class AssetController extends Controller
     {
         $this->authorize('view', $asset);
         $histories = \App\Models\AssetHistory::where('asset_id', $asset->id)->with('user')->latest()->paginate(15);
-        return view('assets.history', compact('asset', 'histories'));
+        return view('assets.history', ['asset' => $asset, 'histories' => $histories]);
     }
 
     public function exportHistory(Asset $asset)

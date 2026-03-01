@@ -28,10 +28,8 @@ class UserPolicy
             return false;
         }
 
-        if (!$authUser->hasExecutiveOversight()) {
-            if ($authUser->department_id !== $model->department_id) {
-                return false;
-            }
+        if (!$authUser->hasExecutiveOversight() && $authUser->department_id !== $model->department_id) {
+            return false;
         }
 
         return true;
@@ -50,7 +48,9 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        if (!$this->canManageUser($user, $model)) return false;
+        if (!$this->canManageUser($user, $model)) {
+            return false;
+        }
         return $user->hasPermission('perm_users', 'view');
     }
 
@@ -67,7 +67,9 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        if (!$this->canManageUser($user, $model)) return false;
+        if (!$this->canManageUser($user, $model)) {
+            return false;
+        }
         return $user->hasPermission('perm_users', 'update');
     }
 
@@ -76,7 +78,9 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        if (!$this->canManageUser($user, $model)) return false;
+        if (!$this->canManageUser($user, $model)) {
+            return false;
+        }
         return $user->hasPermission('perm_users', 'delete');
     }
 
@@ -85,7 +89,9 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        if (!$this->canManageUser($user, $model)) return false;
+        if (!$this->canManageUser($user, $model)) {
+            return false;
+        }
         return $user->hasPermission('perm_users', 'delete');
     }
 
@@ -94,7 +100,9 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        if (!$this->canManageUser($user, $model)) return false;
+        if (!$this->canManageUser($user, $model)) {
+            return false;
+        }
         return $user->hasPermission('perm_users', 'delete');
     }
 }

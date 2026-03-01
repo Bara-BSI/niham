@@ -21,7 +21,7 @@ class DepartmentController extends Controller
         $this->authorize('view', Department::class);
         $departments = Department::with(['users', 'assets'])->orderBy('name')->paginate(15);
 
-        return view('departments.index', compact('departments'));
+        return view('departments.index', ['departments' => $departments]);
     }
 
     /**
@@ -49,8 +49,8 @@ class DepartmentController extends Controller
         $data['is_executive_oversight'] = $request->has('is_executive_oversight');
 
         // Ensure Department name in upper case
-        $data['name'] = strtoupper($data['name']);
-        $data['code'] = strtoupper($data['code']);
+        $data['name'] = strtoupper((string) $data['name']);
+        $data['code'] = strtoupper((string) $data['code']);
 
         Department::create($data);
 
@@ -68,7 +68,7 @@ class DepartmentController extends Controller
         $users = $department->users()->paginate(5, ['*'], 'users_page');
         $assets = $department->assets()->paginate(5, ['*'], 'assets_page');
 
-        return view('departments.show', compact('department', 'users', 'assets'));
+        return view('departments.show', ['department' => $department, 'users' => $users, 'assets' => $assets]);
     }
 
     /**
@@ -98,8 +98,8 @@ class DepartmentController extends Controller
         $data['is_executive_oversight'] = $request->has('is_executive_oversight');
 
         // Ensure Department name in upper case
-        $data['name'] = strtoupper($data['name']);
-        $data['code'] = strtoupper($data['code']);
+        $data['name'] = strtoupper((string) $data['name']);
+        $data['code'] = strtoupper((string) $data['code']);
 
         $department->update($data);
 

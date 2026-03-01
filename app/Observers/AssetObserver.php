@@ -27,7 +27,9 @@ class AssetObserver
      */
     public function updated(Asset $asset): void
     {
-        if (!$asset->wasChanged()) return;
+        if (!$asset->wasChanged()) {
+            return;
+        }
 
         $changes = $asset->getChanges();
         $original = array_intersect_key($asset->getOriginal(), $changes);
@@ -48,10 +50,6 @@ class AssetObserver
     public function deleted(Asset $asset): void
     {
         $this->dispatchNotification($asset, 'deleted');
-
-        // ABORT: Do not attempt to log history for a permanently deleted model
-        // because the ON DELETE CASCADE constraint will cause a SQL 1452 error.
-        return;
     }
 
     /**

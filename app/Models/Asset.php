@@ -30,11 +30,19 @@ class Asset extends Model
         'property_id',
     ];
 
-    protected $casts = [
-        'meta' => 'array',
-        'purchase_date' => 'date',
-        'warranty_date' => 'date',
-    ];
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'meta' => 'array',
+            'purchase_date' => 'date',
+            'warranty_date' => 'date',
+        ];
+    }
 
     protected static function booted()
     {
@@ -43,13 +51,11 @@ class Asset extends Model
         });
 
         static::deleting(function ($asset) {
-            if ($asset->isForceDeleting()) {
-                if ($attachment = $asset->attachments) {
-                    if (\Storage::disk('public')->exists($attachment->path)) {
-                        \Storage::disk('public')->delete($attachment->path);
-                    }
-                    $attachment->delete();
+            if ($asset->isForceDeleting() && $attachment = $asset->attachments) {
+                if (\Storage::disk('public')->exists($attachment->path)) {
+                    \Storage::disk('public')->delete($attachment->path);
                 }
+                $attachment->delete();
             }
         });
     }

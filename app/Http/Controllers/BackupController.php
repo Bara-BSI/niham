@@ -109,7 +109,7 @@ class BackupController extends Controller
         foreach ($files as $file) {
             if (! $file->isDir()) {
                 $filePath = $file->getRealPath();
-                $relativePath = $zipFolder.'/'.substr($filePath, strlen($folder) + 1);
+                $relativePath = $zipFolder.'/'.substr((string) $filePath, strlen((string) $folder) + 1);
                 $zip->addFile($filePath, $relativePath);
             }
         }

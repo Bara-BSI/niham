@@ -14,9 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('assets.index');
-});
+Route::get('/', fn() => redirect()->route('assets.index'));
 
 Route::get('/lang/{locale}', [LanguageController::class, 'switchLang'])->name('lang.switch');
 

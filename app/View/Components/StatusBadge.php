@@ -6,11 +6,8 @@ use Illuminate\View\Component;
 
 class StatusBadge extends Component
 {
-    public string $status;
-
-    public function __construct(string $status)
+    public function __construct(public string $status)
     {
-        $this->status = $status;
     }
 
     public function render()

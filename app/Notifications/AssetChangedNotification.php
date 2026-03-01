@@ -11,16 +11,11 @@ class AssetChangedNotification extends Notification
 {
     use Queueable;
 
-    public $asset;
-    public $action;
-
     /**
      * Create a new notification instance.
      */
-    public function __construct($asset, $action)
+    public function __construct(public $asset, public $action)
     {
-        $this->asset = $asset;
-        $this->action = $action;
     }
 
     /**
@@ -41,7 +36,7 @@ class AssetChangedNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $actionText = ucfirst($this->action);
+        $actionText = ucfirst((string) $this->action);
         return (new MailMessage)
             ->subject("Asset {$actionText}: {$this->asset->name}")
             ->line("The asset '{$this->asset->name}' (Tag: {$this->asset->tag}) has been {$this->action}.")

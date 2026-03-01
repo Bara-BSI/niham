@@ -53,13 +53,13 @@ class DatabaseSeeder extends Seeder
             ['name' => 'staff', 'property_id' => $ibis->id],
             ['perm_assets' => 'create', 'perm_users' => 'view only', 'perm_categories' => 'view only', 'perm_departments' => 'view only', 'perm_roles' => 'no access']
         );
-        $managerRoleIbis = Role::updateOrCreate(
+        Role::updateOrCreate(
             ['name' => 'manager', 'property_id' => $ibis->id],
             ['perm_assets' => 'create & update', 'perm_users' => 'view only', 'perm_categories' => 'view only', 'perm_departments' => 'view only', 'perm_roles' => 'no access']
         );
 
         // ── Departments (Novotel) ─────────────────────────────────
-        $nvtTC = Department::updateOrCreate(
+        Department::updateOrCreate(
             ['name' => 'TALENT AND CULTURE', 'property_id' => $novotel->id],
             ['code' => 'TC']
         );
@@ -83,7 +83,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'HOUSEKEEPING', 'property_id' => $novotel->id],
             ['code' => 'HK']
         );
-        $nvtENG = Department::updateOrCreate(
+        Department::updateOrCreate(
             ['name' => 'ENGINEERING', 'property_id' => $novotel->id],
             ['code' => 'ENG']
         );
@@ -101,7 +101,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'EXECUTIVE', 'property_id' => $ibis->id],
             ['code' => 'EXE']
         );
-        $ibisHK = Department::updateOrCreate(
+        Department::updateOrCreate(
             ['name' => 'HOUSEKEEPING', 'property_id' => $ibis->id],
             ['code' => 'HK']
         );
@@ -156,7 +156,7 @@ class DatabaseSeeder extends Seeder
 
         // ── Users ─────────────────────────────────────────────────
         // Super Admin
-        $superAdmin = User::updateOrCreate(
+        User::updateOrCreate(
             ['username' => 'superadmin'],
             [
                 'name' => 'Super Admin',
@@ -183,7 +183,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $baraNvt = User::updateOrCreate(
+        User::updateOrCreate(
             ['username' => 'bara'],
             [
                 'name' => 'Bara',

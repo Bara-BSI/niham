@@ -44,12 +44,12 @@ class OcrScanController extends Controller
 
                 // Example rough extraction logic:
                 // Look for common SN labels
-                if (preg_match('/(?:SN|S\/N|Serial(?: No)?\.?)\s*:?\s*([A-Z0-9\-]+)/i', $parsedText, $matches)) {
+                if (preg_match('/(?:SN|S\/N|Serial(?: No)?\.?)\s*:?\s*([A-Z0-9\-]+)/i', (string) $parsedText, $matches)) {
                     $serialNumber = $matches[1];
                 }
 
                 // Split text into lines for heuristics
-                $lines = array_values(array_filter(array_map('trim', explode("\n", $parsedText))));
+                $lines = array_values(array_filter(array_map(trim(...), explode("\n", (string) $parsedText))));
                 
                 if (count($lines) > 0) {
                     // Very rudimentary fallback: first line is often the title/brand

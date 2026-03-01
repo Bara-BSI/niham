@@ -69,7 +69,7 @@ class UserController extends Controller
         $roles = Role::all();
         $properties = Auth::user()->isSuperAdmin() ? Property::all() : collect();
 
-        return view('users.index', compact('users', 'roles', 'departments', 'properties'));
+        return view('users.index', ['users' => $users, 'roles' => $roles, 'departments' => $departments, 'properties' => $properties]);
     }
 
     /**
@@ -124,16 +124,14 @@ class UserController extends Controller
         $request->validate($rules);
 
         // Enforce department selection restriction
-        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
-            if ($request->department_id != Auth::user()->department_id) {
-                abort(403, 'You can only assign users to your own department.');
-            }
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && !Auth::user()->hasExecutiveOversight() && $request->department_id != Auth::user()->department_id) {
+            abort(403, 'You can only assign users to your own department.');
         }
 
         // Enforce Admin Role assignment restriction
         if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
             $assignedRole = Role::find($request->role_id);
-            if ($assignedRole && strtolower($assignedRole->name) === 'admin') {
+            if ($assignedRole && strtolower((string) $assignedRole->name) === 'admin') {
                 abort(403, 'You do not have permission to assign the admin role.');
             }
         }
@@ -173,7 +171,7 @@ class UserController extends Controller
             'property',
         ]);
 
-        return view('users.show', compact('user'));
+        return view('users.show', ['user' => $user]);
     }
 
     /**
@@ -227,16 +225,14 @@ class UserController extends Controller
         $data = $request->validate($rules);
 
         // Enforce department selection restriction
-        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
-            if ($request->department_id != Auth::user()->department_id) {
-                abort(403, 'You can only assign users to your own department.');
-            }
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && !Auth::user()->hasExecutiveOversight() && $request->department_id != Auth::user()->department_id) {
+            abort(403, 'You can only assign users to your own department.');
         }
 
         // Enforce Admin Role assignment restriction
         if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin')) {
             $assignedRole = Role::find($request->role_id);
-            if ($assignedRole && strtolower($assignedRole->name) === 'admin') {
+            if ($assignedRole && strtolower((string) $assignedRole->name) === 'admin') {
                 abort(403, 'You do not have permission to assign or maintain the admin role for this user.');
             }
         }

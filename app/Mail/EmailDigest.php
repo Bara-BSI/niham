@@ -13,16 +13,11 @@ class EmailDigest extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
-    public $notifications;
-
     /**
      * Create a new message instance.
      */
-    public function __construct($user, $notifications)
+    public function __construct(public $user, public $notifications)
     {
-        $this->user = $user;
-        $this->notifications = $notifications;
     }
 
     /**

@@ -43,7 +43,7 @@ class AssetFactory extends Factory
             'department_id' => $departmentId,
             'status' => fake()->randomElement(['out_of_service', 'disposed', 'in_service']),
             'serial_number' => strtoupper(fake()->bothify('SN###???')),
-            'purchase_date' => now()->subYears(rand(0, 5)),
+            'purchase_date' => now()->subYears(random_int(0, 5)),
             'purchase_cost' => fake()->randomFloat(2, 50, 1500),
             'vendor' => fake()->company(),
         ];

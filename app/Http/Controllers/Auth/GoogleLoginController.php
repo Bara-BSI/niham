@@ -36,7 +36,7 @@ class GoogleLoginController extends Controller
                 'email' => 'Your Google Account (' . $googleUser->getEmail() . ') is not registered in our system. Please contact an administrator to create an account.',
             ]);
             
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return redirect()->route('login')->withErrors([
                 'email' => 'Unable to connect to Google at this time.',
             ]);
