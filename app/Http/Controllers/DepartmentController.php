@@ -52,7 +52,7 @@ class DepartmentController extends Controller
         $data['name'] = strtoupper($data['name']);
         $data['code'] = strtoupper($data['code']);
 
-        Department::updateOrCreate(['id' => $department->id ?? null], $data);
+        Department::create($data);
 
         return redirect()->route('departments.index')->with('ok', 'Department Created');
     }

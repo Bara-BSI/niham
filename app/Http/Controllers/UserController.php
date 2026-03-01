@@ -55,6 +55,7 @@ class UserController extends Controller
 
         $users = $query->whereNot('name', 'Admin')
             ->where('is_super_admin', false) // don't show super admins in regular list
+            ->with(['department', 'role', 'property'])
             ->paginate(15)->withQueryString();
             
         $departmentsQuery = Department::query();

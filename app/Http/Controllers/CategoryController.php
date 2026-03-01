@@ -50,7 +50,7 @@ class CategoryController extends Controller
         $data['name'] = strtoupper($data['name']);
         $data['code'] = strtoupper($data['code']);
 
-        Category::updateOrCreate(['id' => $category->id ?? null], $data);
+        Category::create($data);
 
         return redirect()->route('categories.index')->with('ok', 'Category Created');
     }

@@ -66,7 +66,7 @@ class AssetController extends Controller
             $query->latest();
         }
 
-        $assets = $query->paginate(15)->withQueryString();
+        $assets = $query->with(['category', 'department'])->paginate(15)->withQueryString();
         $categories = Category::all();
         $departments = Department::all();
 

@@ -68,7 +68,7 @@ class RoleController extends Controller
         // Ensure role name is in lowercase
         $data['name'] = strtolower($data['name']);
 
-        Role::updateOrCreate(['id' => $role->id ?? null], $data);
+        Role::create($data);
 
         return redirect()->route('roles.index')->with('ok', 'Role Created');
     }

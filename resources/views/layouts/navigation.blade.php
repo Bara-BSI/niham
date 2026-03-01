@@ -228,7 +228,7 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden dark:bg-gray-800">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-white/90 dark:bg-gray-800/90 backdrop-blur-md">
         <div class="pt-2 pb-3 space-y-1 border-b border-gray-200 dark:border-gray-700">
             <!-- Mobile Language Switch -->
             <div class="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">

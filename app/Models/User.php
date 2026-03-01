@@ -149,4 +149,14 @@ class User extends Authenticatable
         }
         return optional($this->department)->is_executive_oversight == true;
     }
+
+    public function assetHistories()
+    {
+        return $this->hasMany(AssetHistory::class);
+    }
+
+    public function editedAssets()
+    {
+        return $this->hasMany(Asset::class, 'editor');
+    }
 }

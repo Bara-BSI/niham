@@ -475,4 +475,10 @@ return [
     'full_access' => 'Full Access',
     'download_backup' => 'Download Backup',
     'restore_data' => 'Restore Data',
+    'scan_asset_qr' => 'Scan Asset QR',
+    'invalid_qr_content' => 'Invalid QR content',
+    'export_html_csv' => 'Export HTML/CSV',
+    'date' => 'Date',
+    'user' => 'User',
+    'changes_details' => 'Changes Details',
 ];

@@ -475,4 +475,10 @@ return [
     'full_access' => 'Akses Penuh',
     'download_backup' => 'Unduh Cadangan',
     'restore_data' => 'Pulihkan Data',
+    'scan_asset_qr' => 'Pindai QR Aset',
+    'invalid_qr_content' => 'Konten QR tidak valid',
+    'export_html_csv' => 'Ekspor HTML/CSV',
+    'date' => 'Tanggal',
+    'user' => 'Pengguna',
+    'changes_details' => 'Detail Perubahan',
 ];

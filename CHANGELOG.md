@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2026-03-01
+### Added
+- Inverse bidirectional Eloquent relationships (`assetHistories`, `editedAssets`, `histories`) across User and Asset models.
+- Final missing string localization keys explicitly injected into `lang/en/messages.php` and `lang/id/messages.php`.
+### Changed
+- Converted global blade `<x-slot name="header">` injections into inner standalone floating cards on `history.blade.php` and `scan.blade.php` to respect layout hierarchy.
+- Restored missing 90% opacity backdrop-blur glass classes to the responsive mobile navigation layout and component modals.
+### Fixed
+- Resolved `updateOrCreate` validation circumvention anti-patterns in Department, Category, and Role controllers.
+- Re-patched N+1 query latency regressions in Asset and User index controllers via specific eager loading mapping.
+- Eradicated trailing hardcoded English strings from Blade views, binding them safely to the localization matrices.
+
 ## [0.7.0] - 2026-03-01
 ### Added
 - Comprehensive English/Indonesian string localization (`i18n`) across all views and error pages.

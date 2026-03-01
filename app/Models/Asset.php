@@ -73,4 +73,9 @@ class Asset extends Model
     {
         return $this->belongsTo(User::class, 'editor');
     }
+
+    public function histories()
+    {
+        return $this->hasMany(AssetHistory::class);
+    }
 }
