@@ -22,6 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
             CheckForMaintenanceMode::class,
         ]);
 
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
+
         // Register route middleware aliases
         $middleware->alias([
             'auth' => Authenticate::class,

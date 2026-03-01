@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Models\Property;
 
 class PropertyPolicy
 {
@@ -23,8 +24,11 @@ class PropertyPolicy
         return false;
     }
 
-    public function view(User $user): bool
+    public function view(User $user, Property $property): bool
     {
+        if (strtolower(optional($user->role)->name) === 'admin' && $user->property_id === $property->id) {
+            return true;
+        }
         return false;
     }
 
@@ -33,12 +37,15 @@ class PropertyPolicy
         return false;
     }
 
-    public function update(User $user): bool
+    public function update(User $user, Property $property): bool
     {
+        if (strtolower(optional($user->role)->name) === 'admin' && $user->property_id === $property->id) {
+            return true;
+        }
         return false;
     }
 
-    public function delete(User $user): bool
+    public function delete(User $user, Property $property): bool
     {
         return false;
     }

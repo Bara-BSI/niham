@@ -45,6 +45,21 @@ class ProfileController extends Controller
     }
 
     /**
+     * Update the user's notification preferences.
+     */
+    public function updateNotifications(Request $request): RedirectResponse
+    {
+        $request->user()->update([
+            'notify_department' => $request->has('notify_department') ? $request->boolean('notify_department') : false,
+            'notify_all_properties' => $request->has('notify_all_properties') ? $request->boolean('notify_all_properties') : false,
+            'notify_email' => $request->has('notify_email') ? $request->boolean('notify_email') : false,
+            'email_frequency' => $request->input('email_frequency', 'immediate')
+        ]);
+
+        return Redirect::back()->with('status', 'notifications-updated');
+    }
+
+    /**
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse

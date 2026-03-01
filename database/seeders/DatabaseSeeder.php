@@ -37,11 +37,11 @@ class DatabaseSeeder extends Seeder
         );
         $staffRoleNvt = Role::updateOrCreate(
             ['name' => 'staff', 'property_id' => $novotel->id],
-            ['perm_assets' => 'view, create', 'perm_users' => 'view', 'perm_categories' => 'view', 'perm_departments' => 'view', 'perm_roles' => 'no access']
+            ['perm_assets' => 'create', 'perm_users' => 'view only', 'perm_categories' => 'view only', 'perm_departments' => 'view only', 'perm_roles' => 'no access']
         );
         $managerRoleNvt = Role::updateOrCreate(
             ['name' => 'manager', 'property_id' => $novotel->id],
-            ['perm_assets' => 'view, create, update', 'perm_users' => 'view', 'perm_categories' => 'view', 'perm_departments' => 'view', 'perm_roles' => 'no access']
+            ['perm_assets' => 'create & update', 'perm_users' => 'view only', 'perm_categories' => 'view only', 'perm_departments' => 'view only', 'perm_roles' => 'no access']
         );
 
         // Ibis roles
@@ -51,11 +51,11 @@ class DatabaseSeeder extends Seeder
         );
         $staffRoleIbis = Role::updateOrCreate(
             ['name' => 'staff', 'property_id' => $ibis->id],
-            ['perm_assets' => 'view, create', 'perm_users' => 'view', 'perm_categories' => 'view', 'perm_departments' => 'view', 'perm_roles' => 'no access']
+            ['perm_assets' => 'create', 'perm_users' => 'view only', 'perm_categories' => 'view only', 'perm_departments' => 'view only', 'perm_roles' => 'no access']
         );
         $managerRoleIbis = Role::updateOrCreate(
             ['name' => 'manager', 'property_id' => $ibis->id],
-            ['perm_assets' => 'view, create, update', 'perm_users' => 'view', 'perm_categories' => 'view', 'perm_departments' => 'view', 'perm_roles' => 'no access']
+            ['perm_assets' => 'create & update', 'perm_users' => 'view only', 'perm_categories' => 'view only', 'perm_departments' => 'view only', 'perm_roles' => 'no access']
         );
 
         // ── Departments (Novotel) ─────────────────────────────────

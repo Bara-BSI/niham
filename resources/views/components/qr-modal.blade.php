@@ -10,8 +10,8 @@
         <div x-show="open"
             x-cloak
             @click.self="open = false"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div class="bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-6 relative">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 dark:bg-gray-900/60 backdrop-blur-sm">
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-xl shadow-xl p-6 relative">
                 <!-- Close button with circle -->
                 <button @click="open = false"
                         class="absolute top-2 right-2 flex items-center justify-center

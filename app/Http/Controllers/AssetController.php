@@ -178,8 +178,13 @@ class AssetController extends Controller
             'attachments',
         ]);
         $assetClass = Asset::class;
+        $recentHistories = \App\Models\AssetHistory::where('asset_id', $asset->id)
+            ->with('user')
+            ->latest()
+            ->take(3)
+            ->get();
 
-        return view('assets.show', compact('asset', 'assetClass'));
+        return view('assets.show', compact('asset', 'assetClass', 'recentHistories'));
     }
 
     /**
@@ -306,7 +311,7 @@ class AssetController extends Controller
         $this->authorize('delete', $asset);
         $asset->forceDelete(); // Hard delete
 
-        return redirect()->route('assets.index')->with('ok', 'Deleted');
+        return redirect()->route('assets.index')->with('success', __('messages.asset_deleted'));
     }
 
     public function export(Request $request)
@@ -377,14 +382,14 @@ class AssetController extends Controller
 
     public function history(Asset $asset)
     {
-        abort_unless(Auth::user()->hasExecutiveOversight(), 403);
+        $this->authorize('view', $asset);
         $histories = \App\Models\AssetHistory::where('asset_id', $asset->id)->with('user')->latest()->paginate(15);
         return view('assets.history', compact('asset', 'histories'));
     }
 
     public function exportHistory(Asset $asset)
     {
-        abort_unless(Auth::user()->hasExecutiveOversight(), 403);
+        $this->authorize('view', $asset);
         $histories = \App\Models\AssetHistory::where('asset_id', $asset->id)->with('user')->latest()->get();
         
         $callback = function() use ($histories) {

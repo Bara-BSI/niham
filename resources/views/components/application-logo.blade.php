@@ -4,4 +4,5 @@
 
 {{-- <img style="height: 2em;" src="https://imgs.search.brave.com/fL11xP6BYfb2vfkZjA2hAJ3iJr7Z5p68NL2cOuKYMG0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9sb2dv/cy1kb3dubG9hZC5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MTkvMTEvTm92b3Rl/bF9Mb2dvLTcwMHgy/NzQucG5n" alt=""> --}}
 
-<img src="{{ asset('niham-logo.png') }}" {{ $attributes->merge(['class' => '']) }} alt="">
+<img src="{{ asset('niham-logo.png') }}" {{ $attributes->merge(['class' => 'block dark:hidden']) }} alt="">
+<img src="{{ asset('niham-logo-dk.png') }}" {{ $attributes->merge(['class' => 'hidden dark:block']) }} alt="">

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="header"><h2>Scan asset QR</h2></x-slot>
+    <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Scan asset QR</h2></x-slot>
     <div id="reader" style="width: 400px; max-width: 100%"></div>
     <div id="result" class="mt-4"></div>
 

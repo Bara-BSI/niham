@@ -7,15 +7,15 @@
         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
-        {{ __('Export') }}
+        {{ __('messages.export') }}
     </button>
     
     <template x-teleport="body">
         <div x-show="openExportModal"
             x-cloak
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-            <div class="bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-sm p-6 relative" @click.outside="openExportModal = false">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Choose Export Format</h2>
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 dark:bg-gray-900/60 backdrop-blur-sm p-4">
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-xl shadow-xl w-full max-w-sm p-6 relative" @click.outside="openExportModal = false">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Choose Export Format</h2>
                 
                 <div class="flex flex-col gap-3 mt-4">
                     <button @click="document.getElementById('export-format').value='excel'; document.getElementById('filter-form').target='_self'; document.getElementById('filter-form').action='{{ $route }}'; document.getElementById('filter-form').submit(); openExportModal=false;" type="button"
