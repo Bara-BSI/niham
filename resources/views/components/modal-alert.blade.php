@@ -3,9 +3,9 @@
     @show-alert.window="open = true; title = $event.detail.title || 'Alert'; message = $event.detail.message; type = $event.detail.type || 'info'"
     x-show="open"
     x-cloak
-    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/40 dark:bg-gray-900/60 backdrop-blur-sm"
 >
-    <div class="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 w-full max-w-sm relative border border-white/20"
+    <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-xl shadow-xl p-6 w-full max-w-sm relative"
          @click.away="open = false">
         
         <!-- Close button -->
@@ -42,7 +42,7 @@
                 </div>
             </template>
 
-            <h3 class="text-lg font-semibold text-gray-800" x-text="title"></h3>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200" x-text="title"></h3>
             <p class="mt-2 text-sm text-gray-600" x-text="message"></p>
         </div>
 

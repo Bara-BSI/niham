@@ -1,13 +1,13 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Create Asset') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-4 sm:py-8">
+<div class="py-4 sm:py-8">
         <div class="mx-auto max-w-4xl px-3 sm:px-6 lg:px-8">
-            <div class="glass-card p-6">
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+                <div class="px-6 py-4 border-b border-gray-200/50 dark:border-gray-700/50">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                        {{ __('messages.add_new_asset') ?? __('messages.add_new_asset') }}
+                    </h2>
+                </div>
+                <div class="p-6">
                 <form method="POST" action="{{ route('assets.store') }}" enctype="multipart/form-data">
                     @csrf
 
@@ -84,7 +84,7 @@
                                 }
                             }
                         }" class="m-8">
-                        <x-input-label for="attachment" :value="__('Asset Image')" />
+                        <x-input-label for="attachment" :value="__('messages.asset_image')" />
 
                         <input
                             id="attachment"
@@ -92,7 +92,7 @@
                             type="file"
                             accept="image/*"
                             @change="handleFileSelect($event)"
-                            class="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
+                            class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4
                                 file:rounded-md file:border-0 file:text-sm file:font-semibold
                                 file:bg-indigo-50 file:text-accent hover:file:bg-indigo-100"
                         />
@@ -104,13 +104,13 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            Optimizing image...
+                            {{ __('messages.optimizing_image') }}
                         </div>
 
                         <!-- Preview -->
                         <template x-if="previewUrl">
                             <div class="mt-4">
-                                <p class="text-sm text-gray-600 mb-2">{{ __('Preview') }}</p>
+                                <p class="text-sm text-gray-600 mb-2">{{ __('messages.preview') }}</p>
                                 <img :src="previewUrl" alt="Preview" class="max-h-24 rounded-md border border-gray-200 shadow-sm">
                             </div>
                         </template>
@@ -164,12 +164,12 @@
                                 "
                                 x-bind:disabled="scanning"
                             >
-                                <span x-show="!scanning">✨ AI Scan Details</span>
-                                <span x-show="scanning" x-cloak>Scanning... ⏳</span>
+                                <span x-show="!scanning">{{ __('messages.ai_scan_details') }}</span>
+                                <span x-show="scanning" x-cloak>{{ __('messages.scanning') }}</span>
                             </x-primary-button>
                             <p x-show="error" class="text-sm text-red-600 mt-2" x-text="error" x-cloak></p>
                             <p x-show="success" class="text-sm text-green-600 mt-2" x-text="success" x-cloak></p>
-                            <p class="text-xs text-gray-500 mt-1 italic">Disclaimer: AI scans may occasionally be inaccurate. Always verify the auto-filled information.</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 italic">{{ __('messages.disclaimer_ai_scans_may_occasionally_be_inaccurate') }}</p>
                         </div>
                     </div>
 
@@ -180,15 +180,15 @@
                         <div class="col-span-2 md:col-span-1">
                             <!-- Tag -->
                             <div x-data="{ tag: '' }">
-                                <x-input-label for="tag" :value="__('Asset Tag')" />
+                                <x-input-label for="tag" :value="__('messages.asset_tag')" />
                                 <input
                                     list="tag-options"
                                     x-model="tag"
                                     name="tag"
                                     id="tag"
                                     autocomplete="off"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
-                                    placeholder="Select or type a new tag"
+                                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 shadow-sm focus:ring-accent focus:border-accent"
+                                    placeholder="{{ __('messages.select_or_type_a_new_tag') }}"
                                     required
                                     value="{{ old('tag') }}"
                                 />
@@ -202,7 +202,7 @@
 
                             <!-- Name -->
                             <div>
-                                <x-input-label for="name" :value="__('Asset Name')" />
+                                <x-input-label for="name" :value="__('messages.asset_name')" />
                                 <x-text-input
                                     id="name"
                                     name="name"
@@ -216,11 +216,11 @@
 
                             <!-- Category -->
                             <div>
-                                <x-input-label for="category_id" :value="__('Category')" />
+                                <x-input-label for="category_id" :value="__('messages.category')" />
                                 <select
                                     id="category_id"
                                     name="category_id"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
+                                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 shadow-sm focus:ring-accent focus:border-accent"
                                     required
                                 >
                                     @foreach ($categories as $category)
@@ -241,11 +241,11 @@
                             @if (Auth::user()->hasExecutiveOversight())
                                 <!-- Departments -->
                                 <div>
-                                    <x-input-label for="department_id" :value="__('Department')" />
+                                    <x-input-label for="department_id" :value="__('messages.department')" />
                                     <select
                                         id="department_id"
                                         name="department_id"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
+                                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 shadow-sm focus:ring-accent focus:border-accent"
                                     >
                                         <option value="">—</option>
                                         @foreach ($departments as $department)
@@ -265,12 +265,12 @@
                             @else
                                 <!-- Departments -->
                                 <div>
-                                    <x-input-label for="department_id" :value="__('Department')" />
+                                    <x-input-label for="department_id" :value="__('messages.department')" />
                                     <select
                                         id="department_id"
                                         name="department_id"
                                         disabled
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent text-gray-500"
+                                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400 shadow-sm focus:ring-accent focus:border-accent"
                                     >
                                         <option value="{{ Auth::user()->department->id }}" selected>{{ Auth::user()->department->name }}</option>
                                     </select>
@@ -281,15 +281,15 @@
 
                             <!-- Status -->
                             <div>
-                                <x-input-label for="status" :value="__('Status')" />
+                                <x-input-label for="status" :value="__('messages.status')" />
                                 <select
                                     id="status"
                                     name="status"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
+                                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 shadow-sm focus:ring-accent focus:border-accent"
                                 >
-                                    <option value="in_service" {{ old('status') == 'in_service' ? 'selected' : '' }}>In Service</option>
-                                    <option value="out_of_service" {{ old('status') == 'out_of_service' ? 'selected' : '' }}>Out of Service</option>
-                                    <option value="disposed" {{ old('status') == 'disposed' ? 'selected' : '' }}>Disposed</option>
+                                    <option value="in_service" {{ old('status') == 'in_service' ? 'selected' : '' }}>{{ __('messages.in_service') }}</option>
+                                    <option value="out_of_service" {{ old('status') == 'out_of_service' ? 'selected' : '' }}>{{ __('messages.out_of_service') }}</option>
+                                    <option value="disposed" {{ old('status') == 'disposed' ? 'selected' : '' }}>{{ __('messages.disposed') }}</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('status')" class="mt-2" />
                             </div>
@@ -300,7 +300,7 @@
 
                             <!-- Serial Number -->
                             <div>
-                                <x-input-label for="serial_number" :value="__('Serial Number')" />
+                                <x-input-label for="serial_number" :value="__('messages.serial_number')" />
                                 <x-text-input
                                     id="serial_number"
                                     name="serial_number"
@@ -313,7 +313,7 @@
 
                             <!-- Purchase Date -->
                             <div>
-                                <x-input-label for="purchase_date" :value="__('Purchase Date')" />
+                                <x-input-label for="purchase_date" :value="__('messages.purchase_date')" />
                                 <x-text-input
                                     id="purchase_date"
                                     name="purchase_date"
@@ -326,14 +326,14 @@
 
                             {{-- Warranty --}}
                             <div>
-                                <x-input-label for="warranty_duration" :value="__('Warranty Duration')" />
+                                <x-input-label for="warranty_duration" :value="__('messages.warranty_duration')" />
                                 <select id="warranty_duration" name="warranty_duration"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                                    <option value="none" {{ old('warranty_duration') == 'none' ? 'selected' : '' }}>None</option>
-                                    <option value="6m" {{ old('warranty_duration') == '6m' ? 'selected' : '' }}>6 Months</option>
-                                    <option value="1y" {{ old('warranty_duration') == '1y' ? 'selected' : '' }}>1 Year</option>
-                                    <option value="2y" {{ old('warranty_duration') == '2y' ? 'selected' : '' }}>2 Years</option>
-                                    <option value="3y" {{ old('warranty_duration') == '3y' ? 'selected' : '' }}>3 Years</option>
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 rounded-md shadow-sm">
+                                    <option value="none" {{ old('warranty_duration') == 'none' ? 'selected' : '' }}>{{ __('messages.none') }}</option>
+                                    <option value="6m" {{ old('warranty_duration') == '6m' ? 'selected' : '' }}>{{ __('messages.6_months') }}</option>
+                                    <option value="1y" {{ old('warranty_duration') == '1y' ? 'selected' : '' }}>{{ __('messages.1_year') }}</option>
+                                    <option value="2y" {{ old('warranty_duration') == '2y' ? 'selected' : '' }}>{{ __('messages.2_years') }}</option>
+                                    <option value="3y" {{ old('warranty_duration') == '3y' ? 'selected' : '' }}>{{ __('messages.3_years') }}</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('warranty_duration')" class="mt-2" />
                             </div>
@@ -341,7 +341,7 @@
 
                             <!-- Purchase Cost -->
                             <div>
-                                <x-input-label for="purchase_cost" :value="__('Purchase Cost')" />
+                                <x-input-label for="purchase_cost" :value="__('messages.purchase_cost')" />
                                 <x-text-input
                                     id="purchase_cost"
                                     name="purchase_cost"
@@ -355,7 +355,7 @@
 
                             <!-- Vendor -->
                             <div>
-                                <x-input-label for="vendor" :value="__('Vendor')" />
+                                <x-input-label for="vendor" :value="__('messages.vendor')" />
                                 <x-text-input
                                     id="vendor"
                                     name="vendor"
@@ -373,20 +373,20 @@
                                 x-data="{ count: {{ strlen(old('remarks', $asset->remarks ?? '')) }} }"
                                 class="m-8"
                             >
-                                <x-input-label for="remarks" :value="__('Remarks')" />
+                                <x-input-label for="remarks" :value="__('messages.remarks')" />
 
                                 <textarea
                                     id="remarks"
                                     name="remarks"
                                     maxlength="120"
                                     rows="3"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                                    placeholder="Add a short note (max 120 chars)"
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 rounded-md shadow-sm"
+                                    placeholder="{{ __('messages.add_a_short_note_max_120_chars') }}"
                                     x-on:input="count = $event.target.value.length"
                                 >{{ old('remarks') }}</textarea>
 
-                                <div class="flex justify-between mt-1 text-sm text-gray-500">
-                                    <span>Max 120 characters</span>
+                                <div class="flex justify-between mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <span>{{ __('messages.max_120_characters') }}</span>
                                     <span x-text="count + '/120'"></span>
                                 </div>
 
@@ -398,7 +398,7 @@
                         <div class="mt-6 flex justify-start">
                             <x-secondary-button onclick="window.history.back()">
                                 <x-heroicon-s-arrow-left class="w-4 h-4 mr-2" />
-                                {{ __('Back') }}
+                                {{ __('messages.back') }}
                             </x-secondary-button>
 
                         </div>
@@ -406,11 +406,12 @@
                         <div class="mt-6 flex justify-end">
                             <x-primary-button>
                                 <x-heroicon-s-bookmark class="w-4 h-4 mr-2" />
-                                {{ __('Save Asset') }}
+                                {{ __('messages.save_asset') }}
                             </x-primary-button>
                         </div>
                     </div>
                 </form>
+                </div>
             </div>
         </div>
     </div>

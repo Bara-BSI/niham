@@ -1,13 +1,13 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Create Department') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-4 sm:py-8">
+<div class="py-4 sm:py-8">
         <div class="mx-auto max-w-4xl px-3 sm:px-6 lg:px-8">
-            <div class="glass-card p-6">
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+                <div class="px-6 py-4 border-b border-gray-200/50 dark:border-gray-700/50">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                        {{ __('messages.add_new_department') ?? __('messages.add_new_department') }}
+                    </h2>
+                </div>
+                <div class="p-6">
                 <form method="POST" action="{{ route('departments.store') }}" enctype="multipart/form-data">
                     @csrf
 
@@ -18,7 +18,7 @@
                         <div class="col-span-5 md:col-span-4">
                             <!-- Name -->
                             <div>
-                                <x-input-label for="name" :value="__('Department Name')" />
+                                <x-input-label for="name" :value="__('messages.department_name')" />
                                 <x-text-input
                                     id="name"
                                     name="name"
@@ -36,7 +36,7 @@
 
                             <!-- Code -->
                             <div>
-                                <x-input-label for="code" :value="__('Department Code')" />
+                                <x-input-label for="code" :value="__('messages.department_code')" />
                                 <x-text-input
                                     id="code"
                                     name="code"
@@ -49,8 +49,8 @@
                             <!-- Oversight -->
                             <div class="mt-4">
                                 <label class="flex items-center">
-                                    <input type="checkbox" name="is_executive_oversight" value="1" {{ old('is_executive_oversight') ? 'checked' : '' }} class="h-4 w-4 text-accent border-gray-300 rounded focus:ring-accent">
-                                    <span class="ml-2 text-sm text-gray-600">{{ __('Executive Oversight') }}</span>
+                                    <input type="checkbox" name="is_executive_oversight" value="1" {{ old('is_executive_oversight') ? 'checked' : '' }} class="h-4 w-4 text-accent border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 rounded focus:ring-accent">
+                                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">{{ __('messages.executive_oversight') }}</span>
                                 </label>
                             </div>
                         </div>
@@ -61,20 +61,20 @@
                                 x-data="{ count: {{ strlen(old('notes', $asset->notes ?? '')) }} }"
                                 class="m-8"
                             >
-                                <x-input-label for="notes" :value="__('Notes')" />
+                                <x-input-label for="notes" :value="__('messages.notes')" />
 
                                 <textarea
                                     id="notes"
                                     name="notes"
                                     maxlength="200"
                                     rows="3"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                                    placeholder="Add Note (max 200 chars)"
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 rounded-md shadow-sm"
+                                    placeholder="{{ __('messages.add_note_placeholder') }}"
                                     x-on:input="count = $event.target.value.length"
                                 ></textarea>
 
-                                <div class="flex justify-between mt-1 text-sm text-gray-500">
-                                    <span>Max 200 characters</span>
+                                <div class="flex justify-between mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <span>{{ __('messages.max_200_chars') }}</span>
                                     <span x-text="count + '/200'"></span>
                                 </div>
 
@@ -86,7 +86,7 @@
                         <div class="mt-6 flex justify-start">
                             <x-secondary-button onclick="window.history.back()">
                                 <x-heroicon-s-arrow-left class="w-4 h-4 mr-2" />
-                                {{ __('Back') }}
+                                {{ __('messages.back') }}
                             </x-secondary-button>
 
                         </div>
@@ -94,11 +94,12 @@
                         <div class="mt-6 flex justify-end">
                             <x-primary-button>
                                 <x-heroicon-s-bookmark class="w-4 h-4 mr-2" />
-                                {{ __('Save Department') }}
+                                {{ __('messages.save') }}
                             </x-primary-button>
                         </div>
                     </div>
                 </form>
+                </div>
             </div>
         </div>
     </div>

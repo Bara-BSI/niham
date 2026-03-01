@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('departments', function (Blueprint $table) {
-            //
+            if (!Schema::hasColumn('departments', 'is_executive_oversight')) {
+                $table->boolean('is_executive_oversight')->default(false);
+            }
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('departments', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('departments', 'is_executive_oversight')) {
+                $table->dropColumn('is_executive_oversight');
+            }
         });
     }
 };

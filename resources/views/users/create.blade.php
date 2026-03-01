@@ -1,13 +1,13 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Create Account') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-4 sm:py-8">
+<div class="py-4 sm:py-8">
         <div class="mx-auto max-w-4xl px-3 sm:px-6 lg:px-8">
-            <div class="glass-card p-6">
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+                <div class="px-6 py-4 border-b border-gray-200/50 dark:border-gray-700/50">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                        {{ __('messages.add_new_user') ?? __('messages.add_new_user') }}
+                    </h2>
+                </div>
+                <div class="p-6">
                 <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
                     @csrf
 
@@ -19,7 +19,7 @@
                             
                             <!-- Name -->
                             <div>
-                                <x-input-label for="name" :value="__('Account Name')" />
+                                <x-input-label for="name" :value="__('messages.account_name')" />
                                 <x-text-input
                                     id="name"
                                     name="name"
@@ -33,7 +33,7 @@
 
                             <!-- Username -->
                             <div>
-                                <x-input-label for="username" :value="__('Username')" />
+                                <x-input-label for="username" :value="__('messages.username')" />
                                 <x-text-input
                                     id="username"
                                     name="username"
@@ -47,7 +47,7 @@
                             
                             <!-- Password -->
                             <div>
-                                <x-input-label for="password" :value="__('Password')" />
+                                <x-input-label for="password" :value="__('messages.password')" />
                                 <x-text-input
                                     id="password"
                                     name="password"
@@ -60,7 +60,7 @@
 
                             <!-- Password Confirmation -->
                             <div>
-                                <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+                                <x-input-label for="password_confirmation" :value="__('messages.confirm_password')" />
                                 <x-text-input
                                     id="password_confirmation"
                                     name="password_confirmation"
@@ -78,11 +78,11 @@
                             {{-- Property (Super Admin only) --}}
                             @if (Auth::user()->isSuperAdmin())
                                 <div>
-                                    <x-input-label for="property_id" :value="__('Property')" />
+                                    <x-input-label for="property_id" :value="__('messages.property')" />
                                     <select
                                         id="property_id"
                                         name="property_id"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
+                                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 shadow-sm focus:ring-accent focus:border-accent"
                                         required
                                     >
                                         <option value="">—</option>
@@ -99,13 +99,13 @@
                             <!-- Departments -->
                             <div>
                                 <div x-data="{ selected: '{{ old('department_id', $user->department_id ?? '') }}' }">
-                                    <x-input-label for="department_id" :value="__('Department')" />
+                                    <x-input-label for="department_id" :value="__('messages.department')" />
 
                                     <select
                                         id="department_id"
                                         name="department_id"
                                         x-model="selected"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
+                                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 shadow-sm focus:ring-accent focus:border-accent"
                                     >
                                         <option value="">—</option>
                                         @foreach ($departments as $department)
@@ -118,7 +118,7 @@
                                     <!-- Tooltip/note appears only if the specific department has executive oversight -->
                                     <p x-cloak x-show="selected && {{ $departments->where('is_executive_oversight', true)->pluck('id') }}.includes(parseInt(selected))"
                                     class="mt-1 text-sm text-accent mb-3 font-semibold text-center italic">
-                                        Executive can oversee other departments
+                                        {{ __('messages.executive_can_oversee_other_departments') }}
                                     </p>
                                 </div>
 
@@ -127,11 +127,11 @@
 
                             <!-- Role -->
                             <div>
-                                <x-input-label for="role_id" :value="__('Role')" />
+                                <x-input-label for="role_id" :value="__('messages.role')" />
                                 <select
                                     id="role_id"
                                     name="role_id"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-accent focus:border-accent"
+                                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 shadow-sm focus:ring-accent focus:border-accent"
                                 >
                                     <option value="">—</option>
                                     @foreach ($roles as $role)
@@ -151,7 +151,7 @@
 
                             {{-- Email Address --}}
                             <div>
-                                <x-input-label for="email" :value="__('Email')" />
+                                <x-input-label for="email" :value="__('messages.email')" />
                                 <x-text-input
                                     id="email"
                                     name="email"
@@ -169,7 +169,7 @@
                         <div class="mt-6 flex justify-start">
                             <x-secondary-button onclick="window.history.back()">
                                 <x-heroicon-s-arrow-left class="w-4 h-4 mr-2" />
-                                {{ __('Back') }}
+                                {{ __('messages.back') }}
                             </x-secondary-button>
 
                         </div>
@@ -177,11 +177,12 @@
                         <div class="mt-6 flex justify-end">
                             <x-primary-button>
                                 <x-heroicon-s-bookmark class="w-4 h-4 mr-2" />
-                                {{ __('Save Account') }}
+                                {{ __('messages.save_account') }}
                             </x-primary-button>
                         </div>
                     </div>
                 </form>
+                </div>
             </div>
         </div>
     </div>

@@ -26,6 +26,10 @@ class User extends Authenticatable
         'department_id',
         'property_id',
         'is_super_admin',
+        'notify_department',
+        'notify_all_properties',
+        'notify_email',
+        'email_frequency',
     ];
 
     /**
@@ -49,6 +53,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_super_admin' => 'boolean',
+            'notify_department' => 'boolean',
+            'notify_all_properties' => 'boolean',
+            'notify_email' => 'boolean',
         ];
     }
 
@@ -93,6 +100,9 @@ class User extends Authenticatable
 
     /**
      * Check if user has explicit string permission on a module.
+     * New 9 strict string vocabulary:
+     * 'no access', 'view only', 'create', 'update', 'delete', 
+     * 'create & update', 'create & delete', 'update & delete', 'full access'
      */
     public function hasPermission(string $module, string $action): bool
     {
@@ -105,12 +115,28 @@ class User extends Authenticatable
         if ($perm === 'full access') {
             return true;
         }
-
-        if ($action === 'view') {
-            return $perm !== 'no access';
+        if ($perm === 'no access') {
+            return false;
         }
 
-        return str_contains($perm, $action);
+        // Implicit view if they have any permission other than 'no access'
+        if ($action === 'view') {
+            return true;
+        }
+
+        if ($action === 'create') {
+            return in_array($perm, ['create', 'create & update', 'create & delete']);
+        }
+
+        if ($action === 'update') {
+            return in_array($perm, ['update', 'create & update', 'update & delete']);
+        }
+
+        if ($action === 'delete') {
+            return in_array($perm, ['delete', 'create & delete', 'update & delete']);
+        }
+
+        return false;
     }
 
     /**

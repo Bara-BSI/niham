@@ -1,5 +1,5 @@
 @if ($paginator->hasPages())
-    <nav role="navigation" aria-label="{!! __('Pagination Navigation') !!}">
+    <nav role="navigation" aria-label="{!! __('messages.pagination_navigation') !!}">
         <ul class="pagination">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())

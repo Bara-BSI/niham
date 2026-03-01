@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex flex-wrap justify-between items-center w-full">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Asset History:') }} {{ $asset->name }} ({{ $asset->tag }})
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('messages.asset_history') }} {{ $asset->name }} ({{ $asset->tag }})
             </h2>
             <a href="{{ route('assets.history.export', $asset) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition shadow-sm">
                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,29 +15,29 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-2">
-            <div class="glass-card mb-4 text-sm p-4">
-                <a href="{{ route('dashboard') }}" class="text-accent hover:underline mb-2 inline-block">&larr; Back to Dashboard</a>
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm mb-4 text-sm p-4">
+                <a href="{{ route('assets.show', $asset->id) }}" class="text-accent dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 hover:underline mb-2 inline-block">&larr; {{ __('messages.back_to_asset') }}</a>
             </div>
-            <div class="glass-card overflow-x-auto p-0">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50/50">
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm overflow-x-auto p-0">
+                <table class="min-w-full divide-y divide-gray-200/50 dark:divide-gray-700/50">
+                    <thead class="bg-gray-50/50 dark:bg-gray-800/50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Changes Details</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">User</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Action</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Changes Details</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                         @forelse($histories as $h)
-                            <tr>
-                                <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">{{ $h->created_at->format('Y-m-d H:i') }}</td>
-                                <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">{{ $h->user?->name ?? 'System' }}</td>
+                            <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200 whitespace-nowrap">{{ $h->created_at->format('Y-m-d H:i') }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200 whitespace-nowrap">{{ $h->user?->name ?? 'System' }}</td>
                                 <td class="px-4 py-3 text-sm font-semibold 
-                                    {{ $h->action == 'created' ? 'text-green-600' : ($h->action == 'updated' ? 'text-blue-600' : 'text-red-600') }}">
+                                    {{ $h->action == 'created' ? 'text-green-600 dark:text-green-400' : ($h->action == 'updated' ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400') }}">
                                     {{ ucfirst($h->action) }}
                                 </td>
-                                <td class="px-4 py-3 text-xs text-gray-600 max-w-xl truncate">
+                                <td class="px-4 py-3 text-xs text-gray-900 dark:text-gray-200 max-w-xl truncate">
                                     @if($h->changes)
                                         {{ json_encode($h->changes) }}
                                     @else
@@ -47,7 +47,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-4 py-8 text-sm text-gray-500 text-center">No history recorded yet for this asset.</td>
+                                <td colspan="4" class="px-4 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">{{ __('messages.no_history_recorded_yet_for_this_asset') }}</td>
                             </tr>
                         @endforelse
                     </tbody>

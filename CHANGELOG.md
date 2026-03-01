@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-03-01
+### Added
+- Comprehensive English/Indonesian string localization (`i18n`) across all views and error pages.
+- Email Digest Notification System containing hourly and daily PDF reporting payloads for Executive Oversight.
+- Database cascading delete security structures preventing orphan records.
+### Changed
+- Extensive UI/UX architecture overhaul strictly enforcing the "Floating Glass" design system across navigation flyouts, modals, tooltips, and all data cards.
+- Refactored `store` logic in multiple controllers (Categories, Departments, Roles) to replace fragile `updateOrCreate` anti-patterns with strictly validated `create` routines.
+### Fixed
+- Eradicated N+1 latency loops in Asset and User index tables via eager loading.
+- Replaced unstyled empty table arrays with standardized, localized empty state fallback rows.
+- Patched pagination logic to visually respect active theme tokens (bg-white/90 backdrop blur vs solid backgrounds).
+
 ## [0.6.0] - 2026-02-25
 ### Added
 - Major system overhaul including robust String-Based Modular Access (RBAC) and Executive Oversight abstraction.

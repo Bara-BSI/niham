@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ theme: localStorage.getItem('theme') || 'light' }" x-init="$watch('theme', val => localStorage.setItem('theme', val))" x-bind:class="{ 'dark': theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) }">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,6 +18,8 @@
             [x-cloak] { display: none !important; }
             :root {
                 --accent-color: {{ $activeProperty->accent_color ?? '#4f46e5' }};
+                --property-accent: {{ $activeProperty->accent_color ?? '#4f46e5' }};
+                --property-accent-transparent: {{ $activeProperty->accent_color ?? '#4f46e5' }}33;
             }
             .bg-accent { background-color: var(--accent-color) !important; }
             .text-accent { color: var(--accent-color) !important; }
@@ -32,34 +34,90 @@
             ? asset('storage/' . $activeProperty->background_image_path)
             : asset('global-background.png');
     @endphp
-    <body class="font-sans antialiased min-h-screen">
+    <body class="font-sans antialiased bg-gray-50 text-gray-900 dark:text-gray-100 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200">
         <!-- Fixed background image (works on all devices including mobile) -->
         <div class="fixed inset-0 z-0">
-            <img src="{{ $bgImage }}" alt="Background" class="object-cover w-full h-full" />
+            <img src="{{ $bgImage }}" alt="Background" class="object-cover w-full h-full dark:opacity-40" />
         </div>
 
         <!-- Subtle dark overlay so content is readable -->
-        <div class="fixed inset-0 bg-black/20 z-0"></div>
+        <div class="fixed inset-0 bg-black/20 dark:bg-black/40 z-0"></div>
 
         <!-- Floating layout wrapper — centered with max-w, p-4 gaps around edges -->
-        <div class="relative z-10 min-h-screen flex flex-col p-3 sm:p-4 gap-3 sm:gap-4 max-w-7xl w-full mx-auto">
+        <div class="relative z-10 min-h-screen md:flex">
+            
+            <aside class="hidden md:flex flex-col w-64 flex-shrink-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border-r border-gray-200/50 dark:border-gray-700/50 min-h-screen z-20 rounded-none">
+                
+                <div class="flex items-center justify-center h-16 border-b border-gray-200/50 dark:border-gray-800/50 px-4">
+                    <a href="{{ route('dashboard') }}" class="flex items-center">
+                        @if(isset($activeProperty) && $activeProperty->logo_path)
+                            <img src="{{ asset('storage/' . $activeProperty->logo_path) }}" alt="{{ $activeProperty->name }} Logo" class="block h-10 w-auto object-contain">
+                        @else
+                            <x-application-logo class="block h-10 w-auto fill-current text-accent" />
+                        @endif
+                    </a>
+                </div>
 
-            <!-- Floating Navbar Pill (z-30 so dropdowns appear above everything) -->
-            <div class="relative z-30">
+                <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto w-full">
+                    @can('viewAny', App\Models\Asset::class)
+                    <a href="{{ route('assets.index') }}" class="flex items-center px-4 py-2.5 text-sm font-medium transition-colors rounded-lg w-full {{ request()->routeIs('assets.*') ? 'text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}" {!! request()->routeIs('assets.*') ? 'style="background-color: var(--property-accent);"' : '' !!}>
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                        <span class="truncate">{{ __('messages.assets') ?? 'Assets' }}</span>
+                    </a>
+                    @endcan
+                    
+                    @can('viewAny', App\Models\User::class)
+                    <a href="{{ route('users.index') }}" class="flex items-center px-4 py-2.5 text-sm font-medium transition-colors rounded-lg w-full {{ request()->routeIs('users.*') ? 'text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}" {!! request()->routeIs('users.*') ? 'style="background-color: var(--property-accent);"' : '' !!}>
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        <span class="truncate">{{ __('messages.users') ?? 'Users' }}</span>
+                    </a>
+                    @endcan
+
+                    @can('viewAny', App\Models\Category::class)
+                    <a href="{{ route('categories.index') }}" class="flex items-center px-4 py-2.5 text-sm font-medium transition-colors rounded-lg w-full {{ request()->routeIs('categories.*') ? 'text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}" {!! request()->routeIs('categories.*') ? 'style="background-color: var(--property-accent);"' : '' !!}>
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+                        <span class="truncate">{{ __('messages.categories') ?? 'Categories' }}</span>
+                    </a>
+                    @endcan
+
+                    @can('viewAny', App\Models\Department::class)
+                    <a href="{{ route('departments.index') }}" class="flex items-center px-4 py-2.5 text-sm font-medium transition-colors rounded-lg w-full {{ request()->routeIs('departments.*') ? 'text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}" {!! request()->routeIs('departments.*') ? 'style="background-color: var(--property-accent);"' : '' !!}>
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                        <span class="truncate">{{ __('messages.departments') ?? 'Departments' }}</span>
+                    </a>
+                    @endcan
+
+                    @can('viewAny', App\Models\Role::class)
+                    <a href="{{ route('roles.index') }}" class="flex items-center px-4 py-2.5 text-sm font-medium transition-colors rounded-lg w-full {{ request()->routeIs('roles.*') ? 'text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}" {!! request()->routeIs('roles.*') ? 'style="background-color: var(--property-accent);"' : '' !!}>
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        <span class="truncate">{{ __('messages.roles') ?? 'Roles' }}</span>
+                    </a>
+                    @endcan
+                </nav>
+            </aside>
+
+            <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+                
                 @include('layouts.navigation')
+
+                @isset($header)
+                    <header class="bg-transparent">
+                        <!-- Wrapper matching main content padding -->
+                        <div class="max-w-7xl mx-auto pt-6 px-2 sm:px-6 lg:px-8">
+                            <!-- Inner glass box -->
+                            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 shadow-sm rounded-xl py-6 px-4 sm:px-6 lg:px-8">
+                                {{ $header }}
+                            </div>
+                        </div>
+                    </header>
+                @endisset
+
+                <main class="flex-1 overflow-y-auto">
+                    {{ $slot }}
+                </main>
+
             </div>
 
-            <!-- Floating Header Pill -->
-            @isset($header)
-                <header class="relative z-20 glass-panel px-4 sm:px-6 lg:px-8 py-5">
-                    {{ $header }}
-                </header>
-            @endisset
-
-            <!-- Floating Main Content Card -->
-            <main class="relative z-10 flex-grow glass-panel overflow-x-auto">
-                {{ $slot }}
-            </main>
         </div>
 
         {{-- Success modal --}}
@@ -68,14 +126,15 @@
                 x-data="{ open: true }" 
                 x-show="open" 
                 x-cloak
-                class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 dark:bg-gray-900/60 backdrop-blur-sm"
             >
-                <div class="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 w-full max-w-sm relative border border-white/20">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-6 w-full max-w-sm relative">
                     <!-- Close button -->
                     <button 
                         @click="open = false" 
+                        aria-label="Close"
                         class="absolute top-3 right-3 flex items-center justify-center
-                            w-7 h-7 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200
+                            w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600
                             focus:outline-none focus:ring-2 focus:ring-accent transition"
                     >
                         <x-heroicon-s-x-mark class="w-4 h-4"/>
@@ -83,13 +142,13 @@
 
                     <!-- Message -->
                     <div class="text-center pt-2">
-                        <div class="mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-4">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/50 mb-4">
+                            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-800">Success</h3>
-                        <p class="mt-2 text-gray-600">{{ session('ok') }}</p>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">{{ __('messages.success') }}</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-300">{{ session('ok') }}</p>
                     </div>
 
                     <!-- Action -->
@@ -101,7 +160,7 @@
                                 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accent 
                                 focus:ring-offset-2 transition"
                         >
-                            OK
+                            {{ __('messages.ok') }}
                         </button>
                     </div>
                 </div>

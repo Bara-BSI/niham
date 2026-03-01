@@ -33,8 +33,8 @@ class QrController extends Controller
 
             // Determine Logo Path
             $logoPath = public_path('niham-logo-cr-rd.png');
-            if ($asset->property && $asset->property->logo) {
-                $propLogoPath = storage_path('app/public/' . $asset->property->logo);
+            if ($asset->property && $asset->property->logo_path) {
+                $propLogoPath = storage_path('app/public/' . $asset->property->logo_path);
                 if (file_exists($propLogoPath)) {
                     $logoPath = $propLogoPath;
                 }
