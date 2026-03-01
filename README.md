@@ -4,11 +4,13 @@
 
 # 🏨 NIHAM (New Integrated Hotel Asset Management)
 
-![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
+![openSUSE](https://img.shields.io/badge/openSUSE-Leap_16.0-73BA25?style=for-the-badge&logo=opensuse&logoColor=white)
 
-**NIHAM** is a robust, modern asset management solution designed specifically for the hotel industry. Built with the latest Laravel framework, it streamlines the tracking, maintenance, and lifecycle management of hotel assets across various departments.
+**NIHAM** is a robust, modern asset management solution designed specifically for the hotel industry. Built with the latest Laravel 12 framework and PHP 8.4, it securely streamlines the tracking, maintenance, and lifecycle management of hotel assets across various departments.
 
 ---
 

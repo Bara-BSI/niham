@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-03-01
+### Added
+- Complete architecture migration to openSUSE Leap 16.0 within a Distrobox container.
+- Native `php8-imagick` extension compiled from source via PECL to restore QR Code image generation.
+### Changed
+- Upgraded codebase to native PHP 8.4 and Laravel 12 API constraints.
+- Switched Apache MPM architecture from `prefork` with `mod_php` to the highly scalable Event-driven MPM utilizing `php8-fpm` and `proxy_fcgi`.
+- Refactored `app/Models/` Eloquent attribute bindings to the modern Laravel 12 `casts(): array` method syntax.
+- Excised deprecated `HandleCors` and `CheckForMaintenanceMode` middleware from `bootstrap/app.php` to strictly comply with the slim skeleton foundation.
+### Security
+- Enforced strict Read-Only simulated production file environments (`root:root` with `chmod 555`) while exclusively carving write permissions for `storage/` and `bootstrap/cache/` to the web user `wwwrun`.
+- Executed and validated all Laravel configuration, routing, and blade caches under the unprivileged `wwwrun` container identity.
+
 ## [0.7.1] - 2026-03-01
 ### Added
 - Inverse bidirectional Eloquent relationships (`assetHistories`, `editedAssets`, `histories`) across User and Asset models.

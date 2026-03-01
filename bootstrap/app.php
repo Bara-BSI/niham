@@ -16,12 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Register global middleware
-        $middleware->use([
-            HandleCors::class,
-            CheckForMaintenanceMode::class,
-        ]);
-
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
         ]);
