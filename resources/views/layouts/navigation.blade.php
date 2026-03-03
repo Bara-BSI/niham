@@ -78,7 +78,7 @@
                     @php
                         $settingsRoute = Auth::user()->isSuperAdmin() 
                             ? route('properties.index') 
-                            : ($currentProperty ? route('properties.edit', $currentProperty->id) : '#');
+                            : ($currentProperty ? route('properties.edit', $currentProperty) : '#');
                     @endphp
                     @if($settingsRoute !== '#')
                         <a href="{{ $settingsRoute }}" class="inline-flex items-center p-2 border border-transparent text-sm font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none transition ease-in-out duration-150" aria-label="Property Settings" title="Property Settings">

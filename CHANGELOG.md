@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-03-03
+### Added
+- Database mapping refactored to use standard Laravel 12 UUIDs (`Illuminate\Database\Eloquent\Concerns\HasUuids`) across all primary entities (`Property`, `User`, `Role`, `Department`, `Category`, `Asset`).
+- Native implicit route model binding adapted exclusively for UUID properties to completely eliminate Integer ID leakages on public-facing and internal endpoints.
+- Extensive Multi-Tenancy support anchored by a new formally declared `App\Models\Scopes\PropertyScope`.
+### Changed
+- The `BelongsToProperty` trait was overhauled to securely bind context to the new `PropertyScope` class, dropping vulnerable inline scope declarations.
+- Redesigned `PropertyScope` constraint logic to explicitly enforce strictly valid, non-null `property_id` assignments for all localized users to prevent catastrophic global data leaks during data anomaly states.
+- Cleaned the testing, auditing, and remediation markdown traces from the final workspace repository.
+### Security
+- **IDOR Prevention:** The entire routing structure was modernized using unbreakable non-sequential UUIDs, preventing Iteration-based Insecure Direct Object Reference attacks.
+- **Zero-Trust Tenant Isolation:** Global Scopes implemented at the lowest Eloquent layer structurally guarantee isolated property execution contexts. Malicious or compromised requests attempting cross-tenant injection are met with invisible data (simulated 404 behavior natively by Laravel).
+
 ## [0.8.0] - 2026-03-01
 ### Added
 - Complete architecture migration to openSUSE Leap 16.0 within a Distrobox container.

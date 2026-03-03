@@ -14,7 +14,7 @@
             </div>
 
             <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm mb-4 text-sm p-4">
-                <a href="{{ route('assets.show', $asset->id) }}" class="text-accent dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 hover:underline mb-2 inline-block">&larr; {{ __('messages.back_to_asset') }}</a>
+                <a href="{{ route('assets.show', $asset) }}" class="text-accent dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 hover:underline mb-2 inline-block">&larr; {{ __('messages.back_to_asset') }}</a>
             </div>
             <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm overflow-x-auto p-0">
                 <table class="min-w-full divide-y divide-gray-200/50 dark:divide-gray-700/50">

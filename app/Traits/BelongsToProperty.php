@@ -18,42 +18,19 @@ trait BelongsToProperty
     public static function bootBelongsToProperty(): void
     {
         // ── Query scope ────────────────────────────────────────────
-        static::addGlobalScope('property', function (Builder $builder) {
-            if (app()->runningInConsole() && ! app()->runningUnitTests()) {
-                return; // skip scope for artisan commands (seeder, tinker, etc.)
-            }
-
-            $user = auth()->user();
-            if (! $user) {
-                return;
-            }
-
-            if ($user->isSuperAdmin()) {
-                // Super admin: scope only when a property is selected in session
-                $activePropertyId = session('active_property_id');
-                if ($activePropertyId) {
-                    $builder->where((new static)->getTable().'.property_id', $activePropertyId);
-                }
-                // else: show all → no where clause
-            } else {
-                // Normal user: always scope to their property
-                $builder->where((new static)->getTable().'.property_id', $user->property_id);
-            }
-        });
+        static::addGlobalScope(new \App\Models\Scopes\PropertyScope);
 
         // ── Auto-assign property_id on create ──────────────────────
         static::creating(function ($model) {
-            if (! $model->property_id) {
+            if (! $model->property_id && auth()->check()) {
                 $user = auth()->user();
-                if ($user) {
-                    if ($user->isSuperAdmin()) {
-                        $activePropertyId = session('active_property_id');
-                        if ($activePropertyId) {
-                            $model->property_id = $activePropertyId;
-                        }
-                    } else {
-                        $model->property_id = $user->property_id;
+                if ($user->isSuperAdmin()) {
+                    $activePropertyId = session('active_property_id');
+                    if ($activePropertyId) {
+                        $model->property_id = $activePropertyId;
                     }
+                } else {
+                    $model->property_id = $user->property_id;
                 }
             }
         });

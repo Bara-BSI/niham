@@ -6,11 +6,12 @@ use App\Traits\BelongsToProperty;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Str;
 
 class Asset extends Model
 {
-    use BelongsToProperty, HasFactory, SoftDeletes;
+    use BelongsToProperty, HasFactory, SoftDeletes, HasUuids;
 
     protected $fillable = [
         'uuid',
@@ -46,10 +47,6 @@ class Asset extends Model
 
     protected static function booted()
     {
-        static::creating(function ($asset) {
-            $asset->uuid = (string) Str::uuid();
-        });
-
         static::deleting(function ($asset) {
             if ($asset->isForceDeleting() && $attachment = $asset->attachments) {
                 if (\Storage::disk('public')->exists($attachment->path)) {
@@ -83,5 +80,15 @@ class Asset extends Model
     public function histories()
     {
         return $this->hasMany(AssetHistory::class);
+    }
+
+    public function uniqueIds(): array
+    {
+        return ['uuid'];
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
     }
 }

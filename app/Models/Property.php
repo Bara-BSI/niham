@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Property extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $fillable = ['name', 'code', 'address', 'logo_path', 'background_image_path', 'accent_color'];
 
@@ -34,5 +35,15 @@ class Property extends Model
     public function roles()
     {
         return $this->hasMany(Role::class);
+    }
+
+    public function uniqueIds(): array
+    {
+        return ['uuid'];
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
     }
 }

@@ -47,8 +47,9 @@
 - **Dynamic Property Switching:** Super Admins experience on-the-fly theme and data-context switching when swapping between properties via the sleek collapsible context menus.
 - **Rapid-action Teleport Modals:** Enhanced mobile interactions and seamless user experience utilizing Alpine.js.
 
-### 🛡️ Role & Property-Based Access Control (RBAC)
-- **Global Tenancy Scopes (Auto-Filtering):** Standard users are natively isolated to their assigned `property_id` across all queries using a custom `BelongsToProperty` global scope trait.
+### 🛡️ Role & Property-Based Access Control (RBAC) & Security
+- **Zero-Trust Tenant Isolation (Global Scopes):** Standard users are natively isolated to their assigned `property_id` across all queries using a strictly enforced `PropertyScope` and `BelongsToProperty` global scope architecture.
+- **IDOR Prevention (UUID Routing):** All primary entities (`Users`, `Properties`, `Assets`, etc.) are backed by secure Laravel 12 UUIDs. Public and internal endpoints resolve strictly via UUID implicit model binding to prevent ID iteration attacks.
 - **Multi-Property Management:** Create and manage distinct databases of assets for entirely isolated hotel locations (e.g., Novotel YIA vs. Ibis YIA).
 - **Super Admin Oversight:** Global users bypass the tenancy scope by default (viewing ALL properties at once seamlessly) or can hone in on a specific property context dynamically.
 - **Department Isolation:** Normal users only access assets within their specific department.
