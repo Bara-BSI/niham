@@ -81,7 +81,7 @@
                                 </div>
                                 <div><strong class="text-gray-900 dark:text-gray-100">{{ __('messages.purchase_cost') }}</strong> <span class="text-gray-700 dark:text-gray-300">{{ $asset->purchase_cost ? 'Rp ' . number_format($asset->purchase_cost, 0, ',', '.') : '-' }}</span></div>
                                 <div><strong class="text-gray-900 dark:text-gray-100">{{ __('messages.vendor') }}</strong> <span class="text-gray-700 dark:text-gray-300">{{ $asset->vendor ?: '-' }}</span></div>
-                                <div><strong class="text-gray-900 dark:text-gray-100">{{ __('messages.last_editor') }}</strong> <span class="text-gray-700 dark:text-gray-300">{{ $asset->editorUser->name ?: __('messages.n_a') }}</span></div>
+                                <div><strong class="text-gray-900 dark:text-gray-100">{{ __('messages.last_editor') }}</strong> <span class="text-gray-700 dark:text-gray-300">{{ $asset->editorUser?->name ?? __('messages.n_a') }}</span></div>
                             </div>
                         </div>
 

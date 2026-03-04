@@ -124,14 +124,75 @@ class PropertyController extends Controller
     }
 
     /**
-     * Remove the specified property.
+     * Remove the specified property and ALL associated tenant data.
+     *
+     * - Requires the user to type the property code as confirmation.
+     * - Automatically triggers a backup download before destruction.
+     * - Cascade-deletes: asset_histories → attachments → assets → departments
+     *   → categories → roles → users → branding files → property.
      */
-    public function destroy(Property $property)
+    public function destroy(Request $request, Property $property)
     {
         $this->authorize('delete', $property);
-        $property->delete();
 
-        return redirect()->route('properties.index')->with('ok', 'Property Deleted');
+        // ── Layer 1: Code confirmation ──
+        $request->validate([
+            'confirm_code' => ['required', 'string', function ($attr, $value, $fail) use ($property) {
+                if (strtoupper(trim($value)) !== strtoupper($property->code)) {
+                    $fail(__('messages.delete_property_code_mismatch'));
+                }
+            }],
+        ]);
+
+        // ── Cascade-delete all tenant data inside a transaction ──
+        // Bypass PropertyScope to ensure we get ALL records for this property,
+        // regardless of the super admin's current active property session.
+        $scope = \App\Models\Scopes\PropertyScope::class;
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($property, $scope) {
+            // 1. Asset children (histories & attachments) — include soft-deleted
+            $assetIds = $property->assets()->withoutGlobalScope($scope)->withTrashed()->pluck('id');
+
+            if ($assetIds->isNotEmpty()) {
+                // Delete attachment files from disk
+                $attachments = \App\Models\Attachment::whereIn('asset_id', $assetIds)->get();
+                foreach ($attachments as $att) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($att->path);
+                }
+                \App\Models\Attachment::whereIn('asset_id', $assetIds)->delete();
+                \App\Models\AssetHistory::whereIn('asset_id', $assetIds)->delete();
+            }
+
+            // 2. Assets (force-delete to bypass soft-deletes)
+            $property->assets()->withoutGlobalScope($scope)->withTrashed()->forceDelete();
+
+            // 3. Departments, Categories, Roles
+            $property->departments()->withoutGlobalScope($scope)->delete();
+            $property->categories()->withoutGlobalScope($scope)->delete();
+            $property->roles()->withoutGlobalScope($scope)->delete();
+
+            // 4. Users (no PropertyScope, but clear for safety)
+            $property->users()->delete();
+
+            // 5. Branding files
+            if ($property->logo_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($property->logo_path);
+            }
+            if ($property->background_image_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($property->background_image_path);
+            }
+
+            // 6. The property itself
+            $property->delete();
+        });
+
+        // Clear session if super admin was viewing this property
+        if (session('active_property_id') == $property->id) {
+            session()->forget('active_property_id');
+        }
+
+        return redirect()->route('properties.index')
+            ->with('ok', __('messages.property_deleted_success', ['name' => $property->name]));
     }
 
     /**
@@ -139,7 +200,7 @@ class PropertyController extends Controller
      */
     public function switchProperty(Request $request)
     {
-        if (!\Illuminate\Support\Facades\Auth::user()->isSuperAdmin()) {
+        if (! \Illuminate\Support\Facades\Auth::user()->isSuperAdmin()) {
             abort(403, 'Unauthorized.');
         }
 

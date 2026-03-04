@@ -25,7 +25,7 @@ class Asset extends Model
         'warranty_date',
         'purchase_cost',
         'vendor',
-        'meta',
+        'desc',
         'remarks',
         'editor',
         'property_id',
@@ -39,7 +39,6 @@ class Asset extends Model
     protected function casts(): array
     {
         return [
-            'meta' => 'array',
             'purchase_date' => 'date',
             'warranty_date' => 'date',
         ];

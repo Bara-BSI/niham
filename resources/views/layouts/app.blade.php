@@ -167,6 +167,53 @@
             </div>
         @endif
 
+        {{-- Warning modal --}}
+        @if(session('warning'))
+            <div 
+                x-data="{ open: true }" 
+                x-show="open" 
+                x-cloak
+                class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 dark:bg-gray-900/60 backdrop-blur-sm"
+            >
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-6 w-full max-w-sm relative">
+                    <!-- Close button -->
+                    <button 
+                        @click="open = false" 
+                        aria-label="Close"
+                        class="absolute top-3 right-3 flex items-center justify-center
+                            w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600
+                            focus:outline-none focus:ring-2 focus:ring-accent transition"
+                    >
+                        <x-heroicon-s-x-mark class="w-4 h-4"/>
+                    </button>
+
+                    <!-- Message -->
+                    <div class="text-center pt-2">
+                        <div class="mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/50 mb-4">
+                            <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">{{ __('messages.warning') ?? 'Warning' }}</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-300">{{ session('warning') }}</p>
+                    </div>
+
+                    <!-- Action -->
+                    <div class="mt-5 text-center">
+                        <button 
+                            @click="open = false" 
+                            class="inline-flex items-center px-5 py-2.5 bg-amber-500 border border-transparent 
+                                rounded-xl font-semibold text-xs text-white uppercase tracking-widest 
+                                hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-amber-500 
+                                focus:ring-offset-2 transition"
+                        >
+                            {{ __('messages.ok') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <x-modal-alert />
     </body>
 </html>

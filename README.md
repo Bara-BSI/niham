@@ -58,7 +58,7 @@
 
 ### 📦 Data Management
 - **PDF & Excel Export:** Download comprehensive asset reports automatically compiled into styled PDFs via mPDF or raw `.xlsx` datasets.
-- **Backup & Restore:** Integrated tools for database and file backups (Strictly authorized endpoints).
+- **Backup & Restore (Tenant-Aware):** Download and upload secure, tenant-isolated `.zip` payloads containing JSON data arrays, property branding, and asset media files natively unbound from local numeric identifiers (allowing safe cross-property imports).
 - **Scheduled Email Digests:** (New in v0.7.0) Receive automated hourly or daily summary digest PDFs straight to your corporate inbox outlining organizational changes natively scoped to your oversight privileges.
 
 ### 🌐 Google Workspace Authentication

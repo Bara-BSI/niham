@@ -18,10 +18,11 @@ class RoleFactory extends Factory
     {
         return [
             'name' => fake()->unique()->jobTitle(),
-            'can_read' => true,
-            'can_create' => false,
-            'can_update' => false,
-            'can_delete' => false,
+            'perm_assets' => 'no access',
+            'perm_users' => 'no access',
+            'perm_categories' => 'no access',
+            'perm_departments' => 'no access',
+            'perm_roles' => 'no access',
         ];
     }
 }

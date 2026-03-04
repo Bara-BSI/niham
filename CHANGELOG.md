@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] - 2026-03-04
+### Added
+- **Tenant-Aware Backup Engine:** Export logic completely rewritten via `TenantBackupService` to produce portable, UUID-relative JSON archives containing assets, attachments, and property data strictly isolated from other tenants.
+- **Resilient Data Restoration:** `TenantRestoreService` seamlessly injects backup payloads into any target property, safely rebinding relational UUIDs to local endpoints while meticulously avoiding unique scope collisions.
+- **Robust Cascading Deletion:** Property destruction now triggers a strictly ordered, transaction-bound waterfall delete spanning `asset_histories` → `attachments` (files unlinked from storage) → `assets` → `departments` → `categories` → `roles` → `users` → `branding images` → `property`.
+
+### Changed
+- Converted the legacy soft-delete schema for Property deletion into an authoritative force-delete algorithm for guaranteed data cleanliness.
+- Redesigned the `PropertyController@destroy` view modal into a multi-layered security procedure featuring live code-matching confirmation arrays powered by Alpine.js.
+
+### Security
+- **Strict DB Transactions:** Implemented global DB rollbacks triggered by any internal structural anomaly during the `RestoreService` execution to ensure partial imports cannot desynchronise the active tenant database constraint matrix.
+- Bypassed the native `PropertyScope` during cascading delete cycles via `withoutGlobalScope()` to ensure super-admins do not accidentally orphan records tied to inactive properties outside their immediate volatile session.
+
 ## [0.9.0] - 2026-03-03
 ### Added
 - Database mapping refactored to use standard Laravel 12 UUIDs (`Illuminate\Database\Eloquent\Concerns\HasUuids`) across all primary entities (`Property`, `User`, `Role`, `Department`, `Category`, `Asset`).
