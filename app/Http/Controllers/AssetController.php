@@ -9,8 +9,8 @@ use App\Models\Department;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 use Maatwebsite\Excel\Facades\Excel;
 use Storage;
 
@@ -32,8 +32,8 @@ class AssetController extends Controller
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
             $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', '%'.$searchTerm.'%')
-                    ->orWhere('tag', 'like', '%'.$searchTerm.'%');
+                $q->where('name', 'ilike', '%'.$searchTerm.'%')
+                    ->orWhere('tag', 'ilike', '%'.$searchTerm.'%');
             });
         }
 
@@ -43,7 +43,7 @@ class AssetController extends Controller
         }
 
         // Pembatasan akses ke departemen lain (non-admin, non-super-admin)
-        if (! Auth::user()->isSuperAdmin() && !Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
             $query->where('department_id', Auth::user()->department_id);
         }
 
@@ -138,20 +138,20 @@ class AssetController extends Controller
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $extension = $file->getClientOriginalExtension();
-            if(!in_array(strtolower($extension), ['jpg','jpeg','png','webp'])) {
+            if (! in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'webp'])) {
                 $extension = 'jpg';
             }
-            $filename = uniqid('asset_') . '.' . $extension;
-            $relativePath = 'attachments/' . $filename;
-            
+            $filename = uniqid('asset_').'.'.$extension;
+            $relativePath = 'attachments/'.$filename;
+
             // Create ImageManager instance
-            $manager = new ImageManager(new Driver());
-            
+            $manager = new ImageManager(new Driver);
+
             // Read, Resize & Compress
             $image = $manager->read($file->getRealPath());
             $image->scaleDown(width: 1920);
             $encoded = $image->toJpeg(80);
-            
+
             // Store physically
             Storage::disk('public')->put($relativePath, $encoded->toString());
 
@@ -223,9 +223,9 @@ class AssetController extends Controller
         if ($request->has('purchase_cost')) {
             $data['purchase_cost'] = $request->filled('purchase_cost') ? $request->input('purchase_cost') : null;
         }
-        
+
         $data['editor'] = Auth::id();
-        
+
         // Warranty Calculation (Only if purchase_date is present in the request)
         if ($request->has('purchase_date')) {
             $purchaseDate = $request->filled('purchase_date') ? Carbon::parse($request->purchase_date) : null;
@@ -258,20 +258,20 @@ class AssetController extends Controller
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $extension = $file->getClientOriginalExtension();
-            if(!in_array(strtolower($extension), ['jpg','jpeg','png','webp'])) {
+            if (! in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'webp'])) {
                 $extension = 'jpg';
             }
-            $filename = uniqid('asset_') . '.' . $extension;
-            $relativePath = 'attachments/' . $filename;
-            
+            $filename = uniqid('asset_').'.'.$extension;
+            $relativePath = 'attachments/'.$filename;
+
             // Create ImageManager instance
-            $manager = new ImageManager(new Driver());
-            
+            $manager = new ImageManager(new Driver);
+
             // Read, Resize & Compress
             $image = $manager->read($file->getRealPath());
             $image->scaleDown(width: 1920);
             $encoded = $image->toJpeg(80);
-            
+
             // Store physically
             Storage::disk('public')->put($relativePath, $encoded->toString());
 
@@ -322,8 +322,8 @@ class AssetController extends Controller
             $searchTerm = $request->input('search');
             $appliedFilters['search'] = $searchTerm;
             $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', '%'.$searchTerm.'%')
-                    ->orWhere('tag', 'like', '%'.$searchTerm.'%');
+                $q->where('name', 'ilike', '%'.$searchTerm.'%')
+                    ->orWhere('tag', 'ilike', '%'.$searchTerm.'%');
             });
         }
 
@@ -335,7 +335,7 @@ class AssetController extends Controller
         }
 
         // Pembatasan akses ke departemen lain (non-admin, non-super-admin)
-        if (! Auth::user()->isSuperAdmin() && !Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
+        if (! Auth::user()->isSuperAdmin() && ! Auth::user()->isRole('admin') && ! Auth::user()->hasExecutiveOversight()) {
             $appliedFilters['department_scope'] = Auth::user()->department->name;
             $query->where('department_id', Auth::user()->department_id);
         }
@@ -370,6 +370,7 @@ class AssetController extends Controller
                 'propertyName' => $property,
                 'filters' => $appliedFilters,
             ])->setPaper('a4', 'landscape');
+
             return $pdf->stream('assets.pdf');
         }
 
@@ -380,6 +381,7 @@ class AssetController extends Controller
     {
         $this->authorize('view', $asset);
         $histories = \App\Models\AssetHistory::where('asset_id', $asset->id)->with('user')->latest()->paginate(15);
+
         return view('assets.history', ['asset' => $asset, 'histories' => $histories]);
     }
 
@@ -387,8 +389,8 @@ class AssetController extends Controller
     {
         $this->authorize('view', $asset);
         $histories = \App\Models\AssetHistory::where('asset_id', $asset->id)->with('user')->latest()->get();
-        
-        $callback = function() use ($histories) {
+
+        $callback = function () use ($histories) {
             $file = fopen('php://output', 'w');
             fputcsv($file, ['ID', 'Date', 'Action', 'User', 'Details']);
             foreach ($histories as $history) {
@@ -398,18 +400,19 @@ class AssetController extends Controller
                     $history->created_at->format('Y-m-d H:i:s'),
                     $history->action,
                     $history->user ? $history->user->name : 'System',
-                    $details
+                    $details,
                 ]);
             }
             fclose($file);
         };
         $filename = "asset_{$asset->tag}_history.csv";
+
         return response()->streamDownload($callback, $filename, [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$filename",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ]);
     }
 }

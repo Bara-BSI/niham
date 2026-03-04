@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-03-04
+### Added
+- **PostgreSQL Native Migration Engine:** Replaced the legacy MariaDB foundation with a unified, high-performance PostgreSQL schema utilizing native `uuid` columns and binary `jsonb` indexing.
+- **Server Management Script:** Introduced `/usr/local/bin/apache-pgsql` for robust, systemd-less container management capable of synchronizing Apache, PHP-FPM, and PostgreSQL execution states flawlessly.
+- Complete data porting utility (`app:port-mariadb-to-pgsql`) for 1:1 state transitions in active environments.
+
+### Changed
+- Converted all fragile database schemas originally deploying `CHAR(36)` and `LONGTEXT` into rigid PostgreSQL native counterparts (`uuid` and `jsonb`).
+- Replaced ambiguous soft-queries utilizing generic `LIKE` with PostgreSQL's strictly case-insensitive `ILIKE` operators to guarantee cross-tenant search stability.
+- Explicitly enforced PHP timezone (`UTC`) and `PDO::ATTR_STRINGIFY_FETCHES => false` configurations statically within `config/database.php`.
+
+### Security & Performance
+- **Strict Foreign Key Enforcement:** Upgraded all relational constraints with explicit `cascadeOnDelete()` or `nullOnDelete()` schemas, eliminating orphan record risks system-wide.
+- **`PropertyScope` Compound Indexing:** Autonomous injection of compound lookup indexes (`property_id` + `role_id/department_id/status/etc`) structurally resolving previously undetected N+1 full-table scan threats on `asset_histories` and `assets`.
+- **UPSERT Idempotency Checks:** Upgraded the `TenantRestoreService` with explicit `->unique()` database-layer constraints ensuring `ON CONFLICT` merge operations complete cleanly without throwing `SQLSTATE[42P10]` exceptions during recovery states.
+
 ## [0.9.1] - 2026-03-04
 ### Added
 - **Tenant-Aware Backup Engine:** Export logic completely rewritten via `TenantBackupService` to produce portable, UUID-relative JSON archives containing assets, attachments, and property data strictly isolated from other tenants.

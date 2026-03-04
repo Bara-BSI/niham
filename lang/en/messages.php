@@ -502,4 +502,5 @@ return [
     'restore_success' => 'Backup restored successfully. All property data has been replaced with the backup contents.',
     'restore_error_json' => 'The backup file contains malformed JSON:',
     'restore_error_generic' => 'An unexpected error occurred during restore. The database has been rolled back.',
+    'asset_deleted' => 'Asset deleted successfully.',
 ];

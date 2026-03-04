@@ -137,7 +137,7 @@ return [
     'add_new_department' => 'Tambah Departemen Baru',
     'add_new_role' => 'Tambah Peran Baru',
     'add_new_property' => 'Tambah Properti Baru',
-    
+
     // --- Auto-Injected Raw Strings ---
     '1 Year' => '1 Tahun',
     '2 Years' => '2 Tahun',
@@ -502,4 +502,5 @@ return [
     'restore_success' => 'Cadangan berhasil dipulihkan. Semua data properti telah digantikan dengan isi cadangan.',
     'restore_error_json' => 'File cadangan mengandung JSON yang tidak valid:',
     'restore_error_generic' => 'Terjadi kesalahan tak terduga saat pemulihan. Database telah dikembalikan.',
+    'asset_deleted' => 'Aset berhasil dihapus.',
 ];

@@ -7,7 +7,7 @@
 ![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![openSUSE](https://img.shields.io/badge/openSUSE-Leap_16.0-73BA25?style=for-the-badge&logo=opensuse&logoColor=white)
 
 **NIHAM** is a robust, modern asset management solution designed specifically for the hotel industry. Built with the latest Laravel 12 framework and PHP 8.4, it securely streamlines the tracking, maintenance, and lifecycle management of hotel assets across various departments.
@@ -77,9 +77,10 @@ Follow these steps to set up the project locally.
 ### Prerequisites
 - PHP 8.2+
 - `php-imagick` extension (Required for QR Code generation)
+- `php-pgsql` extension
 - Composer
 - Node.js 22.x & NPM
-- MySQL or MariaDB
+- PostgreSQL 16+
 
 ### Installation
 
@@ -135,6 +136,19 @@ Follow these steps to set up the project locally.
     npm run dev
     ```
 
+9.  **Server Management (openSUSE Container)**
+    If running within a systemd-less container environment like `dev-leap`, manage the synchronized Apache, PHP-FPM, and PostgreSQL stack using the custom CLI wrapper:
+    ```bash
+    # Start the stack
+    sudo apache-pgsql start
+
+    # Stop the stack
+    sudo apache-pgsql stop
+
+    # Restart the stack
+    sudo apache-pgsql restart
+    ```
+
 ---
 
 ## 📖 Usage
@@ -151,7 +165,7 @@ Follow these steps to set up the project locally.
 
 - **Backend:** Laravel 11/12
 - **Frontend:** Blade Templates, Alpine.js, TailwindCSS
-- **Database:** MySQL / MariaDB (Supports SQLite for testing)
+- **Database:** PostgreSQL (Supports SQLite for testing)
 - **Tools:** Vite, PHPUnit, Pest, mPDF, Intervention Image v3, dompdf
 
 ---
