@@ -137,16 +137,19 @@ Follow these steps to set up the project locally.
     ```
 
 9.  **Server Management (openSUSE Container)**
-    If running within a systemd-less container environment like `dev-leap`, manage the synchronized Apache, PHP-FPM, and PostgreSQL stack using the custom CLI wrapper:
+    If running within a systemd-less container environment like `dev-leap`, manage the synchronized Nginx, PHP-FPM, and PostgreSQL stack using the custom CLI wrapper:
     ```bash
     # Start the stack
-    sudo apache-pgsql start
+    sudo nginx-pgsql start
 
     # Stop the stack
-    sudo apache-pgsql stop
+    sudo nginx-pgsql stop
 
     # Restart the stack
-    sudo apache-pgsql restart
+    sudo nginx-pgsql restart
+
+    # Check the status
+    sudo nginx-pgsql status
     ```
 
 ---

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.1] - 2026-03-05
+### Added
+- **Nginx Infrastructure:** Transitioned the web server stack from Apache to Nginx and PHP-FPM (via Unix sockets). This architecture significantly improves throughput and reduces the memory footprint for the Multi-Tenancy application.
+- **Management Container Script:** Replaced `apache-pgsql` with `nginx-pgsql` script (`/usr/local/bin/nginx-pgsql`) to seamlessly orchestrate PostgreSQL, PHP-FPM, and Nginx.
+- **Tracked Infrastructure:** Captured production configuration blueprints for Nginx and PHP-FPM into the repository's `infrastructure/` directory.
+
+### Removed
+- Completely purged legacy `.htaccess` Apache routing files from `public/`.
+- Obsolete `apache-pgsql` administration scripts removed from the container environment.
+
 ## [0.10.0] - 2026-03-04
 ### Added
 - **PostgreSQL Native Migration Engine:** Replaced the legacy MariaDB foundation with a unified, high-performance PostgreSQL schema utilizing native `uuid` columns and binary `jsonb` indexing.
