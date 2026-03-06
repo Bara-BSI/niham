@@ -32,6 +32,12 @@ Route::middleware('auth')->group(function () {
     // Export the assets
     Route::get('/assets/export', [AssetController::class, 'export'])->name('assets.export');
 
+    // Smart Import Routes
+    Route::post('/assets/import-parse', [\App\Http\Controllers\AssetImportController::class, 'parse'])->name('assets.import-parse');
+    Route::get('/assets/import-review', [\App\Http\Controllers\AssetImportController::class, 'review'])->name('assets.import-review');
+    Route::post('/assets/import-store', [\App\Http\Controllers\AssetImportController::class, 'store'])->name('assets.import-store');
+    Route::get('/assets/bulk-manual', [\App\Http\Controllers\AssetImportController::class, 'bulkManual'])->name('assets.bulk-manual');
+
     Route::resource('assets', AssetController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('departments', DepartmentController::class);

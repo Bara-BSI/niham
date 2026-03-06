@@ -6,13 +6,13 @@
             </h2>
             <div>
                 @can('create', App\Models\Asset::class)
-                <a href="{{ route('assets.create') }}"
+                <button type="button" @click="$dispatch('open-add-asset-modal')"
                 class="inline-flex items-center px-4 py-2 bg-accent border border-transparent rounded-md 
                         font-semibold text-xs text-white uppercase tracking-widest hover:opacity-90 
                         focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition">
                     <x-heroicon-s-plus class="w-4 h-4 mr-2" />
                     {{ __('messages.new_asset') }}
-                </a>
+                </button>
                 @endcan
             </div>
         </div>
@@ -347,4 +347,6 @@
 
         </div>
     </div>
+
+    @include('assets.partials.add-asset-modal')
 </x-app-layout>

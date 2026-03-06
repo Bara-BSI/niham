@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-03-06
+### Added
+- **Native Heuristic Parser:** Introduced a robust, native stream-based file parser utilizing `openspout/openspout` for `Smart Import`. Allows memory-efficient row-by-row extraction from `.csv` and `.xlsx` files without hitting server memory limits.
+- **Dynamic Header Detection:** Built a bilingual (English/Indonesian) heuristic algorithm capable of automatically mapping unstructured spreadsheet columns to standard database attributes.
+- **Asynchronous Modal UI:** Completely overhauled the `add-asset-modal` using Alpine.js and AJAX Fetch. Includes "Floating Glass" loading overlays, real-time file size warnings (cap at 2MB), and animated UI states (`@alpinejs/collapse`).
+- Comprehensive unit and feature tests validating garbage collection, header offset scans, and partial row logic within the new `SmartImportTest`.
+
+### Changed
+- **Architectural Pivot:** Completely pivoted the "Smart Import" feature away from the external Gemini AI API toward a deterministic, native server-side engine.
+
+### Removed
+- **Gemini API Pipeline:** Entirely deleted `SmartImportService` and the `services.gemini.key` configuration. All external HTTP calls for generic file JSON extraction have been securely eradicated.
+
 ## [0.10.1] - 2026-03-05
 ### Added
 - **Nginx Infrastructure:** Transitioned the web server stack from Apache to Nginx and PHP-FPM (via Unix sockets). This architecture significantly improves throughput and reduces the memory footprint for the Multi-Tenancy application.
