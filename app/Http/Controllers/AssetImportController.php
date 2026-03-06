@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Department;
 use App\Services\AssetImportService;
+use App\Services\EntityCodeGeneratorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -60,7 +63,7 @@ class AssetImportController extends Controller
                 'success' => true,
                 'cache_key' => $cacheKey,
                 'row_count' => $rowCount,
-                'redirect' => route('assets.import-review'),
+                'redirect' => route('assets.import-rapid-add'),
             ]);
 
         } catch (\Exception $e) {
@@ -76,6 +79,213 @@ class AssetImportController extends Controller
                 'message' => __('assets.import_parse_error', ['message' => $e->getMessage()]),
             ], 422);
         }
+    }
+
+    /**
+     * Rapid Add interception: cross-reference category/department hints
+     * against the database. If missing, proceed to rapid-add workflow.
+     */
+    public function rapidAdd(Request $request)
+    {
+        $cacheKey = 'import_review_'.auth()->id();
+        $data = Cache::get($cacheKey);
+
+        if ($data === null) {
+            return redirect()->route('assets.index')
+                ->with('warning', __('assets.import_parse_error', ['message' => 'Import session expired or not found.']));
+        }
+
+        // 1. Extract unique hints from the cached data
+        $categoryHints = collect($data)
+            ->pluck('_category_hint')
+            ->map(fn($v) => trim($v))
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $departmentHints = collect($data)
+            ->pluck('_department_hint')
+            ->map(fn($v) => trim($v))
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        // 2. Query existing names case-insensitively
+        // Using LOWER() for PostgreSQL compatibility to match hints effectively
+        $existingCategories = Category::whereIn(\DB::raw('LOWER(name)'), array_map('strtolower', $categoryHints))
+            ->pluck('name')
+            ->toArray();
+
+        $existingDepartments = Department::whereIn(\DB::raw('LOWER(name)'), array_map('strtolower', $departmentHints))
+            ->pluck('name')
+            ->toArray();
+
+        // 3. Find missing items (case-insensitive difference)
+        $missingCategories = array_values(array_udiff($categoryHints, $existingCategories, 'strcasecmp'));
+        $missingDepartments = array_values(array_udiff($departmentHints, $existingDepartments, 'strcasecmp'));
+
+        $warnings = [];
+        $hasMissingCategories = !empty($missingCategories);
+        $hasMissingDepartments = !empty($missingDepartments);
+
+        // Check category auth
+        if ($hasMissingCategories && !auth()->user()->can('create', Category::class)) {
+            $warnings[] = __('assets.import_unauthorized_category_add', ['count' => count($missingCategories)]);
+            // Strip missing category hints
+            foreach ($data as &$row) {
+                $hint = trim($row['_category_hint']);
+                $isMissing = collect($missingCategories)->contains(fn($c) => strcasecmp($c, $hint) === 0);
+                if ($isMissing) {
+                    $row['_category_hint'] = '';
+                }
+            }
+            $missingCategories = [];
+        }
+
+        // Check department auth
+        if ($hasMissingDepartments && !auth()->user()->can('create', Department::class)) {
+            $warnings[] = __('assets.import_unauthorized_department_add', ['count' => count($missingDepartments)]);
+            // Strip missing department hints
+            foreach ($data as &$row) {
+                $hint = trim($row['_department_hint']);
+                $isMissing = collect($missingDepartments)->contains(fn($c) => strcasecmp($c, $hint) === 0);
+                if ($isMissing) {
+                    $row['_department_hint'] = '';
+                }
+            }
+            $missingDepartments = [];
+        }
+
+        // --- MAP EXISTING ENTITIES IMMEDIATELY ---
+        // Fetch full collections of existing models matching names case-insensitively
+        $existingCatModels = Category::whereIn(\DB::raw('LOWER(name)'), array_map('strtolower', $categoryHints))->get();
+        $existingDeptModels = Department::whereIn(\DB::raw('LOWER(name)'), array_map('strtolower', $departmentHints))->get();
+
+        foreach ($data as &$row) {
+            $cHint = trim($row['_category_hint']);
+            $dHint = trim($row['_department_hint']);
+
+            if (!empty($cHint)) {
+                $matched = $existingCatModels->first(fn($c) => strcasecmp($c->name, $cHint) === 0);
+                if ($matched) {
+                    $row['category_id'] = $matched->id;
+                }
+            }
+
+            if (!empty($dHint)) {
+                $matched = $existingDeptModels->first(fn($d) => strcasecmp($d->name, $dHint) === 0);
+                if ($matched) {
+                    $row['department_id'] = $matched->id;
+                }
+            }
+        }
+        // -----------------------------------------
+
+        // Re-cache data with mapped existing IDs (and potentially stripped unauthorized hints)
+        Cache::put($cacheKey, $data, now()->addMinutes(30));
+
+        // If none are missing (or were stripped), bypass and go to standard review
+        if (empty($missingCategories) && empty($missingDepartments)) {
+            $redirect = redirect()->route('assets.import-review');
+            if (!empty($warnings)) {
+                $redirect->with('warning', implode(' ', $warnings));
+            }
+            return $redirect;
+        }
+
+        // Return view (for rapid add display, which will be implemented in Batch 3)
+        if (view()->exists('assets.import-rapid-add')) {
+            return view('assets.import-rapid-add', compact('missingCategories', 'missingDepartments'));
+        }
+
+        // Demo output for Batch 1/2 Verification
+        return response()->json([
+            'status' => 'intercepted_for_rapid_add',
+            'missing_categories' => $missingCategories,
+            'missing_departments' => $missingDepartments,
+            'warnings' => $warnings,
+        ]);
+    }
+
+    /**
+     * Process Rapid Add submissions.
+     */
+    public function storeRapidAdd(Request $request, EntityCodeGeneratorService $codeGen)
+    {
+        $request->validate([
+            'categories' => 'nullable|array',
+            'categories.*' => 'string|max:255',
+            'departments' => 'nullable|array',
+            'departments.*' => 'string|max:255',
+        ]);
+
+        $cacheKey = 'import_review_'.auth()->id();
+        $data = Cache::get($cacheKey);
+
+        if ($data === null) {
+            return redirect()->route('assets.index')
+                ->with('warning', __('assets.import_parse_error', ['message' => 'Import session expired or not found.']));
+        }
+
+        $propertyId = auth()->user()->isSuperAdmin() ? session('active_property_id') : auth()->user()->property_id;
+
+        $createdCategories = [];
+        $createdDepartments = [];
+
+        // Create Categories
+        if ($request->filled('categories') && auth()->user()->can('create', Category::class)) {
+            foreach ($request->categories as $name) {
+                $code = $codeGen->generateUniqueCode($name, Category::class, $propertyId);
+                $category = Category::create([
+                    'name' => $name,
+                    'code' => $code,
+                    'property_id' => $propertyId,
+                ]);
+                $createdCategories[$name] = $category->id;
+            }
+        }
+
+        // Create Departments
+        if ($request->filled('departments') && auth()->user()->can('create', Department::class)) {
+            foreach ($request->departments as $name) {
+                $code = $codeGen->generateUniqueCode($name, Department::class, $propertyId);
+                $department = Department::create([
+                    'name' => $name,
+                    'code' => $code,
+                    'property_id' => $propertyId,
+                ]);
+                $createdDepartments[$name] = $department->id;
+            }
+        }
+
+        // Map the IDs back
+        foreach ($data as &$row) {
+            $catHint = trim($row['_category_hint']);
+            $deptHint = trim($row['_department_hint']);
+
+            $matchedCat = collect($createdCategories)->first(function ($id, $name) use ($catHint) {
+                return strcasecmp($name, $catHint) === 0;
+            });
+            if ($matchedCat) {
+                $row['category_id'] = $matchedCat;
+                $row['_category_hint'] = '';
+            }
+
+            $matchedDept = collect($createdDepartments)->first(function ($id, $name) use ($deptHint) {
+                return strcasecmp($name, $deptHint) === 0;
+            });
+            if ($matchedDept) {
+                $row['department_id'] = $matchedDept;
+                $row['_department_hint'] = '';
+            }
+        }
+
+        // Re-cache updated data
+        Cache::put($cacheKey, $data, now()->addMinutes(30));
+
+        return redirect()->route('assets.import-review');
     }
 
     /**

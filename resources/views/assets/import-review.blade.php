@@ -93,7 +93,7 @@
                                                 class="block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-accent focus:border-accent text-sm dark:bg-gray-900/50 dark:text-white">
                                                 <option value="">-- Select --</option>
                                                 @foreach($categories as $cat)
-                                                    <option value="{{ $cat->id }}" {{ old('assets.'.$index.'.category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                                    <option value="{{ $cat->id }}" {{ old('assets.'.$index.'.category_id', $item['category_id'] ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                                                 @endforeach
                                             </select>
                                         </td>
@@ -105,7 +105,7 @@
                                                 <option value="">-- Select --</option>
                                                 @foreach($departments as $dept)
                                                     <!-- Auto-select department if match or fallback to user dept if admin -->
-                                                    <option value="{{ $dept->id }}" {{ old('assets.'.$index.'.department_id') == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
+                                                    <option value="{{ $dept->id }}" {{ old('assets.'.$index.'.department_id', $item['department_id'] ?? '') == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
                                                 @endforeach
                                             </select>
                                         </td>

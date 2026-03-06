@@ -6,15 +6,15 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => redirect()->route('assets.index'));
+Route::get('/', fn () => redirect()->route('assets.index'));
 
 Route::get('/lang/{locale}', [LanguageController::class, 'switchLang'])->name('lang.switch');
 
@@ -34,6 +34,8 @@ Route::middleware('auth')->group(function () {
 
     // Smart Import Routes
     Route::post('/assets/import-parse', [\App\Http\Controllers\AssetImportController::class, 'parse'])->name('assets.import-parse');
+    Route::get('/assets/import-rapid-add', [\App\Http\Controllers\AssetImportController::class, 'rapidAdd'])->name('assets.import-rapid-add');
+    Route::post('/assets/import-rapid-add', [\App\Http\Controllers\AssetImportController::class, 'storeRapidAdd'])->name('assets.import-rapid-add.store');
     Route::get('/assets/import-review', [\App\Http\Controllers\AssetImportController::class, 'review'])->name('assets.import-review');
     Route::post('/assets/import-store', [\App\Http\Controllers\AssetImportController::class, 'store'])->name('assets.import-store');
     Route::get('/assets/bulk-manual', [\App\Http\Controllers\AssetImportController::class, 'bulkManual'])->name('assets.bulk-manual');

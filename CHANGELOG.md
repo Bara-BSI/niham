@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.1] - 2026-03-06
+### Added
+- **Rapid Add Workflow:** Introduced an intelligent interception layer during asset imports to handle missing Categories and Departments.
+- **`EntityCodeGeneratorService`:** Automated, collision-resistant shortcode generator with tenant-aware recursive char-shifting and sequential fallback.
+- **Alpine.js Dynamic Selection:** Interactive "Rapid Add" UI including "Select All" toggles and real-time Action Button state morphing ("Create & Continue" vs "Skip & Continue").
+- **Case-Insensitive Entity Matching:** Upgraded database cross-referencing to use normalized `LOWER(name)` lookups for robust existing entity detection.
+
+### Fixed
+- **Dropdown Persistence:** Resolved an issue in the Bulk Review form where mapped `category_id` and `department_id` from the Rapid Add step were being ignored by the Blade renderer.
+- **UI Feedback:** Replaced CSS-dependent `peer-checked` visual states with direct Alpine.js bindings for reliable checkbox feedback.
+
 ## [0.11.0] - 2026-03-06
 ### Added
 - **Native Heuristic Parser:** Introduced a robust, native stream-based file parser utilizing `openspout/openspout` for `Smart Import`. Allows memory-efficient row-by-row extraction from `.csv` and `.xlsx` files without hitting server memory limits.
