@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-03-08
+### Added
+- **Native Infrastructure Migration:** Successfully transitioned the entire application stack (Nginx, PHP-FPM, PostgreSQL) from legacy Distrobox containers to a native systemd-based environment on openSUSE Leap 16.0.
+- **Native PHP 8.4 Runtime:** Compiled and enabled the `imagick` extension from source via PECL for high-performance QR code rendering on the native host.
+
+### Changed
+- **Documentation Overhaul:** Rewrote the `README.md` to be user-friendly and removed all references to legacy `distrobox` and `podman` infrastructure.
+- **Permission Standardization:** Corrected file ownership and group permissions (`www` group) to eliminate "Permission Denied" errors during log writing and view compilation.
+
+### Fixed
+- **Blade Syntax Crash:** Resolved a critical typo in `@foreach` loops within `assets/history.blade.php`.
+- **QR Generation:** Restored the QR Code generation engine that was failing due to missing image processing libraries on the new host.
+
+
 ## [0.11.1] - 2026-03-06
 ### Added
 - **Rapid Add Workflow:** Introduced an intelligent interception layer during asset imports to handle missing Categories and Departments.
