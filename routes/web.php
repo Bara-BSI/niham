@@ -7,83 +7,107 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OcrScanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AssetImportController;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => redirect()->route('assets.index'));
+// Redirect home to assets index
+Route::get('/', fn() => to_route('assets.index'));
 
+// Localization (i18n)
 Route::get('/lang/{locale}', [LanguageController::class, 'switchLang'])->name('lang.switch');
 
+// Authenticated Routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::patch('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.update.notifications');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Profile Management
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile', 'edit')->name('profile.edit');
+        Route::patch('/profile', 'update')->name('profile.update');
+        Route::patch('/profile/notifications', 'updateNotifications')->name('profile.update.notifications');
+        Route::delete('/profile', 'destroy')->name('profile.destroy');
+    });
 
-    Route::post('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
-    Route::post('/notifications/clear-all', [\App\Http\Controllers\NotificationController::class, 'clearAll'])->name('notifications.clearAll');
+    // Notifications
+    Route::controller(NotificationController::class)->name('notifications.')->group(function () {
+        Route::post('/notifications/mark-all-read', 'markAllAsRead')->name('markAllAsRead');
+        Route::post('/notifications/clear-all', 'clearAll')->name('clearAll');
+    });
 
-    // Export the assets
-    Route::get('/assets/export', [AssetController::class, 'export'])->name('assets.export');
+    // Asset Management
+    Route::controller(AssetController::class)->prefix('assets')->name('assets.')->group(function () {
+        Route::get('/export', 'export')->name('export');
+        Route::get('/{asset}/history', 'history')->name('history');
+        Route::get('/{asset}/history/export', 'exportHistory')->name('history.export');
+        Route::post('/{asset}/attachments', 'storeAttachment')->name('attachments.store');
+        Route::delete('/attachments/{attachment}', 'destroyAttachment')->name('attachments.destroy');
+        Route::get('/{asset}/attachments/download/all', 'downloadAllAttachments')->name('attachments.download-all');
+    });
 
-    // Smart Import Routes
-    Route::post('/assets/import-parse', [\App\Http\Controllers\AssetImportController::class, 'parse'])->name('assets.import-parse');
-    Route::get('/assets/import-rapid-add', [\App\Http\Controllers\AssetImportController::class, 'rapidAdd'])->name('assets.import-rapid-add');
-    Route::post('/assets/import-rapid-add', [\App\Http\Controllers\AssetImportController::class, 'storeRapidAdd'])->name('assets.import-rapid-add.store');
-    Route::get('/assets/import-review', [\App\Http\Controllers\AssetImportController::class, 'review'])->name('assets.import-review');
-    Route::post('/assets/import-store', [\App\Http\Controllers\AssetImportController::class, 'store'])->name('assets.import-store');
-    Route::get('/assets/bulk-manual', [\App\Http\Controllers\AssetImportController::class, 'bulkManual'])->name('assets.bulk-manual');
+    // Smart Import Workflow
+    Route::controller(AssetImportController::class)->prefix('assets')->name('assets.')->group(function () {
+        Route::post('/import-parse', 'parse')->name('import-parse');
+        Route::get('/import-rapid-add', 'rapidAdd')->name('import-rapid-add');
+        Route::post('/import-rapid-add', 'storeRapidAdd')->name('import-rapid-add.store');
+        Route::get('/import-review', 'review')->name('import-review');
+        Route::post('/import-store', 'store')->name('import-store');
+        Route::get('/bulk-manual', 'bulkManual')->name('bulk-manual');
+    });
 
-    Route::resource('assets', AssetController::class);
-    Route::resource('roles', RoleController::class);
-    Route::resource('departments', DepartmentController::class);
-    Route::resource('categories', CategoryController::class);
-    Route::resource('users', UserController::class);
+    // OCR Analysis
+    Route::post('/assets/ocr-scan', [OcrScanController::class, 'scan'])->name('assets.ocr-scan');
 
-    // History Routes
-    Route::get('/assets/{asset}/history', [AssetController::class, 'history'])->name('assets.history');
-    Route::get('/assets/{asset}/history/export', [AssetController::class, 'exportHistory'])->name('assets.history.export');
-
-    // Property Routes
-    Route::resource('properties', PropertyController::class);
-    Route::post('/properties/switch', [PropertyController::class, 'switchProperty'])->name('properties.switch');
-    Route::get('/select-property', [PropertyController::class, 'selectForm'])->name('properties.select.form');
-    Route::post('/select-property', [PropertyController::class, 'select'])->name('properties.select');
-
+    // QR Codes
     Route::get('assets/{asset}/qr', [QrController::class, 'image'])->name('assets.qr');
-    Route::post('/assets/{asset}/attachments', [AssetController::class, 'storeAttachment'])->name('assets.attachments.store');
-    Route::delete('/assets/attachments/{attachment}', [AssetController::class, 'destroyAttachment'])->name('assets.attachments.destroy');
-    Route::get('/assets/{asset}/attachments/download/all', [AssetController::class, 'downloadAllAttachments'])->name('assets.attachments.download-all');
-
-    // OCR Scan Endpoints
-    Route::post('/assets/ocr-scan', [\App\Http\Controllers\OcrScanController::class, 'scan'])->name('assets.ocr-scan');
-
-    // Jobs
-    Route::resource('jobs', \App\Http\Controllers\JobController::class);
-    Route::patch('/jobs/{job}/status', [\App\Http\Controllers\JobController::class, 'updateStatus'])->name('jobs.status');
-    Route::post('/jobs/{job}/comments', [\App\Http\Controllers\JobController::class, 'addComment'])->name('jobs.comments');
-
-    // Halaman scan qr
     Route::view('scan', 'qr.scan')->name('qr.scan');
 
-    // Backup routes
-    Route::post('/backup/download', [BackupController::class, 'download'])->name('backup.download');
-    Route::post('/backup/restore', [BackupController::class, 'restore'])->name('backup.restore');
+    // Resources
+    Route::resources([
+        'assets' => AssetController::class,
+        'roles' => RoleController::class,
+        'departments' => DepartmentController::class,
+        'categories' => CategoryController::class,
+        'users' => UserController::class,
+        'properties' => PropertyController::class,
+        'jobs' => JobController::class,
+    ]);
+
+    // Tenancy (Property Switching)
+    Route::controller(PropertyController::class)->group(function () {
+        Route::post('/properties/switch', 'switchProperty')->name('properties.switch');
+        Route::get('/select-property', 'selectForm')->name('properties.select.form');
+        Route::post('/select-property', 'select')->name('properties.select');
+    });
+
+    // Jobs Extended Attributes
+    Route::controller(JobController::class)->prefix('jobs')->name('jobs.')->group(function () {
+        Route::patch('/{job}/status', 'updateStatus')->name('status');
+        Route::post('/{job}/comments', 'addComment')->name('comments');
+    });
+
+    // Global Backup/Restore
+    Route::controller(BackupController::class)->prefix('backup')->name('backup.')->group(function () {
+        Route::post('/download', 'download')->name('download');
+        Route::post('/restore', 'restore')->name('restore');
+    });
 });
 
-// Public signed resolution endpoint (no auth)
-Route::get('/qr/resolve/{uuid}', [QrController::class, 'resolve'])
-    ->name('qr.resolve');
+// Public Public Signed Resolution
+Route::get('/qr/resolve/{uuid}', [QrController::class, 'resolve'])->name('qr.resolve');
 
+// OAuth (Guest Only)
 Route::middleware('guest')->group(function () {
     Route::get('/auth/google', [GoogleLoginController::class, 'redirectToGoogle'])->name('login.google');
     Route::get('/auth/google/callback', [GoogleLoginController::class, 'handleGoogleCallback']);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
+
